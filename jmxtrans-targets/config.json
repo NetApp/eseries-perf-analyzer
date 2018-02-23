@@ -1,0 +1,132 @@
+{
+  "servers": [
+    {
+      "numQueryThreads": "5",
+      "host": "localhost",
+      "port": "8099",
+      "queries": [
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "java.lang:type=Memory",
+          "attr": [
+            "HeapMemoryUsage",
+            "NonHeapMemoryUsage"
+          ],
+          "resultAlias": "heap"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "java.lang:type=ClassLoading",
+          "attr": [
+            "LoadedClassCount",
+            "TotalLoadedClassCount",
+            "UnloadedClassCount"
+          ],
+          "resultAlias": "ClassLoading"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "java.lang:type=GarbageCollector,name=*",
+          "attr": [
+            "CollectionCount",
+            "CollectionTime"
+          ],
+          "resultAlias": "GC"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "com.ni.eseries:type=StorageDevice,name=*",
+          "attr": [
+            "OpenConnections", "ActveConnections",
+            "GraphFetchCount", "LastGraphFetchTime",
+            "TryAltCount"
+          ],
+          "resultAlias": "StorageSystems"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "com.ni.eseries:type=StatsManager",
+          "attr": [
+            "HxDaysToSave", "LastHistoricalFetchTime",
+            "NumberInActivePoll", "PollingInterval"
+          ],
+          "resultAlias": "StatsManager"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "com.ni.eseries:type=MultiDeviceManager",
+          "attr": [
+            "NumberOfSelectChannels", "OnlineSystemCount", "SystemCount",
+            "RequestCount", "ProcessingTaskCount", "ThreadPoolSize"
+          ],
+          "resultAlias": "DeviceManager"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "com.ni.webserver:type=WebServer",
+          "attr": [
+            "CurrentThreadCount", "IdleThreadCount", "MaxThreadCount"
+          ],
+          "resultAlias": "WebServer"
+        }
+      ]
+    }
+  ]
+}
+

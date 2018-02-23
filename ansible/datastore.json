@@ -1,0 +1,9 @@
+{
+  "name":"WSP",
+  "label": "WSP",
+  "type": "graphite",
+  "url":"http://localhost:80",
+  "access":"proxy",
+  "basicAuth": false,
+  "isDefault": true
+}

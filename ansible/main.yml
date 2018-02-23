@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    grafana_username: admin
+    grafana_password: admin
+  tasks:
+    - include_tasks: tasks/grafana.yml

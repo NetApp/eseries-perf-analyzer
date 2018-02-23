@@ -1,0 +1,58 @@
+- name: Get graphite datasource
+  uri:
+    url: "http://localhost:3000/api/datasources/id/WSP"
+    method: GET
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    force_basic_auth: yes
+    status_code: 404,200
+    headers:
+      Accept: "application/json"
+  register: resp
+
+- name: Define graphite datasource
+  uri:
+    url: "http://localhost:3000/api/datasources"
+    method: POST
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    body: "{{ lookup('file', 'datastore.json') | from_json}}"
+    status_code: 200
+    body_format: json
+    force_basic_auth: yes
+    headers:
+      Content-Type: "application/json"
+  when: resp.status == 404
+
+- name: Find dashboard files
+  find:
+    paths: ./dashboards
+    recurse: yes
+  register: dashboards
+
+- name: Get graphite dashboards
+  uri:
+    url: "http://localhost:3000/api/search/?tag=template"
+    method: GET
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    force_basic_auth: yes
+    headers:
+      Accept: "application/json"
+  register: resp
+
+  
+- name: Create grafana dashboards
+  uri:
+    url: "http://localhost:3000/api/dashboards/db"
+    method: POST
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    body: "{{ lookup('file', item.path) | from_json}}"
+    status_code: 200
+    body_format: json
+    force_basic_auth: yes
+    headers:
+      Content-Type: "application/json"
+  when: resp.json|length < (dashboards.files | length)
+  with_items: "{{ dashboards.files }}"

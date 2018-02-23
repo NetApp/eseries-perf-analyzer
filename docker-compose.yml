@@ -1,0 +1,34 @@
+version: '2'
+services:
+  jmxtrans:
+    image: jmxtrans/jmxtrans
+    environment:
+      HEAP_SIZE: 128
+      SECONDS_BETWEEN_RUNS: 5
+    volumes:
+      - ./jmxtrans-targets:/var/lib/jmxtrans
+    mem_limit: 256M
+    network_mode: "host" 
+    depends_on:
+      - graphite
+  graphite:
+    build:
+      context: ./graphite
+    mem_limit: 128M
+    ports: 
+    - 80:80
+    - 2003-2004:2003-2004
+    - 2023-2024:2023-2024
+    - 8125:8125/udp
+    - 8126:8126
+    volumes:
+    #  - ./graphite/configs:/opt/graphite/conf
+      - ./graphite/data:/opt/graphite/storage/whisper
+  grafana:
+    image: grafana/grafana:master
+    ports:
+      - 3000:3000
+    network_mode: "host"
+  
+volumes:
+  grafana_vol:
