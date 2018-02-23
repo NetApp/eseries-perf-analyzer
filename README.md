@@ -1,3 +1,5 @@
+# Super Simple Monitoring
+
 Welcome! This tool is designed and intended to give you a deeper view into the inner workings of the Web Services Proxy. We expose various metrics via API's and via Java Management eXtensions (JMX), that this tool is capable of collecting and helping you visualize through the highly customizable Grafana front-end.
 
 # Components
