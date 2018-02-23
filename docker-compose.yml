@@ -11,6 +11,9 @@ services:
     network_mode: "host" 
     depends_on:
       - graphite
+    logging:
+      options:
+        max-size: 50m
   graphite:
     build:
       context: ./graphite
