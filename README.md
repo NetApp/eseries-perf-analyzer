@@ -1,3 +1,4 @@
+
 # Super Simple Monitoring
 
 Welcome! This tool is designed and intended to give you a deeper view into the inner workings of the Web Services Proxy. We expose various metrics via API's and via Java Management eXtensions (JMX), that this tool is capable of collecting and helping you visualize through the highly customizable Grafana front-end.
@@ -34,8 +35,15 @@ We use Docker and Docker-Compose for our deployment method because of the simpli
 You'll need [Docker](https://docs.docker.com/install/) and Docker-Compose installed. Most of the other dependencies are provided via individual Docker images.
 
 ## Configuration
-By default, the configuration is setup to allow the local machine to be monitored on port 8099. The Web Services Proxy is configured to allow this in <install_dir>/webserver.sh under debug_options, but it is disabled by default. Enabling this option will allow the JMX statistics to be captured. 
+By default, the configuration is setup to allow the local machine to be monitored on port 8099. The Web Services Proxy is configured to allow this in <install_dir>/webserver.sh under debug_options, but it is disabled by default. Enabling this option will allow the JMX statistics to be captured.
 //TODO Define a template to allow a new configuration to be generated using a given server hostname and port.
+
+### Configuring Targets
+The jmxtrans-targets/config.json file contains the configuration for pulling metrics from a single JVM instance. It is possible to have multiple files in the directory in order to poll multiple instances. By default, we will attempt to poll from an instance running on the localhost with a port of 8099.
+There is a DEBUG_OPTIONS property in the webserver.sh file of the Web Services Proxy install directory that will enable remote JMX capabilities.
 
 ## Starting It Up
 It's pretty simple, run the start.sh script. When you want to stop it, run the stop.sh script. If you're trying to monitor status, you can do so using standard Docker commands.
+
+## Accessing the Dashboards
+The dashboards are available at yourhost:3000, with default credentials of admin/admin.
