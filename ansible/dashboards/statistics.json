@@ -1,0 +1,391 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": null,
+        "iteration": 1520013364378,
+        "links": [],
+        "panels": [
+            {
+                "cacheTimeout": null,
+                "colorBackground": false,
+                "colorValue": false,
+                "colors": [
+                    "#629e51",
+                    "rgba(237, 129, 40, 0.89)",
+                    "#d44a3a"
+                ],
+                "datasource": "WSP",
+                "decimals": null,
+                "description": "The number of days that we are preserving the statistics for later retrieval.",
+                "format": "none",
+                "gauge": {
+                    "maxValue": 120,
+                    "minValue": null,
+                    "show": true,
+                    "thresholdLabels": false,
+                    "thresholdMarkers": true
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 6,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 5,
+                "interval": null,
+                "links": [],
+                "mappingType": 2,
+                "mappingTypes": [
+                    {
+                        "name": "value to text",
+                        "value": 1
+                    },
+                    {
+                        "name": "range to text",
+                        "value": 2
+                    }
+                ],
+                "maxDataPoints": 100,
+                "nullPointMode": "connected",
+                "nullText": null,
+                "postfix": " days",
+                "postfixFontSize": "50%",
+                "prefix": "",
+                "prefixFontSize": "50%",
+                "rangeMaps": [
+                    {
+                        "from": "null",
+                        "text": "N/A",
+                        "to": "null"
+                    }
+                ],
+                "sparkline": {
+                    "fillColor": "rgba(31, 118, 189, 0.18)",
+                    "full": false,
+                    "lineColor": "rgb(31, 120, 193)",
+                    "show": false
+                },
+                "tableColumn": "",
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "servers.$SystemInstance.StatsManager.HxDaysToSave"
+                    }
+                ],
+                "thresholds": "1,31",
+                "title": "Historical Statistics",
+                "transparent": true,
+                "type": "singlestat",
+                "valueFontSize": "80%",
+                "valueMaps": [],
+                "valueName": "current"
+            },
+            {
+                "cacheTimeout": null,
+                "colorBackground": false,
+                "colorValue": false,
+                "colors": [
+                    "#d44a3a",
+                    "rgba(237, 129, 40, 0.89)",
+                    "#299c46"
+                ],
+                "datasource": "WSP",
+                "format": "none",
+                "gauge": {
+                    "maxValue": 100,
+                    "minValue": 0,
+                    "show": true,
+                    "thresholdLabels": false,
+                    "thresholdMarkers": true
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 6,
+                    "x": 6,
+                    "y": 0
+                },
+                "id": 6,
+                "interval": null,
+                "links": [],
+                "mappingType": 2,
+                "mappingTypes": [
+                    {
+                        "name": "value to text",
+                        "value": 1
+                    },
+                    {
+                        "name": "range to text",
+                        "value": 2
+                    }
+                ],
+                "maxDataPoints": 100,
+                "nullPointMode": "connected",
+                "nullText": null,
+                "postfix": "s",
+                "postfixFontSize": "50%",
+                "prefix": "",
+                "prefixFontSize": "50%",
+                "rangeMaps": [
+                    {
+                        "from": "-999999999999999",
+                        "text": "Disabled",
+                        "to": "0"
+                    }
+                ],
+                "sparkline": {
+                    "fillColor": "rgba(31, 118, 189, 0.18)",
+                    "full": false,
+                    "lineColor": "rgb(31, 120, 193)",
+                    "show": false
+                },
+                "tableColumn": "",
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "servers.$SystemInstance.StatsManager.PollingInterval"
+                    }
+                ],
+                "thresholds": "5,15",
+                "title": "Polling Interval",
+                "transparent": true,
+                "type": "singlestat",
+                "valueFontSize": "80%",
+                "valueMaps": [
+                    {
+                        "op": "=",
+                        "text": "N/A",
+                        "value": "null"
+                    },
+                    {
+                        "op": "=",
+                        "text": "",
+                        "value": ""
+                    }
+                ],
+                "valueName": "current"
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "WSP",
+                "description": "The amount of time it took us to make the statistics collection.",
+                "fill": 1,
+                "gridPos": {
+                    "h": 7,
+                    "w": 24,
+                    "x": 0,
+                    "y": 7
+                },
+                "id": 1,
+                "interval": "",
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": true,
+                    "current": true,
+                    "max": true,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "links": [],
+                "nullPointMode": "null",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "dsType": "influxdb",
+                        "groupBy": [
+                            {
+                                "params": [
+                                    "1m"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "none"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "measurement": "DeviceManager",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "refCount": 0,
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "RequestCount"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "mean"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "difference"
+                                }
+                            ]
+                        ],
+                        "tags": [],
+                        "target": "aliasByMetric(servers.$SystemInstance.StatsManager.LastHistoricalFetchTime)"
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Statistics Fetch Time",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "transparent": true,
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "ms",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ]
+            }
+        ],
+        "refresh": "5s",
+        "schemaVersion": 16,
+        "style": "dark",
+        "tags": [
+            "template",
+            "webservices"
+        ],
+        "templating": {
+            "list": [
+                {
+                    "allValue": null,
+                    "current": {
+                        "text": "scspw0388203001",
+                        "value": "scspw0388203001"
+                    },
+                    "datasource": "WSP",
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": null,
+                    "multi": false,
+                    "name": "SystemInstance",
+                    "options": [],
+                    "query": "servers.*",
+                    "refresh": 2,
+                    "regex": "",
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                }
+            ]
+        },
+        "time": {
+            "from": "now-5m",
+            "to": "now"
+        },
+        "timepicker": {
+            "refresh_intervals": [
+                "5s",
+                "10s",
+                "30s",
+                "1m",
+                "5m",
+                "15m",
+                "30m",
+                "1h",
+                "2h",
+                "1d"
+            ],
+            "time_options": [
+                "5m",
+                "15m",
+                "1h",
+                "6h",
+                "12h",
+                "24h",
+                "2d",
+                "7d",
+                "30d"
+            ]
+        },
+        "timezone": "",
+        "title": "Statistics",
+        "uid": "sVQ2ycezz",
+        "version": 2
+    },
+    "meta": {
+        "canAdmin": true,
+        "canEdit": true,
+        "canSave": true,
+        "canStar": true,
+        "created": "0001-01-01T00:00:00Z",
+        "createdBy": "Anonymous",
+        "expires": "0001-01-01T00:00:00Z",
+        "folderId": 7,
+        "folderTitle": "Web Services",
+        "folderUrl": "/dashboards/f/ZNO9fPekz/web-services",
+        "hasAcl": false,
+        "isFolder": false,
+        "slug": "statistics",
+        "type": "db",
+        "updated": "2018-03-02T17:56:23Z",
+        "updatedBy": "VALUE_SPECIFIED_IN_NO_LOG_PARAMETER",
+        "url": "/d/sVQ2ycezz/statistics",
+        "version": 2
+    }
+}

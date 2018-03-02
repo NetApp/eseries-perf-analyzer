@@ -1,0 +1,1139 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": null,
+        "iteration": 1520013343092,
+        "links": [],
+        "panels": [
+            {
+                "cards": {
+                    "cardPadding": null,
+                    "cardRound": null
+                },
+                "color": {
+                    "cardColor": "#890f02",
+                    "colorScale": "sqrt",
+                    "colorScheme": "interpolateYlOrRd",
+                    "exponent": 0.5,
+                    "max": null,
+                    "mode": "spectrum"
+                },
+                "dataFormat": "timeseries",
+                "datasource": "WSP",
+                "gridPos": {
+                    "h": 9,
+                    "w": 12,
+                    "x": 0,
+                    "y": 0
+                },
+                "heatmap": {},
+                "highlightCards": true,
+                "id": 13,
+                "legend": {
+                    "show": true
+                },
+                "links": [],
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "servers.$SystemInstance.StorageSystems.$StorageSystem.ActveConnections"
+                    }
+                ],
+                "title": "Active Connections (HeatMap)",
+                "tooltip": {
+                    "show": true,
+                    "showHistogram": false
+                },
+                "transparent": true,
+                "type": "heatmap",
+                "xAxis": {
+                    "show": true
+                },
+                "xBucketNumber": null,
+                "xBucketSize": null,
+                "yAxis": {
+                    "decimals": null,
+                    "format": "short",
+                    "logBase": 1,
+                    "max": null,
+                    "min": null,
+                    "show": true,
+                    "splitFactor": null
+                },
+                "yBucketNumber": null,
+                "yBucketSize": null
+            },
+            {
+                "aliasColors": {},
+                "bars": true,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "WSP",
+                "fill": 0,
+                "gridPos": {
+                    "h": 9,
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                },
+                "hideTimeOverride": false,
+                "id": 2,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "hideEmpty": true,
+                    "hideZero": true,
+                    "max": false,
+                    "min": false,
+                    "rightSide": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "null",
+                "percentage": false,
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": true,
+                "targets": [
+                    {
+                        "alias": "$tag_typeName",
+                        "dsType": "influxdb",
+                        "groupBy": [
+                            {
+                                "params": [
+                                    "$__interval"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "typeName"
+                                ],
+                                "type": "tag"
+                            },
+                            {
+                                "params": [
+                                    "none"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "limit": "",
+                        "measurement": "StorageSystems",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "OpenConnections"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "mean"
+                                }
+                            ]
+                        ],
+                        "slimit": "",
+                        "tags": [],
+                        "target": "aliasByNode(summarize(highestAverage(servers.$SystemInstance.StorageSystems.$StorageSystem.ActveConnections, 5), '1m', 'avg', 'false'), 3)"
+                    }
+                ],
+                "thresholds": [
+                    {
+                        "colorMode": "warning",
+                        "fill": true,
+                        "line": true,
+                        "op": "gt",
+                        "value": 5
+                    },
+                    {
+                        "colorMode": "critical",
+                        "fill": true,
+                        "line": true,
+                        "op": "gt",
+                        "value": 10
+                    }
+                ],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Active Connections",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "transparent": true,
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "decimals": null,
+                        "format": "none",
+                        "label": "Connection Count",
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ]
+            },
+            {
+                "cards": {
+                    "cardPadding": null,
+                    "cardRound": null
+                },
+                "color": {
+                    "cardColor": "#890f02",
+                    "colorScale": "sqrt",
+                    "colorScheme": "interpolateYlOrRd",
+                    "exponent": 0.5,
+                    "max": null,
+                    "mode": "spectrum"
+                },
+                "dataFormat": "timeseries",
+                "datasource": "WSP",
+                "gridPos": {
+                    "h": 9,
+                    "w": 12,
+                    "x": 0,
+                    "y": 9
+                },
+                "heatmap": {},
+                "highlightCards": true,
+                "id": 12,
+                "legend": {
+                    "show": true
+                },
+                "links": [],
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "servers.$SystemInstance.StorageSystems.$StorageSystem.OpenConnections"
+                    }
+                ],
+                "title": "Open Connections (HeatMap",
+                "tooltip": {
+                    "show": true,
+                    "showHistogram": false
+                },
+                "transparent": true,
+                "type": "heatmap",
+                "xAxis": {
+                    "show": true
+                },
+                "xBucketNumber": null,
+                "xBucketSize": null,
+                "yAxis": {
+                    "decimals": null,
+                    "format": "short",
+                    "logBase": 1,
+                    "max": null,
+                    "min": null,
+                    "show": true,
+                    "splitFactor": null
+                },
+                "yBucketNumber": null,
+                "yBucketSize": null
+            },
+            {
+                "aliasColors": {},
+                "bars": true,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "WSP",
+                "fill": 0,
+                "gridPos": {
+                    "h": 9,
+                    "w": 12,
+                    "x": 12,
+                    "y": 9
+                },
+                "hideTimeOverride": false,
+                "id": 14,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "hideEmpty": true,
+                    "hideZero": true,
+                    "max": false,
+                    "min": false,
+                    "rightSide": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 2,
+                "links": [],
+                "nullPointMode": "null",
+                "percentage": false,
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": true,
+                "targets": [
+                    {
+                        "alias": "$tag_typeName",
+                        "dsType": "influxdb",
+                        "groupBy": [
+                            {
+                                "params": [
+                                    "$__interval"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "typeName"
+                                ],
+                                "type": "tag"
+                            },
+                            {
+                                "params": [
+                                    "none"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "limit": "",
+                        "measurement": "StorageSystems",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "OpenConnections"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "mean"
+                                }
+                            ]
+                        ],
+                        "slimit": "",
+                        "tags": [],
+                        "target": "aliasByNode(summarize(highestAverage(servers.$SystemInstance.StorageSystems.$StorageSystem.OpenConnections, 5), '1m', 'avg', false), 3)"
+                    }
+                ],
+                "thresholds": [
+                    {
+                        "colorMode": "warning",
+                        "fill": true,
+                        "line": true,
+                        "op": "gt",
+                        "value": 5
+                    },
+                    {
+                        "colorMode": "critical",
+                        "fill": true,
+                        "line": true,
+                        "op": "gt",
+                        "value": 10
+                    }
+                ],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Open Connections",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "transparent": true,
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "decimals": null,
+                        "format": "none",
+                        "label": "Connection Count",
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ]
+            },
+            {
+                "cacheTimeout": null,
+                "colorBackground": false,
+                "colorValue": false,
+                "colors": [
+                    "#299c46",
+                    "rgba(237, 129, 40, 0.89)",
+                    "#d44a3a"
+                ],
+                "datasource": "WSP",
+                "format": "none",
+                "gauge": {
+                    "maxValue": 100,
+                    "minValue": 0,
+                    "show": false,
+                    "thresholdLabels": false,
+                    "thresholdMarkers": true
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 6,
+                    "x": 0,
+                    "y": 18
+                },
+                "id": 6,
+                "interval": null,
+                "links": [],
+                "mappingType": 1,
+                "mappingTypes": [
+                    {
+                        "name": "value to text",
+                        "value": 1
+                    },
+                    {
+                        "name": "range to text",
+                        "value": 2
+                    }
+                ],
+                "maxDataPoints": 100,
+                "nullPointMode": "connected",
+                "nullText": null,
+                "postfix": "",
+                "postfixFontSize": "50%",
+                "prefix": "",
+                "prefixFontSize": "50%",
+                "rangeMaps": [
+                    {
+                        "from": "null",
+                        "text": "N/A",
+                        "to": "null"
+                    }
+                ],
+                "sparkline": {
+                    "fillColor": "rgba(31, 118, 189, 0.18)",
+                    "full": false,
+                    "lineColor": "rgb(31, 120, 193)",
+                    "show": false
+                },
+                "tableColumn": "",
+                "targets": [
+                    {
+                        "dsType": "influxdb",
+                        "groupBy": [
+                            {
+                                "params": [
+                                    "$__interval"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "null"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "measurement": "DeviceManager",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "SystemCount"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "mean"
+                                }
+                            ]
+                        ],
+                        "tags": [],
+                        "target": "servers.$SystemInstance.DeviceManager.SystemCount"
+                    }
+                ],
+                "thresholds": "",
+                "title": "Storage Systems",
+                "type": "singlestat",
+                "valueFontSize": "80%",
+                "valueMaps": [
+                    {
+                        "op": "=",
+                        "text": "N/A",
+                        "value": "null"
+                    }
+                ],
+                "valueName": "avg"
+            },
+            {
+                "cacheTimeout": null,
+                "colorBackground": false,
+                "colorValue": false,
+                "colors": [
+                    "#299c46",
+                    "rgba(237, 129, 40, 0.89)",
+                    "#d44a3a"
+                ],
+                "datasource": "WSP",
+                "format": "none",
+                "gauge": {
+                    "maxValue": 100,
+                    "minValue": 0,
+                    "show": false,
+                    "thresholdLabels": false,
+                    "thresholdMarkers": true
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 6,
+                    "x": 6,
+                    "y": 18
+                },
+                "id": 8,
+                "interval": null,
+                "links": [],
+                "mappingType": 1,
+                "mappingTypes": [
+                    {
+                        "name": "value to text",
+                        "value": 1
+                    },
+                    {
+                        "name": "range to text",
+                        "value": 2
+                    }
+                ],
+                "maxDataPoints": 100,
+                "nullPointMode": "connected",
+                "nullText": null,
+                "postfix": "",
+                "postfixFontSize": "50%",
+                "prefix": "",
+                "prefixFontSize": "50%",
+                "rangeMaps": [
+                    {
+                        "from": "null",
+                        "text": "N/A",
+                        "to": "null"
+                    }
+                ],
+                "sparkline": {
+                    "fillColor": "rgba(31, 118, 189, 0.18)",
+                    "full": false,
+                    "lineColor": "rgb(31, 120, 193)",
+                    "show": false
+                },
+                "tableColumn": "",
+                "targets": [
+                    {
+                        "dsType": "influxdb",
+                        "groupBy": [
+                            {
+                                "params": [
+                                    "$__interval"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "null"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "measurement": "DeviceManager",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "OnlineSystemCount"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "mean"
+                                }
+                            ]
+                        ],
+                        "tags": [],
+                        "target": "servers.$SystemInstance.DeviceManager.OnlineSystemCount"
+                    }
+                ],
+                "thresholds": "",
+                "title": "Online Storage Systems",
+                "type": "singlestat",
+                "valueFontSize": "80%",
+                "valueMaps": [
+                    {
+                        "op": "=",
+                        "text": "N/A",
+                        "value": "null"
+                    }
+                ],
+                "valueName": "avg"
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "WSP",
+                "fill": 0,
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 12,
+                    "y": 18
+                },
+                "id": 10,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": false,
+                    "current": false,
+                    "hideEmpty": true,
+                    "hideZero": true,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": true,
+                "linewidth": 1,
+                "links": [],
+                "minSpan": null,
+                "nullPointMode": "null",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "repeatDirection": "h",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "dsType": "influxdb",
+                        "groupBy": [
+                            {
+                                "params": [
+                                    "$__interval"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "typeName"
+                                ],
+                                "type": "tag"
+                            },
+                            {
+                                "params": [
+                                    "none"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "hide": false,
+                        "measurement": "StorageSystems",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "LastGraphFetchTime"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "mean"
+                                },
+                                {
+                                    "params": [
+                                        " / 1000"
+                                    ],
+                                    "type": "math"
+                                }
+                            ]
+                        ],
+                        "tags": [],
+                        "target": "aliasByNode(removeBelowValue(summarize(highestAverage(servers.$SystemInstance.StorageSystems.$StorageSystem.LastGraphFetchTime, 5), '1m', 'avg', 'true'), 0.00001), 3)"
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "ObjectGraph Fetch Times (Average)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "transparent": true,
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": false,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "ms",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ]
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "WSP",
+                "description": "The systems with the most change activity. This is measured by the number of objectGraph fetches we've had to make.",
+                "fill": 1,
+                "gridPos": {
+                    "h": 6,
+                    "w": 12,
+                    "x": 0,
+                    "y": 25
+                },
+                "hideTimeOverride": false,
+                "id": 9,
+                "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "links": [],
+                "nullPointMode": "null",
+                "percentage": false,
+                "pointradius": 5,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "dsType": "influxdb",
+                        "groupBy": [
+                            {
+                                "params": [
+                                    "$__interval"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "none"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "measurement": "DeviceManager",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "refCount": 0,
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "NumberOfSelectChannels"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "mean"
+                                }
+                            ]
+                        ],
+                        "tags": [],
+                        "target": "aliasByNode(summarize(removeBelowValue(highestAverage(derivative(servers.$SystemInstance.StorageSystems.$StorageSystem.GraphFetchCount), 5), 1), '15s', 'sum', true), 3)"
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Graph Fetches (Top 5)",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 1,
+                    "value_type": "individual"
+                },
+                "transparent": true,
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ]
+            },
+            {
+                "aliasColors": {},
+                "bars": true,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "WSP",
+                "fill": 0,
+                "gridPos": {
+                    "h": 6,
+                    "w": 12,
+                    "x": 12,
+                    "y": 25
+                },
+                "id": 4,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": true,
+                    "hideEmpty": true,
+                    "hideZero": true,
+                    "max": true,
+                    "min": true,
+                    "show": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": false,
+                "linewidth": 1,
+                "links": [],
+                "minSpan": null,
+                "nullPointMode": "null",
+                "percentage": false,
+                "pointradius": 5,
+                "points": false,
+                "renderer": "flot",
+                "repeat": null,
+                "repeatDirection": "h",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "dsType": "influxdb",
+                        "groupBy": [
+                            {
+                                "params": [
+                                    "$__interval"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "typeName"
+                                ],
+                                "type": "tag"
+                            },
+                            {
+                                "params": [
+                                    "none"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "hide": false,
+                        "measurement": "StorageSystems",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "LastGraphFetchTime"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "mean"
+                                },
+                                {
+                                    "params": [
+                                        " / 1000"
+                                    ],
+                                    "type": "math"
+                                }
+                            ]
+                        ],
+                        "tags": [],
+                        "target": "aliasByNode(removeBelowValue(highestAverage(*.*.StorageSystems.$StorageSystem.LastGraphFetchTime, 5), 0.00001), 3)"
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "ObjectGraph Fetch Times (Average)",
+                "tooltip": {
+                    "shared": false,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "transparent": true,
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "series",
+                    "name": null,
+                    "show": false,
+                    "values": [
+                        "avg"
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "format": "ms",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ]
+            }
+        ],
+        "refresh": "5s",
+        "schemaVersion": 16,
+        "style": "dark",
+        "tags": [
+            "template",
+            "webservices"
+        ],
+        "templating": {
+            "list": [
+                {
+                    "allValue": null,
+                    "current": {
+                        "text": "scspw0388203001",
+                        "value": "scspw0388203001"
+                    },
+                    "datasource": "WSP",
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": null,
+                    "multi": false,
+                    "name": "SystemInstance",
+                    "options": [],
+                    "query": "servers.*",
+                    "refresh": 2,
+                    "regex": "",
+                    "sort": 1,
+                    "tagValuesQuery": "",
+                    "tags": [],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "text": "All",
+                        "value": [
+                            "$__all"
+                        ]
+                    },
+                    "datasource": "WSP",
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": null,
+                    "multi": true,
+                    "name": "StorageSystem",
+                    "options": [],
+                    "query": "*.*.StorageSystems.*",
+                    "refresh": 2,
+                    "regex": "",
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                }
+            ]
+        },
+        "time": {
+            "from": "now-5m",
+            "to": "now"
+        },
+        "timepicker": {
+            "refresh_intervals": [
+                "5s",
+                "10s",
+                "30s",
+                "1m",
+                "5m",
+                "15m",
+                "30m",
+                "1h",
+                "2h",
+                "1d"
+            ],
+            "time_options": [
+                "5m",
+                "15m",
+                "1h",
+                "6h",
+                "12h",
+                "24h",
+                "2d",
+                "7d",
+                "30d"
+            ]
+        },
+        "timezone": "",
+        "title": "Storage System",
+        "uid": "0lR3N-qzk",
+        "version": 3
+    },
+    "meta": {
+        "canAdmin": true,
+        "canEdit": true,
+        "canSave": true,
+        "canStar": true,
+        "created": "0001-01-01T00:00:00Z",
+        "createdBy": "Anonymous",
+        "expires": "0001-01-01T00:00:00Z",
+        "folderId": 7,
+        "folderTitle": "Web Services",
+        "folderUrl": "/dashboards/f/ZNO9fPekz/web-services",
+        "hasAcl": false,
+        "isFolder": false,
+        "slug": "storage-system",
+        "type": "db",
+        "updated": "2018-03-02T17:55:49Z",
+        "updatedBy": "VALUE_SPECIFIED_IN_NO_LOG_PARAMETER",
+        "url": "/d/0lR3N-qzk/storage-system",
+        "version": 3
+    }
+}
