@@ -1,6 +1,7 @@
 {
   "servers": [
     {
+      "alias": "local",
       "numQueryThreads": "5",
       "host": "localhost",
       "port": "8099",
@@ -108,6 +109,39 @@
             "RequestCount", "ProcessingTaskCount", "ThreadPoolSize"
           ],
           "resultAlias": "DeviceManager"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "java.nio:type=BufferPool,name=*",
+          "attr": [
+            "Count", "TotalCapacity", "MemoryUsed"
+          ],
+          "resultAlias": "BufferPool"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "org.apache.activemq:type=Broker,brokerName=localhost",
+          "attr": [
+            "TotalDequeueCount", "TotalEnqueueCount", "DispatchCount",
+            "TotalConnectionsCount", "MaxMessageSize", "AverageMessageSize"
+          ],
+          "resultAlias": "ActiveMQ"
         },
         {
           "outputWriters": [
