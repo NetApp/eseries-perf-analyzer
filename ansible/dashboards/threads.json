@@ -277,9 +277,9 @@
                 "colorBackground": false,
                 "colorValue": false,
                 "colors": [
-                    "#d44a3a",
+                    "#299c46",
                     "rgba(237, 129, 40, 0.89)",
-                    "#299c46"
+                    "#d44a3a"
                 ],
                 "datasource": "WSP",
                 "format": "none",
@@ -671,7 +671,7 @@
         "timezone": "",
         "title": "Threads",
         "uid": "LIkYqPezk",
-        "version": 2
+        "version": 3
     },
     "meta": {
         "canAdmin": true,
