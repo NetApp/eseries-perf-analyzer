@@ -708,9 +708,9 @@
                     },
                     "datasource": "WSP",
                     "hide": 0,
-                    "includeAll": true,
+                    "includeAll": false,
                     "label": null,
-                    "multi": true,
+                    "multi": false,
                     "name": "SystemInstance",
                     "options": [],
                     "query": "servers.*",
@@ -757,7 +757,7 @@
         "timezone": "",
         "title": "ActiveMQ",
         "uid": "gUq9-16kz",
-        "version": 5
+        "version": 2
     },
     "meta": {
         "canAdmin": true,

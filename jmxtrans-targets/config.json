@@ -158,6 +158,55 @@
             "CurrentThreadCount", "IdleThreadCount", "MaxThreadCount"
           ],
           "resultAlias": "WebServer"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "java.lang:type=OperatingSystem",
+          "attr": [
+            "FreePhysicalMemorySize", "FreeSwapSpaceSize", "MaxFileDescriptorCount", "OpenFileDescriptorCount",
+            "ProcessCpuLoad", "SystemCpuLoad", "TotalPhysicalMemorySize", "TotalSwapSpaceSize", "SystemLoadAverage"
+          ],
+          "resultAlias": "SystemResources"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "java.lang:type=Threading",
+          "attr": [
+            "PeakThreadCount", "ThreadCount", "TotalStartedThreadCount", "DaemonThreadCount"
+          ],
+          "resultAlias": "Threading"
+        },
+        {
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriterFactory",
+              "port" : 2003,
+              "host" : "localhost",
+              "typeNames" : [ "name" ],
+	            "flushStrategy" : "always"
+            }
+          ],
+          "obj" : "com.ni.eseries:type=SymbolRedirect",
+          "attr": [
+            "CurrentConnectionCount", "MaxCurrentConnectionCount", "TotalCommandCount", "TotalConnectionCount"
+          ],
+          "resultAlias": "SymbolRedirect"
         }
       ]
     }
