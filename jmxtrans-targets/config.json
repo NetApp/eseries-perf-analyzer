@@ -103,7 +103,7 @@
 	            "flushStrategy" : "always"
             }
           ],
-          "obj" : "com.ni.eseries:type=MultiDeviceManager",
+          "obj" : "com.ni.eseries:type=*DeviceManager",
           "attr": [
             "NumberOfSelectChannels", "OnlineSystemCount", "SystemCount",
             "RequestCount", "ProcessingTaskCount", "ThreadPoolSize"
