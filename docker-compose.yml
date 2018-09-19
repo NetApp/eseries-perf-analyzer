@@ -1,19 +1,5 @@
 version: '2'
 services:
-  jmxtrans:
-    image: jmxtrans/jmxtrans
-    environment:
-      HEAP_SIZE: 128
-      SECONDS_BETWEEN_RUNS: 5
-    volumes:
-      - ./jmxtrans-targets:/var/lib/jmxtrans
-    mem_limit: 256M
-    network_mode: "host" 
-    depends_on:
-      - graphite
-    logging:
-      options:
-        max-size: 50m
   graphite:
     build:
       context: ./graphite
@@ -26,17 +12,22 @@ services:
     - 8126:8126
     volumes:
     #  - ./graphite/configs:/opt/graphite/conf
-      - ./graphite/data:/opt/graphite/storage/whisper
+      - /home/graphite-database:/opt/graphite/storage/whisper
+    network_mode: "host"
   grafana:
     image: grafana/grafana:master
     ports:
       - 3000:3000
     network_mode: "host"
 
-  #stats_collector:
-    #build:
-      #context: ./collector
-    #network_mode: "host"
-  
+  stats_collector:
+    build:
+      context: ./collector
+    network_mode: "host"
+    container_name: collect
+    restart: on-failure
+    environment:
+        - COLLECTION_INTERVAL=30
+        - PROXY_ADDRESS=localhost:8090
 volumes:
   grafana_vol:

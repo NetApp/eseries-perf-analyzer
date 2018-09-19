@@ -3,13 +3,18 @@
 Retrieves and collects data from the the NetApp E-series web server
 and sends the data to a graphite server
 """
-
+import struct
 import time
 import logging
 import socket
 import argparse
 import concurrent.futures
 import requests
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 __author__ = 'kevin5'
 
@@ -75,8 +80,8 @@ DRIVE_PARAMETERS = [
 NUMBER_OF_THREADS = 10
 
 # CONSTANTS FOR PULLING INFORMATION FROM SANTRICITY WEB PROXY
-USERNAME = 'rw'
-PASSWORD = 'rw'
+USERNAME = 'admin'
+PASSWORD = 'admin'
 
 # LOGGING
 logging.basicConfig(level=logging.INFO)
@@ -92,7 +97,7 @@ logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.W
 
 PARSER = argparse.ArgumentParser()
 
-PARSER.add_argument('-t', '--intervalTime', type=int, default=60,
+PARSER.add_argument('-t', '--intervalTime', type=int, default=5,
                     help='Provide the time (seconds) in which the script polls and sends data '
                          'from the SANtricity webServer to the Graphite backend. '
                          'If not specified, will use the default time of 60 seconds. <time>')
@@ -101,16 +106,16 @@ PARSER.add_argument('-r', '--root', default='storage.eseries',
                          'as to match the given Grafana templates. If this is changed, '
                          'you must also manually change the Grafana templates. '
                          '<period separated list>')
-PARSER.add_argument('--proxySocketAddress', default='localhost',
+PARSER.add_argument('--proxySocketAddress', default='scspw0513829002.ict.englab.netapp.com:8090',
                     help='Provide both the IP address and the port for the SANtricity webserver. '
                          'If not specified, will default to localhost. <IPv4 Address:port>')
-PARSER.add_argument('--graphiteIpAddress', default='localhost',
+PARSER.add_argument('--graphiteIpAddress', default='scspw0513829002.ict.englab.netapp.com',
                     help='Provide the IP address of the graphite server. If not specified, '
                          'will default to localhost. <IPv4 Address>')
-PARSER.add_argument('--graphitePort', type=int, default=2003,
+PARSER.add_argument('--graphitePort', type=int, default=2004,
                     help='Provide the port number used for the graphite backend (Carbon).'
-                         ' When Graphite is installed, by default this is port is 2003.'
-                         ' If this parameter is not specified, this will default to 2003 <port>')
+                         ' When Graphite is installed, by default this is port is 2004.'
+                         ' If this parameter is not specified, this will default to 2004 <port>')
 PARSER.add_argument('-s', '--showStorageNames', action='store_true',
                     help='Outputs the storage array names found from the SANtricity webserver')
 PARSER.add_argument('-v', '--showVolumeNames', action='store_true', default=0,
@@ -133,6 +138,9 @@ PROXY_BASE_URL = 'http://{}/devmgr/v2/storage-systems'.format(CMD.proxySocketAdd
 #######################
 
 
+
+
+
 def get_session():
     """
     Returns a session with the appropriate content type and login information.
@@ -145,17 +153,23 @@ def get_session():
     request_session.verify = False
     return request_session
 
-
-def post_to_graphite(graphite_metrics):
+def post_to_graphite(system_id, graphite_metrics):
     """
     Posts the graphite metrics to carbon (graphite's backend).
     """
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as graphite_server:
-        graphite_server.connect((CMD.graphiteIpAddress, CMD.graphitePort))
-        LOG.info("X")
-        for metric in graphite_metrics:
-            graphite_server.send(metric.encode('utf-8'))
-        graphite_server.close()
+    LOG.info("Sending to graphite, points=%s, system=%s", len(graphite_metrics), system_id)
+    chunk_size = 400
+    chunks = [graphite_metrics[x:x+chunk_size] for x in range(0, len(graphite_metrics), chunk_size)]
+    LOG.debug("Sending %s chunks for system=%s.", len(chunks), system_id)
+    for data in chunks:
+
+        payload = pickle.dumps(data, protocol=2)
+        header = struct.pack("!L", len(payload))
+        message = header + payload
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as graphite_server:
+            graphite_server.connect((CMD.graphiteIpAddress, CMD.graphitePort))
+            graphite_server.send(message)
+            graphite_server.close()
 
 
 def get_drive_location(storage_id, session):
@@ -194,10 +208,13 @@ def collect_storage_system_statistics(storage_system):
         graphite_package = []
         storage_id = storage_system['id']
         storage_name = storage_system.get('name', storage_id)
-
+        pools = session.get('{}/{}/storage-pools'.format(
+            PROXY_BASE_URL, storage_id)).json()
+        drives = session.get('{}/{}/drives'.format(
+            PROXY_BASE_URL, storage_id)).json()
         # Get Drive statistics
         graphite_drive_root = (('{}.{}.drive_statistics'.format(
-            CMD.root, storage_name)))
+            CMD.root, storage_id)))
         drive_stats_list = session.get('{}/{}/analysed-drive-statistics'.format(
             PROXY_BASE_URL, storage_id)).json()
         drive_locations = get_drive_location(storage_id, session)
@@ -205,6 +222,7 @@ def collect_storage_system_statistics(storage_system):
         if CMD.showDriveNames:
             for driveStats in drive_stats_list:
                 location_send = drive_locations.get(driveStats['diskId'])
+
                 LOG.info('Tray{:02.0f}:Slot{:03.0f}'.format(location_send[0], location_send[1]))
 
         # Add drive statistics to list
@@ -212,13 +230,22 @@ def collect_storage_system_statistics(storage_system):
             for metricsToCheck in DRIVE_PARAMETERS:
                 if driveStats.get(metricsToCheck) != 'none':
                     location_send = drive_locations.get(driveStats['diskId'])
-                    graphite_payload = ('{}.Tray{:02.0f}:Slot{:03.0f}.{} {} {}\n'.format(
+                    pool = get_drive_pool_name(pools, drives, driveStats['diskId'])
+                    graphite_payload = ('{}.Tray{:02.0f}:Slot{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
                         location_send[1],
-                        metricsToCheck,
-                        driveStats.get(metricsToCheck),
-                        time.time()))
+                        metricsToCheck), (int(time.time()), driveStats.get(metricsToCheck)))
+                    if CMD.showDriveMetrics:
+                        LOG.info(graphite_payload)
+                    graphite_package.append(graphite_payload)
+                    # With pool information
+                    graphite_payload = ('{}.Tray{:02.0f}:Slot{:03.0f}.{}.{}'.format(
+                        graphite_drive_root,
+                        location_send[0],
+                        location_send[1],
+                        pool,
+                        metricsToCheck), (int(time.time()), driveStats.get(metricsToCheck)))
                     if CMD.showDriveMetrics:
                         LOG.info(graphite_payload)
                     graphite_package.append(graphite_payload)
@@ -237,21 +264,22 @@ def collect_storage_system_statistics(storage_system):
         for volumeStats in volume_stats_list:
             for metricsToCheck in VOLUME_PARAMETERS:
                 if volumeStats.get(metricsToCheck) != 'none':
-                    graphite_payload = ('{}.{}.{} {} {}\n'.format(
+                    graphite_payload = ('{}.{}.{}'.format(
                         graphite_volume_root,
                         volumeStats.get('volumeName'),
-                        metricsToCheck,
-                        volumeStats.get(metricsToCheck),
-                        time.time()))
+                        metricsToCheck), (int(time.time()), volumeStats.get(metricsToCheck)))
                     if CMD.showVolumeMetrics:
                         LOG.debug(graphite_payload)
                     graphite_package.append(graphite_payload)
 
         if not CMD.doNotPost:
-            post_to_graphite(graphite_package)
+            post_to_graphite(storage_id, graphite_package)
     except RuntimeError:
         LOG.error('Error when attempting to post statistics for {}'.format(
             storage_system['name']))
+
+
+
 
 #######################
 # MAIN FUNCTIONS#######
@@ -264,14 +292,24 @@ if __name__ == '__main__':
 
     while True:
         time_start = time.time()
-        storageList = SESSION.get(PROXY_BASE_URL).json()
-        if CMD.showStorageNames:
-            for storage in storageList:
-                LOG.info(storage['name'])
+        try:
+            response = SESSION.get(PROXY_BASE_URL)
+            if response.status_code != 200:
+                LOG.warning("We were unable to retrieve the storage-system list! Status-code={}".format(response.status_code))
+        except requests.exceptions.HTTPError or requests.exceptions.ConnectionError as e:
+            LOG.warning("Unable to connect to the Web Services instance to get storage-system list!", e)
+        except Exception as e:
+            LOG.warning("Unexpected exception!", e)
+        else:
+            storageList = response.json()
+            LOG.info("Names: %s", len(storageList))
+            if True or CMD.showStorageNames:
+                for storage in storageList:
+                    LOG.info(storage['name'])
 
-        # Iterate through all storage systems
-        collector = [executor.submit(collect_storage_system_statistics, s) for s in storageList]
-        concurrent.futures.wait(collector)
+            # Iterate through all storage systems
+            collector = [executor.submit(collect_storage_system_statistics, s) for s in storageList]
+            concurrent.futures.wait(collector)
 
         time_difference = time.time() - time_start
         if CMD.showIteration:
