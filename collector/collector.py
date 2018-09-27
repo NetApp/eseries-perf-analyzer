@@ -225,7 +225,6 @@ def collect_storage_system_statistics(storage_system):
             for metricsToCheck in DRIVE_PARAMETERS:
                 if driveStats.get(metricsToCheck) != 'none':
                     location_send = drive_locations.get(driveStats['diskId'])
-                    pool = get_drive_pool_name(pools, drives, driveStats['diskId'])
                     graphite_payload = ('{}.Tray{:02.0f}:Slot{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
@@ -235,11 +234,10 @@ def collect_storage_system_statistics(storage_system):
                         LOG.info(graphite_payload)
                     graphite_package.append(graphite_payload)
                     # With pool information
-                    graphite_payload = ('{}.Tray{:02.0f}:Slot{:03.0f}.{}.{}'.format(
+                    graphite_payload = ('{}.Tray{:02.0f}:Slot{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
                         location_send[1],
-                        pool,
                         metricsToCheck), (int(time.time()), driveStats.get(metricsToCheck)))
                     if CMD.showDriveMetrics:
                         LOG.info(graphite_payload)
