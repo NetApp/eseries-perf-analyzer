@@ -2,7 +2,7 @@
   "name":"WSP",
   "label": "WSP",
   "type": "graphite",
-  "url":"http://localhost:80",
+  "url":"http://graphite",
   "access":"proxy",
   "basicAuth": false,
   "isDefault": true

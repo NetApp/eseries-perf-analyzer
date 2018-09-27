@@ -106,10 +106,10 @@ PARSER.add_argument('-r', '--root', default='storage.eseries',
                          'as to match the given Grafana templates. If this is changed, '
                          'you must also manually change the Grafana templates. '
                          '<period separated list>')
-PARSER.add_argument('--proxySocketAddress', default='scspw0513829002.ict.englab.netapp.com:8090',
+PARSER.add_argument('--proxySocketAddress', default='localhost:8090',
                     help='Provide both the IP address and the port for the SANtricity webserver. '
                          'If not specified, will default to localhost. <IPv4 Address:port>')
-PARSER.add_argument('--graphiteIpAddress', default='scspw0513829002.ict.englab.netapp.com',
+PARSER.add_argument('--graphiteIpAddress', default='graphite',
                     help='Provide the IP address of the graphite server. If not specified, '
                          'will default to localhost. <IPv4 Address>')
 PARSER.add_argument('--graphitePort', type=int, default=2004,
@@ -137,10 +137,6 @@ PROXY_BASE_URL = 'http://{}/devmgr/v2/storage-systems'.format(CMD.proxySocketAdd
 # HELPER FUNCTIONS#####
 #######################
 
-
-
-
-
 def get_session():
     """
     Returns a session with the appropriate content type and login information.
@@ -162,7 +158,6 @@ def post_to_graphite(system_id, graphite_metrics):
     chunks = [graphite_metrics[x:x+chunk_size] for x in range(0, len(graphite_metrics), chunk_size)]
     LOG.debug("Sending %s chunks for system=%s.", len(chunks), system_id)
     for data in chunks:
-
         payload = pickle.dumps(data, protocol=2)
         header = struct.pack("!L", len(payload))
         message = header + payload
