@@ -18,6 +18,7 @@ except ImportError:
 
 __author__ = 'kevin5'
 
+
 #######################
 # LIST OF METRICS######
 #######################
@@ -73,6 +74,7 @@ DRIVE_PARAMETERS = [
     'writeThroughput'
 ]
 
+
 #######################
 # PARAMETERS###########
 #######################
@@ -90,6 +92,7 @@ LOG = logging.getLogger(__name__)
 
 # Disables reset connection warning message if the connection time is too long
 logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.WARNING)
+
 
 #######################
 # ARGUMENT PARSER######
@@ -133,6 +136,7 @@ PARSER.add_argument('-n', '--doNotPost', action='store_true', default=0,
 CMD = PARSER.parse_args()
 PROXY_BASE_URL = 'http://{}/devmgr/v2/storage-systems'.format(CMD.proxySocketAddress)
 
+
 #######################
 # HELPER FUNCTIONS#####
 #######################
@@ -166,11 +170,10 @@ def post_to_graphite(system_id, graphite_metrics):
             graphite_server.send(message)
             graphite_server.close()
 
-
 def get_drive_location(storage_id, session):
     """
     :param storage_id: Storage system ID on the Webserver
-    :param session: the  session of the thread that calls this definition
+    :param session: the session of the thread that calls this definition
     ::return: returns a dictionary containing the disk id matched up against
     the tray id it is located in:
     """
@@ -191,7 +194,6 @@ def get_drive_location(storage_id, session):
         else:
             LOG.error('Error matching drive to a tray in the storage system')
     return drive_location
-
 
 def collect_storage_system_statistics(storage_system):
     """
@@ -270,8 +272,6 @@ def collect_storage_system_statistics(storage_system):
     except RuntimeError:
         LOG.error('Error when attempting to post statistics for {}'.format(
             storage_system['name']))
-
-
 
 
 #######################
