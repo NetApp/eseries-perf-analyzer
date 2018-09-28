@@ -167,7 +167,8 @@ def post_to_graphite(system_id, graphite_metrics):
         message = header + payload
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as graphite_server:
             graphite_server.connect((CMD.graphiteIpAddress, CMD.graphitePort))
-            graphite_server.send(message)
+            bytesSent = graphite_server.send(message)
+            LOG.debug("\t%s bytes sent", bytesSent)
             graphite_server.close()
 
 def get_drive_location(storage_id, session):
@@ -189,8 +190,9 @@ def get_drive_location(storage_id, session):
 
     for drive in drive_list:
         drive_tray = drive['physicalLocation']['trayRef']
-        if tray_ids.get(drive_tray) != 'none':
-            drive_location[drive['driveRef']] = [tray_ids.get(drive_tray), drive['physicalLocation']['slot']]
+        tray_id = tray_ids.get(drive_tray)
+        if tray_id != 'none':
+            drive_location[drive['driveRef']] = [tray_id, drive['physicalLocation']['slot']]
         else:
             LOG.error('Error matching drive to a tray in the storage system')
     return drive_location
@@ -205,8 +207,6 @@ def collect_storage_system_statistics(storage_system):
         graphite_package = []
         storage_id = storage_system['id']
         storage_name = storage_system.get('name', storage_id)
-        pools = session.get('{}/{}/storage-pools'.format(
-            PROXY_BASE_URL, storage_id)).json()
         drives = session.get('{}/{}/drives'.format(
             PROXY_BASE_URL, storage_id)).json()
         # Get Drive statistics
@@ -219,7 +219,6 @@ def collect_storage_system_statistics(storage_system):
         if CMD.showDriveNames:
             for driveStats in drive_stats_list:
                 location_send = drive_locations.get(driveStats['diskId'])
-
                 LOG.info('Tray{:02.0f}:Slot{:03.0f}'.format(location_send[0], location_send[1]))
 
         # Add drive statistics to list
@@ -258,11 +257,12 @@ def collect_storage_system_statistics(storage_system):
         # Add volume statistics to list
         for volumeStats in volume_stats_list:
             for metricsToCheck in VOLUME_PARAMETERS:
-                if volumeStats.get(metricsToCheck) != 'none':
+                this_metric = volumeStats.get(metricsToCheck)
+                if this_metric != 'none':
                     graphite_payload = ('{}.{}.{}'.format(
                         graphite_volume_root,
                         volumeStats.get('volumeName'),
-                        metricsToCheck), (int(time.time()), volumeStats.get(metricsToCheck)))
+                        metricsToCheck), (int(time.time()), this_metric))
                     if CMD.showVolumeMetrics:
                         LOG.debug(graphite_payload)
                     graphite_package.append(graphite_payload)
@@ -296,7 +296,7 @@ if __name__ == '__main__':
         else:
             storageList = response.json()
             LOG.info("Names: %s", len(storageList))
-            if True or CMD.showStorageNames:
+            if CMD.showStorageNames:
                 for storage in storageList:
                     LOG.info(storage['name'])
 
