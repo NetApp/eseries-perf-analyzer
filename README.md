@@ -26,7 +26,7 @@ Graphite. There are also logs available within the Graphite container (@ /var/lo
 any issues with a collector.
 
 ### Grafana
-[Grafana](https://grafana.com/) is a open-source tool designed to help you visualize time-series data. It is incredibly customizable and can be used to view data from a variety of data stores.
+[Grafana](https://grafana.com/) is an open-source tool designed to help you visualize time-series data. It is incredibly customizable and can be used to view data from a variety of data stores.
 
 
 ## Supporting Tools
