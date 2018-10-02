@@ -1,8 +1,21 @@
 version: '2'
 services:
+
+  netapp_web_services:
+    image: netapp/eseries-webservices:3.00
+    container_name: webservices
+    restart: on-failure
+    ports:
+      - 8080:8080
+      - 8443:8443
+    environment:
+      - ACCEPT_EULA=true
+
   graphite:
     build:
       context: ./graphite
+    depends_on:
+      - netapp_web_services
     mem_limit: 1G
     ports: 
     - 80:80
@@ -12,11 +25,13 @@ services:
     - 8126:8126
     volumes:
     #  - ./graphite/configs:/opt/graphite/conf
-      - /home/graphite-database:/opt/graphite/storage/whisper
+      - ./graphite-database:/opt/graphite/storage/whisper
     #network_mode: "host"
 
   grafana:
     image: grafana/grafana:master
+    depends_on:
+      - graphite
     ports:
       - 3000:3000
     #network_mode: "host"
@@ -24,11 +39,13 @@ services:
   stats_collector:
     build:
       context: ./collector
+    depends_on:
+      - grafana
     container_name: collect
     restart: on-failure
     environment:
         - COLLECTION_INTERVAL=30
-        - PROXY_ADDRESS=scspw0536729001.ict.englab.netapp.com:8080
+        - PROXY_ADDRESS=netapp_web_services:8080
     #network_mode: "host"
 
 volumes:

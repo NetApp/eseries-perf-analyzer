@@ -44,15 +44,15 @@
   
 - name: Create grafana dashboards
   uri:
-    url: "http://localhost:3000/api/dashboards/db"
+    url: "http://scspw0536729001.ict.englab.netapp.com:3000/api/dashboards/import"
     method: POST
+    headers:
+      Content-Type: "application/json"
     user: "{{ grafana_username }}"
     password: "{{ grafana_password }}"
     body: "{{ lookup('file', item.path) | from_json}}"
     status_code: 200
     body_format: json
     force_basic_auth: yes
-    headers:
-      Content-Type: "application/json"
   when: resp.json|length < (dashboards.files | length)
   with_items: "{{ dashboards.files }}"
