@@ -88,7 +88,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "highestAverage(storage.eseries.$ESystem.volume_statistics.*.readCacheUtilization, $TopResources)"
+				"target": "averageSeries(highestAverage(storage.eseries.$ESystem.volume_statistics.*.readCacheUtilization, $TopResources))"
 			    }
 			],
 			"thresholds": "10,20",
@@ -163,7 +163,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "highestAverage(storage.eseries.$ESystem.volume_statistics.*.writeCacheUtilization, $TopResources)"
+				"target": "averageSeries(highestAverage(storage.eseries.$ESystem.volume_statistics.*.writeCacheUtilization, $TopResources))"
 			    }
 			],
 			"thresholds": "80,90",
@@ -913,7 +913,7 @@
 		    "name": "TopResources",
 		    "options": [
 			{
-			    "selected": true,
+			    "selected": false,
 			    "text": "1",
 			    "value": "1"
 			},
@@ -923,7 +923,7 @@
 			    "value": "2"
 			},
 			{
-			    "selected": false,
+			    "selected": true,
 			    "text": "3",
 			    "value": "3"
 			},
