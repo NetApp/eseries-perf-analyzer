@@ -1,0 +1,8 @@
+{
+  "id": "3",
+  "controllerAddresses": [
+    "10.227.52.55"
+  ],
+  "acceptCertificate": false,
+  "validate": false
+}

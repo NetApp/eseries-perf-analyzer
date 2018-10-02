@@ -7,42 +7,4 @@
     grafana_password: admin
    
   tasks:
-    - name: Get existing graphite dashboards
-      uri:
-        url: "http://localhost:3000/api/search/?tag=webservices"
-        method: GET
-        user: "{{ grafana_username }}"
-        password: "{{ grafana_password }}"
-        force_basic_auth: yes
-        headers:
-          Accept: "application/json"
-      register: resp
-    
-    - name: Retrieve each individual grafana dashboard
-      uri:
-        url: "http://localhost:3000/api/dashboards/{{ item.uri }}"
-        method: GET
-        user: "{{ grafana_username }}"
-        password: "{{ grafana_password }}"
-        force_basic_auth: yes
-        headers:
-          Accept: "application/json"
-      with_items: "{{ resp.json }}"
-      register: dashboards
-
-    - name: Filter out some of the dashboard data we don't want to preserve
-      grafana_dashboard_cleanup: 
-        dashboard: " {{ item.json | to_nice_json }} "
-      with_items: "{{ dashboards.results }}"
-      register: dashboards2
-      loop_control:
-        label: "{{ item.json.meta.slug }}"
-    
-    - name: Save the retrieved/cleaned Dashboards to disk
-      copy: 
-        force: True
-        content: "{{ item.json | to_nice_json}}"
-        dest: "./dashboards/{{item.json.meta.slug}}.json"
-      with_items: "{{ dashboards2.results }}"      
-      loop_control:
-        label: "{{ item.json.meta.slug }}"
+    - include_tasks: tasks/grafana_backup.yml
