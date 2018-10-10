@@ -41,19 +41,27 @@ This also assumes you already have managed storage arrays ready to be monitored.
 ### Configuration
 *//TODO Define a template to allow a new configuration to be generated using a given server hostname and port.*
 
-##### Dashboards
+#### Dashboards
 The dashboards are located in ** *install_dir*/ansible/dashboards/ ** and will be imported into Grafana when started. Dashboards can also be imported from within the Grafana interface by navigating to **Dashboards->Home**, clicking on the dropdown at the top of the page, and selecting **Import Dashboard**.
 
-Dashboards are represented using JSON and that documentation can be found [here](http://docs.grafana.org/reference/dashboard/).
+Dashboards are represented using JSON and that documentation can be found [here](http://docs.grafana.org/reference/dashboard/). Additionally you can use the provided pre-configured dashboards as a reference for creating your own.
 
-##### Storage Arrays
-Arrays to be monitored are located in ** *install_dir*/ansible/arrays/ ** and will be managed automatically when everything is started. These are currently represented as JSON files, and each array must be assigned a unique ID.
+#### Storage Arrays
+Arrays to be monitored are located in ** *install_dir*/ansible/arrays/ ** and will be managed automatically when everything is started. These are currently represented with JSON files, in which you provide the IP of and a unique ID for each array.
 
-Once everything is started, arrays can also be managed through the SANtricity® Unified Manager as described below. Note that older/legacy arrays added through the API/config files will not appear in this manager.
+Once everything is started, arrays can also be managed through the SANtricity® Unified Manager as described below. Note that, although they will still be monitored, older/legacy arrays added through the API/config files will not appear in this manager.
 
+#### Graphite and Carbon
+Graphite's method and frequency of storing metrics is configurable through config files in the ** *install_dir*/graphite ** directory. There are two different config files to look at here.
+
+##### carbon.conf
+This file is used to configure where and how Carbon collects metrics. The documentation for each setting is written in the comments in the file itself.
+
+##### storage-schemas.conf
+This file is responsible for defining retention rates for metric storage. The retention rates defined here for each section must all be multiples of each other. For example: 5s, 15s, 30s, 60s. Detailed documentation for this file can be found [here](https://graphite.readthedocs.io/en/latest/config-carbon.html#storage-schemas-conf).
 
 ### Starting It Up
-It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping.
+It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping. By running the backup.sh script it will backup current dashboards into ** *install_dir*/ansible/dashboards/backup **
 
 Once everything is started, you have access to several pages to control and configure.
 
@@ -61,6 +69,6 @@ Once everything is started, you have access to several pages to control and conf
 The Web Services Proxy can be accessed at **yourhost:8080**. From here you can access the SANtricity® Unified Manager (default credentials *admin/admin*) which is a UI front-end for managing storage arrays. There are also links to the Web Services API reference as well as the NetApp support site.
 
 #### Accessing the Grafana Interface and Dashboards
-The dashboards are available at **yourhost:3000** with default credentials of *admin/admin*. Grafana should be pre-configured for immediate access to your data. Documentation for additional configuration and navigation can be found [here](http://docs.grafana.org/guides/getting_started/).
+The dashboards are available at **yourhost:3000** with default credentials of *admin/admin*. Grafana should be pre-configured for immediate access to your data. There are also dashboards for displaying data related to Graphite's Carbon component, which is the component responsible for collecting and writing metric data to disk.
 
-By running the backup.sh script it will backup current dashboards into ** *install_dir*/ansible/dashboards/backup **
+Documentation for additional configuration and navigation can be found [here](http://docs.grafana.org/guides/getting_started/).
