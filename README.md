@@ -60,6 +60,8 @@ This file is used to configure where and how Carbon collects metrics. The docume
 ##### storage-schemas.conf
 This file is responsible for defining retention rates for metric storage. The retention rates defined here for each section must all be multiples of each other. For example: 5s, 15s, 30s, 60s. Detailed documentation for this file can be found [here](https://graphite.readthedocs.io/en/latest/config-carbon.html#storage-schemas-conf).
 
+Note that changes made to retention rates will invalidate data collected before the changes were made.
+
 ### Starting It Up
 It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping. By running the backup.sh script it will backup current dashboards into ** *install_dir*/ansible/dashboards/backup **
 

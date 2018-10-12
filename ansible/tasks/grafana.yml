@@ -62,6 +62,11 @@
     recurse: yes
   register: arrays_result
 
+# Wait a few seconds before trying to add the arrays
+# Doing so immediately frequently fails
+- pause:
+    seconds: 8
+
 - name: Add found arrays
   uri:
     url: "http://localhost:8080/devmgr/v2/storage-systems"
