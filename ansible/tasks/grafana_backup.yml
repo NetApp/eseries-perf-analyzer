@@ -1,6 +1,6 @@
-- name: Get existing graphite dashboards
+- name: Get existing dashboards
   uri:
-    url: "http://localhost:3000/api/search/?tag=NetAppESeries"
+    url: "http://localhost:3000/api/search/"
     method: GET
     user: "{{ grafana_username }}"
     password: "{{ grafana_password }}"
@@ -9,7 +9,7 @@
       Accept: "application/json"
   register: resp
 
-- name: Retrieve each individual grafana dashboard
+- name: Retrieve each individual dashboard from the list
   uri:
     url: "http://localhost:3000/api/dashboards/{{ item.uri }}"
     method: GET
@@ -21,7 +21,7 @@
   with_items: "{{ resp.json }}"
   register: dashboards
 
-- name: Save the retrieved/cleaned Dashboards to disk
+- name: Save the retrieved dashboards to disk
   copy: 
     force: True
     content: "{{ item.json | to_nice_json}}"

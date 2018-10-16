@@ -30,17 +30,6 @@
     recurse: yes
   register: dashboards
 
-- name: Get graphite dashboards
-  uri:
-    url: "http://localhost:3000/api/search/?tag=template"
-    method: GET
-    user: "{{ grafana_username }}"
-    password: "{{ grafana_password }}"
-    force_basic_auth: yes
-    headers:
-      Accept: "application/json"
-  register: resp
-
 - name: Create grafana dashboards
   uri:
     url: "http://localhost:3000/api/dashboards/import"
@@ -53,7 +42,6 @@
     status_code: 200
     body_format: json
     force_basic_auth: yes
-  when: resp.json|length < (dashboards.files | length)
   with_items: "{{ dashboards.files }}"
 
 - name: Find array files

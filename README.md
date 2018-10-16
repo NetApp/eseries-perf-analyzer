@@ -39,8 +39,6 @@ You'll need to install [Docker](https://docs.docker.com/install/) and [Docker-Co
 This also assumes you already have managed storage arrays ready to be monitored. More information on this can be found below.
 
 ### Configuration
-*//TODO Define a template to allow a new configuration to be generated using a given server hostname and port.*
-
 #### Dashboards
 The dashboards are located in ** *install_dir*/ansible/dashboards/ ** and will be imported into Grafana when started. Dashboards can also be imported from within the Grafana interface by navigating to **Dashboards->Home**, clicking on the dropdown at the top of the page, and selecting **Import Dashboard**.
 

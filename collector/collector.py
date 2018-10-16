@@ -109,7 +109,7 @@ PARSER.add_argument('-r', '--root', default='storage.eseries',
                          'as to match the given Grafana templates. If this is changed, '
                          'you must also manually change the Grafana templates. '
                          '<period separated list>')
-PARSER.add_argument('--proxySocketAddress', default='localhost:8090',
+PARSER.add_argument('--proxySocketAddress', default='webservices',
                     help='Provide both the IP address and the port for the SANtricity webserver. '
                          'If not specified, will default to localhost. <IPv4 Address:port>')
 PARSER.add_argument('--graphiteIpAddress', default='graphite',
@@ -226,7 +226,7 @@ def collect_storage_system_statistics(storage_system):
             for metricsToCheck in DRIVE_PARAMETERS:
                 if driveStats.get(metricsToCheck) != 'none':
                     location_send = drive_locations.get(driveStats['diskId'])
-                    graphite_payload = ('{}.{:02.0f}.{:03.0f}.{}'.format(
+                    graphite_payload = ('{}.Tray{:02.0f}.Disk{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
                         location_send[1],
@@ -235,7 +235,7 @@ def collect_storage_system_statistics(storage_system):
                         LOG.info(graphite_payload)
                     graphite_package.append(graphite_payload)
                     # With pool information
-                    graphite_payload = ('{}.{:02.0f}.{:03.0f}.{}'.format(
+                    graphite_payload = ('{}.Tray{:02.0f}.Disk{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
                         location_send[1],
