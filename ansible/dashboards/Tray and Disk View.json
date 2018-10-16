@@ -5,6 +5,7 @@
 
 	    ]
 	},
+
 	"editable": true,
 	"gnetId": null,
 	"graphTooltip": 1,
@@ -31,6 +32,7 @@
 		"panels": [
 		    {
 			"aliasColors": {},
+
 			"bars": false,
 			"datasource": null,
 			"editable": true,
@@ -49,6 +51,7 @@
 			    "total": false,
 			    "values": true
 			},
+
 			"lines": true,
 			"linewidth": 2,
 			"links": [],
@@ -63,10 +66,8 @@
 			"steppedLine": false,
 			"targets": [
 			    {
-				"hide": false,
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.combinedResponseTime, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.combinedResponseTime, 5, 'avg'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -105,6 +106,7 @@
 			    }
 			]
 		    },
+
 		    {
 			"aliasColors": {},
 			"bars": false,
@@ -140,8 +142,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.combinedThroughput, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.combinedThroughput, 5, 'sum'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -180,6 +181,7 @@
 			    }
 			]
 		    },
+
 		    {
 			"aliasColors": {},
 			"bars": false,
@@ -215,8 +217,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.combinedIOps, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.combinedIOps, 5, 'sum'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -263,6 +264,7 @@
 		"title": "Highlights",
 		"titleSize": "h6"
 	    },
+
 	    {
 		"collapse": false,
 		"height": "250px",
@@ -302,8 +304,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.readResponseTime, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.readResponseTime, 5, 'avg'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -342,6 +343,7 @@
 			    }
 			]
 		    },
+
 		    {
 			"aliasColors": {},
 			"bars": false,
@@ -377,8 +379,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.readThroughput, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.readThroughput, 5, 'sum'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -417,6 +418,7 @@
 			    }
 			]
 		    },
+
 		    {
 			"aliasColors": {},
 			"bars": false,
@@ -452,8 +454,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.readIOps, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.readIOps, 5, 'sum'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -492,6 +493,7 @@
 			    }
 			]
 		    },
+
 		    {
 			"aliasColors": {},
 			"bars": false,
@@ -527,8 +529,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.writeResponseTime, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.writeResponseTime, 5, 'avg'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -567,6 +568,7 @@
 			    }
 			]
 		    },
+
 		    {
 			"aliasColors": {},
 			"bars": false,
@@ -602,8 +604,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.writeThroughput, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.writeThroughput, 5, 'sum'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -642,6 +643,7 @@
 			    }
 			]
 		    },
+
 		    {
 			"aliasColors": {},
 			"bars": false,
@@ -677,8 +679,7 @@
 			"targets": [
 			    {
 				"refId": "A",
-				"target": "aliasByNode(sortByMaxima(highestAverage(storage.eseries.$ESystem.volume_statistics.$VolName.writeIOps, $TopResources)), 2, 4)",
-				"textEditor": true
+				"target": "highestAverage(groupByNode(storage.eseries.$ESystem.drive_statistics.$Tray.$Disk.writeIOps, 5, 'sum'), $TopResources)"
 			    }
 			],
 			"thresholds": [],
@@ -726,22 +727,21 @@
 		"titleSize": "h6"
 	    }
 	],
+	
 	"schemaVersion": 14,
 	"style": "dark",
 	"tags": [
 	    "NetAppESeries"
 	],
+	
 	"templating": {
 	    "list": [
 		{
 		    "allValue": null,
 		    "current": {
 			"selected": false,
-			"tags": [],
 			"text": "All",
-			"value": [
-			    "$__all"
-			]
+			"value": "$__all"
 		    },
 		    "datasource": null,
 		    "hide": 0,
@@ -760,22 +760,22 @@
 		    "type": "query",
 		    "useTags": false
 		},
+
 		{
 		    "allValue": null,
 		    "current": {
+			"selected": false,
 			"text": "All",
-			"value": [
-			    "$__all"
-			]
+			"value": "$__all"
 		    },
 		    "datasource": null,
 		    "hide": 0,
 		    "includeAll": true,
 		    "label": null,
 		    "multi": true,
-		    "name": "VolName",
+		    "name": "Tray",
 		    "options": [],
-		    "query": "storage.eseries.$ESystem.volume_statistics.*",
+		    "query": "storage.eseries.$ESystem.drive_statistics.*",
 		    "refresh": 1,
 		    "regex": "",
 		    "sort": 0,
@@ -785,11 +785,36 @@
 		    "type": "query",
 		    "useTags": false
 		},
+
 		{
 		    "allValue": null,
 		    "current": {
 			"selected": false,
-			"tags": [],
+			"text": "All",
+			"value": "$__all"
+		    },
+		    "datasource": null,
+		    "hide": 0,
+		    "includeAll": true,
+		    "label": null,
+		    "multi": true,
+		    "name": "Disk",
+		    "options": [],
+		    "query": "storage.eseries.$ESystem.drive_statistics.$Tray.*",
+		    "refresh": 1,
+		    "regex": "",
+		    "sort": 0,
+		    "tagValuesQuery": "",
+		    "tags": [],
+		    "tagsQuery": "",
+		    "type": "query",
+		    "useTags": false
+		},
+
+		{
+		    "allValue": null,
+		    "current": {
+			"selected": false,
 			"text": "3",
 			"value": "3"
 		    },
@@ -862,10 +887,12 @@
 		}
 	    ]
 	},
+
 	"time": {
 	    "from": "now-3h",
 	    "to": "now"
 	},
+
 	"timepicker": {
 	    "refresh_intervals": [
 		"5s",
@@ -892,9 +919,10 @@
 	    ]
 	},
 	"timezone": "browser",
-	"title": "NetApp E-Series Detail: Volume",
-	"version": 13
+	"title": "NetApp E-Series Tray and Disk View",
+	"version": 6
     },
+
     "overwrite":true,
     "inputs":[
 

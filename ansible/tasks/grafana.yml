@@ -30,29 +30,41 @@
     recurse: yes
   register: dashboards
 
-- name: Get graphite dashboards
-  uri:
-    url: "http://localhost:3000/api/search/?tag=template"
-    method: GET
-    user: "{{ grafana_username }}"
-    password: "{{ grafana_password }}"
-    force_basic_auth: yes
-    headers:
-      Accept: "application/json"
-  register: resp
-
-  
 - name: Create grafana dashboards
   uri:
-    url: "http://localhost:3000/api/dashboards/db"
+    url: "http://localhost:3000/api/dashboards/import"
     method: POST
+    headers:
+      Content-Type: "application/json"
     user: "{{ grafana_username }}"
     password: "{{ grafana_password }}"
     body: "{{ lookup('file', item.path) | from_json}}"
     status_code: 200
     body_format: json
     force_basic_auth: yes
+  with_items: "{{ dashboards.files }}"
+
+- name: Find array files
+  find:
+    paths: ./arrays
+    recurse: yes
+  register: arrays_result
+
+# Wait a few seconds before trying to add the arrays
+# Doing so immediately frequently fails
+- pause:
+    seconds: 8
+
+- name: Add found arrays
+  uri:
+    url: "http://localhost:8080/devmgr/v2/storage-systems"
+    method: POST
     headers:
       Content-Type: "application/json"
-  when: resp.json|length < (dashboards.files | length)
-  with_items: "{{ dashboards.files }}"
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    body: "{{ lookup('file', item.path) | from_json }}"
+    status_code: 201
+    body_format: json
+    force_basic_auth: yes
+  with_items: "{{ arrays_result.files }}"
