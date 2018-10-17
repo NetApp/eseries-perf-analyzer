@@ -81,10 +81,6 @@ DRIVE_PARAMETERS = [
 
 NUMBER_OF_THREADS = 10
 
-# CONSTANTS FOR PULLING INFORMATION FROM SANTRICITY WEB PROXY
-USERNAME = 'admin'
-PASSWORD = 'admin'
-
 # LOGGING
 logging.basicConfig(level=logging.INFO)
 requests.packages.urllib3.disable_warnings()
@@ -100,6 +96,12 @@ logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.W
 
 PARSER = argparse.ArgumentParser()
 
+PARSER.add_argument('-u', '--username', default='admin',
+                    help='Provide the username for the SANtricity RestAPI Webserver'
+                    'If not specified, will default to \'admin\'')
+PARSER.add_argument('-p', '--password', default='admin',
+                    help='Provide the password for the SANtricity RestAPI Webserver'
+                    'If not specified, will default to \'admin\'')
 PARSER.add_argument('-t', '--intervalTime', type=int, default=5,
                     help='Provide the time (seconds) in which the script polls and sends data '
                          'from the SANtricity webServer to the Graphite backend. '
@@ -147,6 +149,8 @@ def get_session():
     :return: Returns a request session for the SANtricity RestAPI Webserver
     """
     request_session = requests.Session()
+    USERNAME = CMD.username;
+    PASSWORD = CMD.password;
     request_session.auth = (USERNAME, PASSWORD)
     request_session.headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     # Ignore the self-signed certificate issues for https
@@ -211,7 +215,7 @@ def collect_storage_system_statistics(storage_system):
             PROXY_BASE_URL, storage_id)).json()
         # Get Drive statistics
         graphite_drive_root = (('{}.{}.drive_statistics'.format(
-            CMD.root, storage_id)))
+            CMD.root, storage_name)))
         drive_stats_list = session.get('{}/{}/analysed-drive-statistics'.format(
             PROXY_BASE_URL, storage_id)).json()
         drive_locations = get_drive_location(storage_id, session)
@@ -226,7 +230,7 @@ def collect_storage_system_statistics(storage_system):
             for metricsToCheck in DRIVE_PARAMETERS:
                 if driveStats.get(metricsToCheck) != 'none':
                     location_send = drive_locations.get(driveStats['diskId'])
-                    graphite_payload = ('{}.Tray{:02.0f}.Disk{:03.0f}.{}'.format(
+                    graphite_payload = ('{}.Tray-{:02.0f}.Disk-{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
                         location_send[1],
@@ -235,7 +239,7 @@ def collect_storage_system_statistics(storage_system):
                         LOG.info(graphite_payload)
                     graphite_package.append(graphite_payload)
                     # With pool information
-                    graphite_payload = ('{}.Tray{:02.0f}.Disk{:03.0f}.{}'.format(
+                    graphite_payload = ('{}.Tray-{:02.0f}.Disk-{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
                         location_send[1],
@@ -258,7 +262,7 @@ def collect_storage_system_statistics(storage_system):
         for volumeStats in volume_stats_list:
             for metricsToCheck in VOLUME_PARAMETERS:
                 this_metric = volumeStats.get(metricsToCheck)
-                if this_metric != 'none':
+                if this_metric is not None:
                     graphite_payload = ('{}.{}.{}'.format(
                         graphite_volume_root,
                         volumeStats.get('volumeName'),

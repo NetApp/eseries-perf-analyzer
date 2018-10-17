@@ -738,16 +738,11 @@
 	    "list": [
 		{
 		    "allValue": null,
-		    "current": {
-			"selected": false,
-			"text": "All",
-			"value": "$__all"
-		    },
 		    "datasource": null,
 		    "hide": 0,
-		    "includeAll": true,
+		    "includeAll": false,
 		    "label": null,
-		    "multi": true,
+		    "multi": false,
 		    "name": "ESystem",
 		    "options": [],
 		    "query": "storage.eseries.*",

@@ -6,6 +6,8 @@ ADD requirements.txt .
 RUN pip install --default-timeout=3 -r requirements.txt ||\
   pip install --trusted-host repoproxy-rtp.eng.netapp.com --default-timeout=3 -i http://repoproxy-rtp.eng.netapp.com:8081/artifactory/api/pypi/python-package-index/simple -r requirements.txt
 
+ENV USERNAME=admin
+ENV PASSWORD=admin
 ENV COLLECTION_INTERVAL=30
 ENV PROXY_ADDRESS=localhost:8080
 
