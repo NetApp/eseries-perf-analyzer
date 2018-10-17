@@ -1,56 +1,129 @@
-# NetApp E-Series Grafana Integration
+# NetApp E-Series Grafana Performance Dashboards
 
-Welcome! This package incorporates several different tools in order to provide an easy to use interface to the Web Services Proxy. Its purpose is to collect exposed metrics on our storage arrays via APIs. This data can then be visualized through the highly customizable Grafana front-end.
+This project incorporates several different Open Source components in order to simply and beautifully demonstrate the
+performance of one or more E-Series systems at different levels/layers. It is intended to serve as a reference implementation
+for the use of Grafana to visualize the performance of your E-Series systems. It is also intended to be customizable and
+extensible based on your individual needs.
 
-This out-of-the-box solution is designed to require minimal additional configuration for getting things up and running and begin seeing the data you want to see.
 
 ## Overview
-Capturing time-series data in a way that is manageable and scalable isn't an easy task. We use several different open-source tools in order to do so very simply.
+In a nutshell, the Web Services Proxy will periodically poll your storage-system[s] for performance data, which we will collect
+ at a regular and consistent interval using a simple Python script. This script will push the data into a Graphite database,
+ which is a database for storing metrics data. Grafana, a data visualization engine for time-series data, is then utilized
+ along with several customized dashboards to present the data graphically. All of these components are integrated together by
+ using Docker and Ansible.
 
-From the top-level, data is presented from Grafana via JSON-defined dashboards. We provide several pre-configured dashboards, but it's possible to define your own. The data that powers these dashboards is provided via the Graphite back-end. We push data into Graphite using Python code. These tools are given a standard environment to work in using Ansible. Finally, we use Docker to put all of these tools into a deployable package for simplicity and portability.
+The only real requirements to utilize this project are a Linux OS and a Docker installation. ~95% of the installation and
+configuration process is automated using Ansible and Docker.
+
+Our descriptions below of the aforementioned components will in no way fully do them justice. It is recommended that you visit
+the project/home pages for each in order to gain a full understanding of what they can provide and how they can be fully
+utilized. We will attempt to provide the information that you absolutely need to know, but probably little beyond that.
 
 ## Components
 ### Graphite
-[Graphite](https://graphiteapp.org/) is a monitoring tool that provides our persistent store for preserving metrics data. The back-end can be configured to expire metrics data over time, as well as analyze/summarize data using a variety of strategies in order to allow long periods of historical data to be preserved without using too much disk space.
+[Graphite](https://graphiteapp.org/) acts as our persistent store for preserving metrics data. There are many [different
+back-ends](https://grafana.com/plugins?type=datasource) that can be utilized with Grafana for storing metrics, but we chose
+Graphite due to its simplicity and the storage efficiency that it can provide. Graphite not only allows a variety of flexible
+queries to be utilized for summarizing the stored metrics, but it also allows data points to be summarized and granularity to
+be reduced over time to reduce disk utilization.
 
-There are many users of Graphite that use it to preserve **years** worth of performance data for their application.
+There are many users of Graphite that use it to preserve **years** worth of behavioral data metrics for their applications.
 
-There are example collector scripts at the root of the project, one in Python and the other in Bash. You can use these to see how metrics can be provided to Graphite. There are also logs available within the Graphite container (*@/var/log/carbon.log*) to help troubleshoot any issues with a collector.
+While we do have a Python script predefined for use with Graphite and the Web Services Proxy for collecting E-Series
+performance metrics, we have also provided some additional collector example scripts at the root of the project, one in Python,
+ the other in Bash. If you would like to provide additional metrics to Graphite, you may used these as a starting sample. If
+ you do need to troubleshoot the metrics collection in Graphite, there are also logs available within the Graphite container
+ that will show metrics that are being pushed. `docker exec -it graphite tail -f /var/log/carbon.log`
 
 ### Grafana
-[Grafana](https://grafana.com/) is an open-source tool designed to help you visualize time-series data. It is incredibly customizable and can be used to view data from a variety of data stores all from a familiar and easy to use web-based UI.
+[Grafana](https://grafana.com/) is an open-source tool designed to help you visualize time-series data. It has the capability
+to accept plug-ins for additional functionality, but its core provides a lot of power with no add-ons.
 
-The data stored in Graphite is displayed in Grafana via user-defined dashboards. Grafana dashboards are represented in JSON. Many of these dashboards can be configured directly from the Grafana UI to tune for the exact data you want to see. We provide pre-defined examples and they can be found in ** *install_dir*/ansible/dashboards/ **
+Data from a configure datasource is displayed in Grafana via user-defined dashboards. Grafana dashboards are
+built/generated in the GUI, but are stored/represented in JSON format on disk. While we provide several pre-built dashboards,
+it is entirely possible (and encouraged), for you to [create your own](http://docs.grafana.org/guides/getting_started/) in
+Grafana. The pre-built dashboards are available in: *<install_dir>/ansible/dashboards/*
 
+### NetApp SANtricity Web Services Proxy
+The Web Services Proxy (WSP), provides a RESTful interface for managing/monitoring E-Series storage systems. Our newest hardware
+ models provide a RESTful API out-of-the-box, but the Web Services Proxy will support the newest systems as well as the legacy
+ storage systems that do not. It is highly scalable and can support upwards of 500 E-Series systems while using < 2 GB of
+ memory.
+
+ The Web Services Proxy is provided with the default configuration and settings,
+  and it may be accessed at *yourhost:8080*. If you do not wish for the API to be made accessible externally, you may remove
+  the port mapping in the docker-compose.yml file.
+
+  ~~~~
+netapp_web_services:
+    ...
+    ports:
+      - 8080:8080
+      - 8443:8443
+  ~~~~
+
+  The WSP installation includes a GUI component that can be utilized to manage the newest E-Series systems (systems running
+  firmware levels 11.40 and above), which may or may not work for your environment.
+
+  By default we will utilize default credentials for accessing the WSP (*admin/admin*). These credentials may be updated, but
+  you will need to update the credentials file for the collector script when doing so (*<install_dir>/collector/config.json*)
 
 ## Supporting Tools
-As you can see, we use a variety of components in order to provide all of this functionality. Due to the difficulty of installing individual components on a given server, we use a few supporting tools in order to make the process easier.
+Installing each of these components and configuring them properly on an arbitrary OS version can be difficult. Rather than
+requiring a complex installation and configuration step, we utilize a couple of different tools to facilitate the deployment.
 
 ### Ansible
-We use [Ansible](https://www.ansible.com/) in order to define a consistent environment for the different components listed above. A simple Playbook saves thousands of lines worth of shell scripting.
+We use [Ansible](https://www.ansible.com/) in order to define/apply a consistent configuration for the different components
+listed above. A simple Ansible Playbook can save thousands of lines worth of shell scripting.
+
+Primarily, we utilize Ansible to configure Grafana and import/export the dashboards as required.
 
 ### Docker
-We use [Docker](https://www.docker.com/) and [Docker-Compose](https://docs.docker.com/compose/) for our deployment method because of the simplicity that it provides even when deploying many separate components.
+[Docker](https://www.docker.com/) allows you to define an environment to run a particular application in code, including the
+OS, dependencies, and any required configuration/customization. It is similar to creating a custom virtual machine image for
+each component, but much easier, more dynamic, and lighter weight resource-wise. Such a configuration is known as a Docker
+image. Each component either has an Official, Unofficial, or custom-built Docker image that defines the environment
+and configuration such that only installation of Docker is required to utilize it.
+
+[Docker-Compose](https://docs.docker.com/compose/) allows multiple Docker images to be orchestrated together to solve a larger
+problem. A common example is a Web Server that also requires a Database.
+
+In our case, we have several components that must be run together for everything to work correctly, there are startup
+dependencies, and certain components require communication with other components. Docker-Compose allows us to define the
+various services we require, how they should behave, where they should store their data, and which should be externally
+accessible, all via the docker-compose.yml file.
 
 ## Getting Started
 ### Dependencies
-You'll need to install [Docker](https://docs.docker.com/install/) and [Docker-Compose](https://docs.docker.com/compose/install/). Most of the other dependencies are provided via individual Docker images.
-
-This also assumes you already have managed storage arrays ready to be monitored. More information on this can be found below.
+You'll need to install [Docker](https://docs.docker.com/install/) and [Docker-Compose](https://docs.docker.com/compose/install/).
+ Virtually all of the other dependencies are provided through other Docker images.
 
 ### Configuration
-#### Dashboards
-The dashboards are located in ** *install_dir*/ansible/dashboards/ ** and will be imported into Grafana when started. Dashboards can also be imported from within the Grafana interface by navigating to **Dashboards->Home**, clicking on the dropdown at the top of the page, and selecting **Import Dashboard**.
 
-Dashboards are represented using JSON and that documentation can be found [here](http://docs.grafana.org/reference/dashboard/). Additionally you can use the provided pre-configured dashboards as a reference for creating your own.
+#### Managed Systems
+
+#### Dashboards
+The dashboards are located in ** *install_dir*/ansible/dashboards/ ** and will be imported into Grafana when started.
+ Dashboards can also be imported from within the Grafana interface by navigating to **Dashboards->Home**, clicking on the
+ drop-down at the top of the page, and selecting **Import Dashboard**.
+
+Dashboards are imported/exported using JSON and that documentation can be found [here](http://docs.grafana
+.org/reference/dashboard/). You may use the provided pre-configured dashboards as a reference for creating your own. We have
+also provided an export script for automatically dumping modified/created dashboards to disk for backup (*backup.sh*).
 
 #### Storage Arrays
-Arrays to be monitored are located in ** *install_dir*/ansible/arrays/ ** and will be managed automatically when everything is started. These are currently represented with JSON files, in which you provide the IP of and a unique ID for each array.
+Arrays to be monitored are located in ** *install_dir*/ansible/arrays/ ** and will be automatically added to the WSP
+when the services start. These are currently represented with JSON files, in which you provide the IP address[es] and a
+unique ID for each storage-system that you wish to manage. This is intended to be a simplified workflow. It is also possible to
+ manually add storage-systems using the API.
 
-Once everything is started, arrays can also be managed through the SANtricity® Unified Manager as described below. Note that, although they will still be monitored, older/legacy arrays added through the API/config files will not appear in this manager.
+Once everything is started, arrays can also be managed through the SANtricity® Unified Manager as described below. Note that
+although they will still be monitored, legacy arrays added through the API/config files will not appear in this manager.
 
 #### Graphite and Carbon
-Graphite's method and frequency of storing metrics is configurable through config files in the ** *install_dir*/graphite ** directory. There are two different config files to look at here.
+Graphite's method and frequency of storing metrics is configurable through config files in the ** *install_dir*/graphite **
+ directory. There are two different config files to look at here.
 
 ##### carbon.conf
 This file is used to configure where and how Carbon collects metrics. The documentation for each setting is written in the comments in the file itself.
