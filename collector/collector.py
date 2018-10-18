@@ -10,6 +10,7 @@ import socket
 import argparse
 import concurrent.futures
 import requests
+import json
 
 try:
     import cPickle as pickle
@@ -96,12 +97,6 @@ logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.W
 
 PARSER = argparse.ArgumentParser()
 
-PARSER.add_argument('-u', '--username', default='admin',
-                    help='Provide the username for the SANtricity RestAPI Webserver'
-                    'If not specified, will default to \'admin\'')
-PARSER.add_argument('-p', '--password', default='admin',
-                    help='Provide the password for the SANtricity RestAPI Webserver'
-                    'If not specified, will default to \'admin\'')
 PARSER.add_argument('-t', '--intervalTime', type=int, default=5,
                     help='Provide the time (seconds) in which the script polls and sends data '
                          'from the SANtricity webServer to the Graphite backend. '
@@ -149,8 +144,20 @@ def get_session():
     :return: Returns a request session for the SANtricity RestAPI Webserver
     """
     request_session = requests.Session()
-    USERNAME = CMD.username;
-    PASSWORD = CMD.password;
+
+    # Try to read username and password from config file, if it exists
+    # Otherwise default to admin/admin
+    try:
+        with open('config.json') as config_file:
+            config_data = json.load(config_file)
+            if (config_data):
+                USERNAME = config_data["username"]
+                PASSWORD = config_data["password"]
+    except:
+        LOG.info("Unable to open \'/collector/config.json\' file")
+        USERNAME = "admin"
+        PASSWORD = "admin"
+
     request_session.auth = (USERNAME, PASSWORD)
     request_session.headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     # Ignore the self-signed certificate issues for https
