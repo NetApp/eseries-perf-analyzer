@@ -97,6 +97,14 @@ logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.W
 
 PARSER = argparse.ArgumentParser()
 
+PARSER.add_argument('-u', '--username', default='',
+                    help='Provide the username used to connect to the graphite server. '
+                         'If not specified, will check for the \'/collector/config.json\' file. '
+                         'Otherwise, it will default to \'admin\'')
+PARSER.add_argument('-p', '--password', default='',
+                    help='Provide the password for this user to connect to the graphite server. '
+                         'If not specified, will check for the \'/collector/config.json\' file. '
+                         'Otherwise, it will default to \'admin\'')
 PARSER.add_argument('-t', '--intervalTime', type=int, default=5,
                     help='Provide the time (seconds) in which the script polls and sends data '
                          'from the SANtricity webServer to the Graphite backend. '
@@ -145,18 +153,24 @@ def get_session():
     """
     request_session = requests.Session()
 
-    # Try to read username and password from config file, if it exists
-    # Otherwise default to admin/admin
-    try:
-        with open('config.json') as config_file:
-            config_data = json.load(config_file)
-            if (config_data):
-                USERNAME = config_data["username"]
-                PASSWORD = config_data["password"]
-    except:
-        LOG.info("Unable to open \'/collector/config.json\' file")
-        USERNAME = "admin"
-        PASSWORD = "admin"
+    # Try to just used what was passed in for username/password...
+    USERNAME = CMD.username;
+    PASSWORD = CMD.password;
+    
+    # ...if nothing was then try to read it from config file
+    if ((USERNAME is None or USERNAME == '') and (PASSWORD is None or PASSWORD == '')):
+        # Try to read username and password from config file, if it exists
+        # Otherwise default to admin/admin
+        try:
+            with open('config.json') as config_file:
+                config_data = json.load(config_file)
+                if (config_data):
+                    USERNAME = config_data["username"]
+                    PASSWORD = config_data["password"]
+        except:
+            LOG.info("Unable to open \'/collector/config.json\' file")
+            USERNAME = "admin"
+            PASSWORD = "admin"
 
     request_session.auth = (USERNAME, PASSWORD)
     request_session.headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
