@@ -153,11 +153,11 @@ def get_session():
     """
     request_session = requests.Session()
 
-    # Try to just used what was passed in for username/password...
+    # Try to use what was passed in for username/password...
     USERNAME = CMD.username;
     PASSWORD = CMD.password;
     
-    # ...if nothing was then try to read it from config file
+    # ...if there was nothing passed in then try to read it from config file
     if ((USERNAME is None or USERNAME == '') and (PASSWORD is None or PASSWORD == '')):
         # Try to read username and password from config file, if it exists
         # Otherwise default to admin/admin
