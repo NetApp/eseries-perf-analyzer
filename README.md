@@ -43,7 +43,7 @@ to accept plug-ins for additional functionality, but its core provides a lot of 
 Data from a configure datasource is displayed in Grafana via user-defined dashboards. Grafana dashboards are
 built/generated in the GUI, but are stored/represented in JSON format on disk. While we provide several pre-built dashboards,
 it is entirely possible (and encouraged), for you to [create your own](http://docs.grafana.org/guides/getting_started/) in
-Grafana. The pre-built dashboards are available in: *<install_dir>/ansible/dashboards/*
+Grafana. The pre-built dashboards are available in: ** *&lt;install_dir&gt;/ansible/dashboards/* **
 
 ### NetApp SANtricity Web Services Proxy
 The Web Services Proxy (WSP), provides a RESTful interface for managing/monitoring E-Series storage systems. Our newest hardware
@@ -67,7 +67,7 @@ netapp_web_services:
   firmware levels 11.40 and above), which may or may not work for your environment.
 
   By default we will utilize default credentials for accessing the WSP (*admin/admin*). These credentials may be updated, but
-  you will need to update the credentials file for the collector script when doing so (*<install_dir>/collector/config.json*)
+  you will need to update the credentials file for the collector script when doing so (** *&lt;install_dir&gt;/collector/config.json* **). These credentials can optionally be passed as arguments to the collector script (*-u USERNAME -p PASSWORD*) which will cause the *config.json* credentials to be ignored. Environment variables for this purpose are exposed in the docker-compose.yml file's stats_collector section.
 
 ## Supporting Tools
 Installing each of these components and configuring them properly on an arbitrary OS version can be difficult. Rather than
@@ -104,7 +104,7 @@ You'll need to install [Docker](https://docs.docker.com/install/) and [Docker-Co
 #### Managed Systems
 
 #### Dashboards
-The dashboards are located in ** *install_dir*/ansible/dashboards/ ** and will be imported into Grafana when started.
+The dashboards are located in ** *&lt;install_dir&gt;*/ansible/dashboards/ ** and will be imported into Grafana when started.
  Dashboards can also be imported from within the Grafana interface by navigating to **Dashboards->Home**, clicking on the
  drop-down at the top of the page, and selecting **Import Dashboard**.
 
@@ -113,7 +113,7 @@ Dashboards are imported/exported using JSON and that documentation can be found 
 also provided an export script for automatically dumping modified/created dashboards to disk for backup (*backup.sh*).
 
 #### Storage Arrays
-Arrays to be monitored are located in ** *install_dir*/ansible/arrays/ ** and will be automatically added to the WSP
+Arrays to be monitored are located in ** *&lt;install_dir&gt;*/ansible/arrays/ ** and will be automatically added to the WSP
 when the services start. These are currently represented with JSON files, in which you provide the IP address[es] and a
 unique ID for each storage-system that you wish to manage. This is intended to be a simplified workflow. It is also possible to
  manually add storage-systems using the API.
@@ -122,7 +122,7 @@ Once everything is started, arrays can also be managed through the SANtricity® 
 although they will still be monitored, legacy arrays added through the API/config files will not appear in this manager.
 
 #### Graphite and Carbon
-Graphite's method and frequency of storing metrics is configurable through config files in the ** *install_dir*/graphite **
+Graphite's method and frequency of storing metrics is configurable through config files in the ** *&lt;install_dir&gt;*/graphite **
  directory. There are two different config files to look at here.
 
 ##### carbon.conf
@@ -134,7 +134,7 @@ This file is responsible for defining retention rates for metric storage. The re
 Note that changes made to retention rates will invalidate data collected before the changes were made.
 
 ### Starting It Up
-It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping. By running the backup.sh script it will backup current dashboards into ** *install_dir*/ansible/dashboards/backup **
+It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping. By running the backup.sh script it will backup current dashboards into ** *&lt;install_dir&gt;*/ansible/dashboards/backup **
 
 Once everything is started, you have access to several pages to control and configure.
 
