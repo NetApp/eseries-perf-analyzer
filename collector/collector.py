@@ -10,6 +10,7 @@ import socket
 import argparse
 import concurrent.futures
 import requests
+import json
 
 try:
     import cPickle as pickle
@@ -81,10 +82,6 @@ DRIVE_PARAMETERS = [
 
 NUMBER_OF_THREADS = 10
 
-# CONSTANTS FOR PULLING INFORMATION FROM SANTRICITY WEB PROXY
-USERNAME = 'admin'
-PASSWORD = 'admin'
-
 # LOGGING
 logging.basicConfig(level=logging.INFO)
 requests.packages.urllib3.disable_warnings()
@@ -100,6 +97,14 @@ logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.W
 
 PARSER = argparse.ArgumentParser()
 
+PARSER.add_argument('-u', '--username', default='',
+                    help='Provide the username used to connect to the graphite server. '
+                         'If not specified, will check for the \'/collector/config.json\' file. '
+                         'Otherwise, it will default to \'admin\'')
+PARSER.add_argument('-p', '--password', default='',
+                    help='Provide the password for this user to connect to the graphite server. '
+                         'If not specified, will check for the \'/collector/config.json\' file. '
+                         'Otherwise, it will default to \'admin\'')
 PARSER.add_argument('-t', '--intervalTime', type=int, default=5,
                     help='Provide the time (seconds) in which the script polls and sends data '
                          'from the SANtricity webServer to the Graphite backend. '
@@ -109,7 +114,7 @@ PARSER.add_argument('-r', '--root', default='storage.eseries',
                          'as to match the given Grafana templates. If this is changed, '
                          'you must also manually change the Grafana templates. '
                          '<period separated list>')
-PARSER.add_argument('--proxySocketAddress', default='localhost:8090',
+PARSER.add_argument('--proxySocketAddress', default='webservices',
                     help='Provide both the IP address and the port for the SANtricity webserver. '
                          'If not specified, will default to localhost. <IPv4 Address:port>')
 PARSER.add_argument('--graphiteIpAddress', default='graphite',
@@ -147,6 +152,26 @@ def get_session():
     :return: Returns a request session for the SANtricity RestAPI Webserver
     """
     request_session = requests.Session()
+
+    # Try to use what was passed in for username/password...
+    USERNAME = CMD.username;
+    PASSWORD = CMD.password;
+    
+    # ...if there was nothing passed in then try to read it from config file
+    if ((USERNAME is None or USERNAME == '') and (PASSWORD is None or PASSWORD == '')):
+        # Try to read username and password from config file, if it exists
+        # Otherwise default to admin/admin
+        try:
+            with open('config.json') as config_file:
+                config_data = json.load(config_file)
+                if (config_data):
+                    USERNAME = config_data["username"]
+                    PASSWORD = config_data["password"]
+        except:
+            LOG.info("Unable to open \'/collector/config.json\' file")
+            USERNAME = "admin"
+            PASSWORD = "admin"
+
     request_session.auth = (USERNAME, PASSWORD)
     request_session.headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     # Ignore the self-signed certificate issues for https
@@ -211,7 +236,7 @@ def collect_storage_system_statistics(storage_system):
             PROXY_BASE_URL, storage_id)).json()
         # Get Drive statistics
         graphite_drive_root = (('{}.{}.drive_statistics'.format(
-            CMD.root, storage_id)))
+            CMD.root, storage_name)))
         drive_stats_list = session.get('{}/{}/analysed-drive-statistics'.format(
             PROXY_BASE_URL, storage_id)).json()
         drive_locations = get_drive_location(storage_id, session)
@@ -219,14 +244,14 @@ def collect_storage_system_statistics(storage_system):
         if CMD.showDriveNames:
             for driveStats in drive_stats_list:
                 location_send = drive_locations.get(driveStats['diskId'])
-                LOG.info('Tray{:02.0f}:Slot{:03.0f}'.format(location_send[0], location_send[1]))
+                LOG.info('tray{:02.0f}.slot{:03.0f}'.format(location_send[0], location_send[1]))
 
         # Add drive statistics to list
         for driveStats in drive_stats_list:
             for metricsToCheck in DRIVE_PARAMETERS:
                 if driveStats.get(metricsToCheck) != 'none':
                     location_send = drive_locations.get(driveStats['diskId'])
-                    graphite_payload = ('{}.Tray{:02.0f}:Slot{:03.0f}.{}'.format(
+                    graphite_payload = ('{}.Tray-{:02.0f}.Disk-{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
                         location_send[1],
@@ -235,7 +260,7 @@ def collect_storage_system_statistics(storage_system):
                         LOG.info(graphite_payload)
                     graphite_package.append(graphite_payload)
                     # With pool information
-                    graphite_payload = ('{}.Tray{:02.0f}:Slot{:03.0f}.{}'.format(
+                    graphite_payload = ('{}.Tray-{:02.0f}.Disk-{:03.0f}.{}'.format(
                         graphite_drive_root,
                         location_send[0],
                         location_send[1],
@@ -258,7 +283,7 @@ def collect_storage_system_statistics(storage_system):
         for volumeStats in volume_stats_list:
             for metricsToCheck in VOLUME_PARAMETERS:
                 this_metric = volumeStats.get(metricsToCheck)
-                if this_metric != 'none':
+                if this_metric is not None:
                     graphite_payload = ('{}.{}.{}'.format(
                         graphite_volume_root,
                         volumeStats.get('volumeName'),

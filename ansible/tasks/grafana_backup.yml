@@ -1,0 +1,31 @@
+- name: Get existing dashboards
+  uri:
+    url: "http://localhost:3000/api/search/"
+    method: GET
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    force_basic_auth: yes
+    headers:
+      Accept: "application/json"
+  register: resp
+
+- name: Retrieve each individual dashboard from the list
+  uri:
+    url: "http://localhost:3000/api/dashboards/{{ item.uri }}"
+    method: GET
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    force_basic_auth: yes
+    headers:
+      Accept: "application/json"
+  with_items: "{{ resp.json }}"
+  register: dashboards
+
+- name: Save the retrieved dashboards to disk
+  copy: 
+    force: True
+    content: "{{ item.json | to_nice_json}}"
+    dest: "./dashboards/backup/{{item.json.meta.slug}}.json"
+  with_items: "{{ dashboards.results }}"      
+  loop_control:
+    label: "{{ item.json.meta.slug }}"
