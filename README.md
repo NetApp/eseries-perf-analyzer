@@ -37,10 +37,6 @@ performance metrics, we have also provided some additional collector example scr
  that will show metrics that are being pushed. `docker exec -it graphite tail -f /var/log/carbon.log`
 
 ### Grafana
-<<<<<<< HEAD
-[Grafana](https://grafana.com/) is an open-source tool designed to help you visualize time-series data. It is incredibly customizable and can be used to view data from a variety of data stores.
-
-=======
 [Grafana](https://grafana.com/) is an open-source tool designed to help you visualize time-series data. It has the capability
 to accept plug-ins for additional functionality, but its core provides a lot of power with no add-ons.
 
@@ -72,7 +68,6 @@ netapp_web_services:
 
   By default we will utilize default credentials for accessing the WSP (*admin/admin*). These credentials may be updated, but
   you will need to update the credentials file for the collector script when doing so (** *&lt;install_dir&gt;/collector/config.json* **). These credentials can optionally be passed as arguments to the collector script (*-u USERNAME -p PASSWORD*) which will cause the *config.json* credentials to be ignored. Environment variables for this purpose are exposed in the docker-compose.yml file's stats_collector section.
->>>>>>> cbf712a71223a35755ba5b093a2f3f86e085fe77
 
 ## Supporting Tools
 Installing each of these components and configuring them properly on an arbitrary OS version can be difficult. Rather than
