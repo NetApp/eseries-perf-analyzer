@@ -46,7 +46,7 @@ it is entirely possible (and encouraged), for you to [create your own](http://do
 Grafana. The pre-built dashboards are available in: ** *&lt;install_dir&gt;/ansible/dashboards/* **
 
 ### NetApp SANtricity Web Services Proxy
-The Web Services Proxy (WSP), provides a RESTful interface for managing/monitoring E-Series storage systems. Our newest hardware
+The Web Services Proxy, provides a RESTful interface for managing/monitoring E-Series storage systems. Our newest hardware
  models provide a RESTful API out-of-the-box, but the Web Services Proxy will support the newest systems as well as the legacy
  storage systems that do not. It is highly scalable and can support upwards of 500 E-Series systems while using < 2 GB of
  memory.
@@ -63,10 +63,10 @@ netapp_web_services:
       - 8443:8443
   ~~~~
 
-  The WSP installation includes a GUI component that can be utilized to manage the newest E-Series systems (systems running
+  The Web Services Proxy installation includes a GUI component that can be utilized to manage the newest E-Series systems (systems running
   firmware levels 11.40 and above), which may or may not work for your environment.
 
-  By default we will utilize default credentials for accessing the WSP (*admin/admin*). These credentials may be updated, but
+  By default we will utilize default credentials for accessing the Web Services Proxy (*admin/admin*). These credentials may be updated, but
   you will need to update the credentials file for the collector script when doing so (** *&lt;install_dir&gt;/collector/config.json* **). These credentials can optionally be passed as arguments to the collector script (*-u USERNAME -p PASSWORD*) which will cause the *config.json* credentials to be ignored. Environment variables for this purpose are exposed in the docker-compose.yml file's stats_collector section.
 
 ## Supporting Tools
@@ -113,7 +113,7 @@ Dashboards are imported/exported using JSON and that documentation can be found 
 also provided an export script for automatically dumping modified/created dashboards to disk for backup (*backup.sh*).
 
 #### Storage Arrays
-Arrays to be monitored are located in ** *&lt;install_dir&gt;*/ansible/arrays/ ** and will be automatically added to the WSP
+Arrays to be monitored are located in ** *&lt;install_dir&gt;*/ansible/arrays/ ** and will be automatically added to the Web Services Proxy
 when the services start. These are currently represented with JSON files, in which you provide the IP address[es] and a
 unique ID for each storage-system that you wish to manage. This is intended to be a simplified workflow. It is also possible to
  manually add storage-systems using the API.
