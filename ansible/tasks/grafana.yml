@@ -55,16 +55,27 @@
 - pause:
     seconds: 8
 
-- name: Add found arrays
-  uri:
-    url: "http://localhost:8080/devmgr/v2/storage-systems"
-    method: POST
-    headers:
-      Content-Type: "application/json"
-    user: "{{ grafana_username }}"
-    password: "{{ grafana_password }}"
-    body: "{{ lookup('file', item.path) | from_json }}"
-    status_code: 201
-    body_format: json
-    force_basic_auth: yes
-  with_items: "{{ arrays_result.files }}"
+#- name: Add found arrays
+- block:
+    - debug:
+        msg: "Beginning Task: Add found arrays"
+    - uri:
+        url: "http://localhost:8080/devmgr/v2/storage-systems"
+        method: POST
+        return_content: yes
+        headers:
+          Content-Type: "application/json"
+        user: "{{ grafana_username }}"
+        password: "{{ grafana_password }}"
+        body: "{{ lookup('file', item.path) | from_json }}"
+        status_code: 201
+        body_format: json
+        force_basic_auth: yes
+      register: add_result
+      with_items: "{{ arrays_result.files }}"
+  rescue:
+    - debug:
+        msg: "Failed to add arrays from files. Please double check formatting against documentation."
+  always:
+    - debug:
+        msg: "Finished Task: Add found arrays"
