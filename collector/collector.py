@@ -10,6 +10,7 @@ import socket
 import argparse
 import concurrent.futures
 import requests
+import json
 
 try:
     import cPickle as pickle
@@ -18,6 +19,8 @@ except ImportError:
 
 __author__ = 'kevin5'
 
+DEFAULT_USERNAME = 'admin'
+DEFAULT_PASSWORD = 'admin'
 
 #######################
 # LIST OF METRICS######
@@ -96,12 +99,14 @@ logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.W
 
 PARSER = argparse.ArgumentParser()
 
-PARSER.add_argument('-u', '--username', default='admin',
-                    help='Provide the username for the SANtricity RestAPI Webserver'
-                    'If not specified, will default to \'admin\'')
-PARSER.add_argument('-p', '--password', default='admin',
-                    help='Provide the password for the SANtricity RestAPI Webserver'
-                    'If not specified, will default to \'admin\'')
+PARSER.add_argument('-u', '--username', default='',
+                    help='Provide the username used to connect to the Web Services Proxy. '
+                         'If not specified, will check for the \'/collector/config.json\' file. '
+                         'Otherwise, it will default to \'' + DEFAULT_USERNAME + '\'')
+PARSER.add_argument('-p', '--password', default='',
+                    help='Provide the password for this user to connect to the Web Services Proxy. '
+                         'If not specified, will check for the \'/collector/config.json\' file. '
+                         'Otherwise, it will default to \'' + DEFAULT_PASSWORD + '\'')
 PARSER.add_argument('-t', '--intervalTime', type=int, default=5,
                     help='Provide the time (seconds) in which the script polls and sends data '
                          'from the SANtricity webServer to the Graphite backend. '
@@ -149,9 +154,27 @@ def get_session():
     :return: Returns a request session for the SANtricity RestAPI Webserver
     """
     request_session = requests.Session()
-    USERNAME = CMD.username;
-    PASSWORD = CMD.password;
-    request_session.auth = (USERNAME, PASSWORD)
+
+    # Try to use what was passed in for username/password...
+    username = CMD.username;
+    password = CMD.password;
+    
+    # ...if there was nothing passed in then try to read it from config file
+    if ((username is None or username == '') and (password is None or password == '')):
+        # Try to read username and password from config file, if it exists
+        # Otherwise default to DEFAULT_USERNAME/DEFAULT_PASSWORD
+        try:
+            with open('config.json') as config_file:
+                config_data = json.load(config_file)
+                if (config_data):
+                    username = config_data["username"]
+                    password = config_data["password"]
+        except:
+            LOG.info("Unable to open \'/collector/config.json\' file")
+            username = DEFAULT_USERNAME
+            password = DEFAULT_PASSWORD
+
+    request_session.auth = (username, password)
     request_session.headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     # Ignore the self-signed certificate issues for https
     request_session.verify = False
