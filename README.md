@@ -115,19 +115,45 @@ also provided an export script for automatically dumping modified/created dashbo
 #### Storage Arrays
 Arrays to be monitored are located in ** *&lt;install_dir&gt;*/ansible/arrays/ ** and will be automatically added to the Web Services Proxy
 when the services start. These are currently represented with JSON files, in which you provide the IP address[es] and a
-unique ID for each storage-system that you wish to manage. This is intended to be a simplified workflow. Each set of arrays should preferably be added to their own JSON file with a unique ID and their IPs represented as a comma separated list like so:
+unique ID for each storage-system that you wish to manage. This is intended to be a simplified workflow. Each set of arrays should preferably be added to their own JSON file with a unique ID and their IPs represented as a comma separated list with additional parameters like so:
 ```json
 {
-  "id": "0",
+  "id": "string",
+  "controllerAddresses": [
+    "string",
+    "string",
+    "string"
+  ],
+  "acceptCertificate": false,
+  "validate": false,
+  "password": "string",
+  "wwn": "string",
+  "enableTrace": true,
+  "metaTags": [
+    {
+      "key": "string",
+      "valueList": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+Please note that if the JSON is formatted improperly this step will fail and notify you. Also be aware that the ID *must be unique* or the add will fail because that system already exists. You can omit the ID line from the JSON file and a valid unique ID will be generated for you. Here is an example of what a simple array JSON file might look like:
+```json
+{
   "controllerAddresses": [
     "10.1.1.1",
     "10.1.2.3",
     "10.3.4.5",
-  ]
+  ],
+  "acceptCertificate": true,
+  "validate": true,
+  "password": "myPass"
 }
 ```
-Please note that if the JSON is formatted improperly this step will fail and notify you. Also be aware that the ID *must be unique* or the add will fail because that system already exists. You can omit the ID line from the JSON file and a valid unique ID will be generated for you. Additional parameters you can pass when adding arrays this way (e.g. password) can be located in the Web Services Proxy interactive API documentation found at **yourhost:8080/devmgr/docs/#/Storage-Systems/new_StorageSystem** under *"body - Example Value"*. It is also possible to
- manually add storage-systems using this API.
+It is also possible to
+ manually add storage-systems using the Web Services Proxy interactive API documentation found at **yourhost:8080/devmgr/docs/#/Storage-Systems/new_StorageSystem**.
 
 Once everything is started, arrays can also be managed through the SANtricity® Unified Manager as described below. Note that
 although they will still be monitored, legacy arrays added through the API/config files will not appear in this manager.

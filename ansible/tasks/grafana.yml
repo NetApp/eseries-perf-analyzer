@@ -55,10 +55,10 @@
 - pause:
     seconds: 8
 
-#- name: Add found arrays
+#- name: Add retrieved arrays
 - block:
     - debug:
-        msg: "Beginning Task: Add found arrays"
+        msg: "Beginning Task: Add retrieved arrays"
     - uri:
         url: "http://localhost:8080/devmgr/v2/storage-systems"
         method: POST
@@ -68,14 +68,14 @@
         user: "{{ grafana_username }}"
         password: "{{ grafana_password }}"
         body: "{{ lookup('file', item.path) | from_json }}"
-        status_code: 201
+        status_code: 200, 201
         body_format: json
         force_basic_auth: yes
       register: add_result
       with_items: "{{ arrays_result.files }}"
   rescue:
     - debug:
-        msg: "Failed to add arrays from files. Please double check formatting against documentation."
+        msg: "Failed to add all the arrays retrieved from files. Please double check formatting against documentation."
   always:
     - debug:
-        msg: "Finished Task: Add found arrays"
+        msg: "Finished Task: Add retrieved arrays"
