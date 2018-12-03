@@ -154,8 +154,8 @@ Please note that if the JSON is formatted improperly this step will fail and not
     {
       "key": "myTag",
       "valueList": [
-        "value1",
-	"value2"
+        "value1", 
+        "value2"
       ]
     }
   ]
