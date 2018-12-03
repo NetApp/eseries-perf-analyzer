@@ -149,7 +149,16 @@ Please note that if the JSON is formatted improperly this step will fail and not
   ],
   "acceptCertificate": true,
   "validate": true,
-  "password": "myPass"
+  "password": "myPass",
+  "metaTags": [
+    {
+      "key": "myTag",
+      "valueList": [
+        "value1",
+	"value2"
+      ]
+    }
+  ]
 }
 ```
 It is also possible to
