@@ -109,8 +109,10 @@ The dashboards are located in ** *&lt;install_dir&gt;*/ansible/dashboards/ ** an
  drop-down at the top of the page, and selecting **Import Dashboard**.
 
 Dashboards are imported/exported using JSON and that documentation can be found [here](http://docs.grafana
-.org/reference/dashboard/). You may use the provided pre-configured dashboards as a reference for creating your own. We have
-also provided an export script for automatically dumping modified/created dashboards to disk for backup (*backup.sh*).
+.org/reference/dashboard/). You may use the provided pre-configured dashboards as a reference for creating your own.
+
+We have
+also provided an export script ** *&lt;install_dir&gt;*/backup.sh ** for automatically dumping dashboards to disk for backup. This pulls current dashboards from the service and stores them locally in ** *&lt;install_dir&gt;*/ansible/dashboards/backup **. The services must be running when you execute this script.
 
 #### Storage Arrays
 Arrays to be monitored are located in ** *&lt;install_dir&gt;*/ansible/arrays/ ** and will be automatically added to the Web Services Proxy
@@ -180,7 +182,7 @@ This file is responsible for defining retention rates for metric storage. The re
 Note that changes made to retention rates will invalidate data collected before the changes were made.
 
 ### Starting It Up
-It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping. By running the backup.sh script it will backup current dashboards into ** *&lt;install_dir&gt;*/ansible/dashboards/backup **
+It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping.
 
 Once everything is started, you have access to several pages to control and configure.
 

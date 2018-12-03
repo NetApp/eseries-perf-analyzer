@@ -1,5 +1,7 @@
 #!/bin/bash
 
-docker run --network "host" --rm ansible backup.yml
-id=$(docker create ansible)
-docker cp $id:/home/dashboards ./ansible/dashboards/backup
+#rm -rf ./ansible/dashboards/backup
+docker run --name tempbak --network "host" ansible backup.yml
+docker cp tempbak:/home/dashboards/backup ./ansible/dashboards
+docker rm tempbak > /dev/null # suppress output
+echo -e "******* [ Dashboards backup made in /ansible/dashboards/backup/ ] *******\n"

@@ -8,6 +8,7 @@ ADD backup.yml /home/
 ADD datastore.json /home/
 ADD arrays /home/arrays
 ADD dashboards /home/dashboards
+RUN mkdir -p /home/dashboards/backup
 RUN mkdir -p /etc/ansible && touch /etc/ansible/hosts
 ENTRYPOINT ["ansible-playbook", "-v"]
 CMD ["main.yml"]
