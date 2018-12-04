@@ -111,8 +111,7 @@ The dashboards are located in ** *&lt;install_dir&gt;*/ansible/dashboards/ ** an
 Dashboards are imported/exported using JSON and that documentation can be found [here](http://docs.grafana
 .org/reference/dashboard/). You may use the provided pre-configured dashboards as a reference for creating your own.
 
-We have
-also provided an export script ** *&lt;install_dir&gt;*/backup.sh ** for automatically dumping dashboards to disk for backup. This pulls current dashboards from the service and stores them locally in ** *&lt;install_dir&gt;*/ansible/dashboards/backup **. The services must be running when you execute this script.
+We have provided an export script ** *&lt;install_dir&gt;*/backup.sh ** for automatically exporting new / user-modified dashboards to disk for backup. This pulls current dashboards from the service and stores them locally in the ** *&lt;install_dir&gt;*/ansible/dashboards/backup ** directory in JSON format. The Grafana service must be running when you execute this script.
 
 #### Storage Arrays
 Arrays to be monitored are located in ** *&lt;install_dir&gt;*/ansible/arrays/ ** and will be automatically added to the Web Services Proxy
