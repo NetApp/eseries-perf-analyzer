@@ -16,7 +16,7 @@ In a nutshell, the Web Services Proxy will periodically poll your storage-system
 The only real requirements to utilize this project are a Linux OS and a Docker installation. ~95% of the installation and
 configuration process is automated using Ansible and Docker.
 
-Our descriptions below of the aforementioned components will in no way fully do them justice. It is recommended that you visit
+Our descriptions below of the various components will in no way fully do them justice. It is recommended that you visit
 the project/home pages for each in order to gain a full understanding of what they can provide and how they can be fully
 utilized. We will attempt to provide the information that you absolutely need to know, but probably little beyond that.
 
