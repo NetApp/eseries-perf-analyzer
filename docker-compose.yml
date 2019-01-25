@@ -12,6 +12,7 @@ services:
       - ACCEPT_EULA=true
 
   graphite:
+    image: graphite:${TAG}
     build:
       context: ./graphite
     container_name: graphite
@@ -27,7 +28,6 @@ services:
     volumes:
     #  - ./graphite/configs:/opt/graphite/conf
       - ./graphite-database:/opt/graphite/storage/whisper
-    #network_mode: "host"
 
   grafana:
     image: grafana/grafana:5.3.4
@@ -35,9 +35,9 @@ services:
       - graphite
     ports:
       - 3000:3000
-    #network_mode: "host"
 
   stats_collector:
+    image: collector:${TAG}
     build:
       context: ./collector
     depends_on:
@@ -51,7 +51,6 @@ services:
         #- PASSWORD=myPass
         - COLLECTION_INTERVAL=30
         - PROXY_ADDRESS=netapp_web_services:8080
-    #network_mode: "host"
 
 volumes:
   grafana_vol:
