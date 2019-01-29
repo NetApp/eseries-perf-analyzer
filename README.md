@@ -1,9 +1,9 @@
 # NetApp E-Series Grafana Performance Dashboards
 
-This project incorporates several different Open Source components in order to simply and beautifully demonstrate the
-performance of one or more E-Series systems at different levels/layers. It is intended to serve as a reference implementation
-for the use of Grafana to visualize the performance of your E-Series systems. It is also intended to be customizable and
-extensible based on your individual needs.
+This project is intended to allow you to quickly and simply deploy a Grafana instance for monitoring your E-Series storage. We
+incorporate various open source components and tools in order to do so. While it is intended primarily to serve as a reference 
+implementation for the use of Grafana to visualize the performance of your E-Series systems. It is also intended to be
+customizable and extensible based on your individual needs.
 
 
 ## Overview
