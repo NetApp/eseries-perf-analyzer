@@ -10,6 +10,11 @@ services:
       - 8443:8443
     environment:
       - ACCEPT_EULA=true
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
 
   graphite:
     image: graphite:${TAG}
@@ -20,11 +25,16 @@ services:
       - netapp_web_services
     mem_limit: 1G
     ports: 
-    - 80:80
-    - 2003-2004:2003-2004
-    - 2023-2024:2023-2024
-    - 8125:8125/udp
-    - 8126:8126
+      - 80:80
+      - 2003-2004:2003-2004
+      - 2023-2024:2023-2024
+      - 8125:8125/udp
+      - 8126:8126
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
     volumes:
     #  - ./graphite/configs:/opt/graphite/conf
       - ./graphite-database:/opt/graphite/storage/whisper
@@ -35,6 +45,11 @@ services:
       - graphite
     ports:
       - 3000:3000
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
 
   stats_collector:
     image: collector:${TAG}
@@ -44,6 +59,11 @@ services:
       - grafana
     container_name: collect
     restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
     environment:
         - USERNAME=admin
         # you can modify the password for webservices here
