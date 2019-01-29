@@ -146,7 +146,7 @@ Please note that if the JSON is formatted improperly this step will fail and not
   "controllerAddresses": [
     "10.1.1.1",
     "10.1.2.3",
-    "10.3.4.5",
+    "10.3.4.5"
   ],
   "acceptCertificate": true,
   "validate": true,
@@ -192,3 +192,53 @@ The Web Services Proxy can be accessed at **yourhost:8080**. From here you can a
 The dashboards are available at **yourhost:3000** with default credentials of *admin/admin*. Grafana should be pre-configured for immediate access to your data. There are also dashboards for displaying data related to Graphite's Carbon component, which is the component responsible for collecting and writing metric data to disk.
 
 Documentation for additional configuration and navigation can be found [here](http://docs.grafana.org/guides/getting_started/).
+
+## Troubleshooting Guide
+
+### I don't have access to Docker
+
+At this time (and unlikely to change), Docker is a hard requirement for using this project.
+
+### I don't have network access on this machine
+
+Your only option at this point is to save/export the Docker images on a machine that does have general internet access and then
+copy them and import them to the target machine. This is an advanced workflow that we do not currently cover in this guide, but
+is not overly difficult to achieve.
+
+### I can't pull the Docker images
+
+Check your access to DockerHub. If you are running this on a machine with network segregation, you may need to update your
+Docker binary to utilize a local DockerHub mirror or repository to get this to work.
+
+### A Docker image failed to build
+
+We pin our Docker images to a known good tag at the time that we commit changes. The downside to pinning to a major/minor
+version rather than a specific image hash is that while you do get the benefit of new patches (security updates, etc), the
+possibility of breakage does exist. If an image fails to build, try to determine where the failure occurred and if it's an
+environment issue or an issue with an update to the Docker image tag. It's quite likely that you'll be able to get things to
+function correctly by rolling back to an older version.
+
+### I don't see any data in the charts!
+
+Did you remember to add any storage-systems to the Web Services Proxy instance, either through the ansible helper scripts or
+manually? If not, you didn't give us anything to push metrics on yet.
+
+Assuming that you did, first verify that the collector container is running and that it is successfully collecting metrics.
+```bash
+docker logs -f collector
+```
+
+Secondly, there is a log file within the graphite container that will give some detail on metrics that it is receiving. You can
+view this log using:
+```bash
+docker exec -it graphite tail -f /var/log/carbon.log
+```
+
+If you have added your own metrics that aren't showing up, first verify that you're sending the data to the correct server
+address and port. Secondly, check the carbon.log file mentioned above to ensure there isn't a data packaging problem.
+
+### I made some changes to <X> and now everything is broken!
+
+While we do encourage variations, improvements, and additions, these are definitely something we can't support. While you may
+enter an issue and/or ask for help, we can't guarantee that we can, or will try to fix your deployment and may ask
+ you to revert to a known good configuration.
