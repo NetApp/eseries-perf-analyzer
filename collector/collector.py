@@ -22,6 +22,8 @@ __author__ = 'kevin5'
 DEFAULT_USERNAME = 'admin'
 DEFAULT_PASSWORD = 'admin'
 
+DEFAULT_SYSTEM_NAME = 'Unnamed'
+
 #######################
 # LIST OF METRICS######
 #######################
@@ -156,8 +158,8 @@ def get_session():
     request_session = requests.Session()
 
     # Try to use what was passed in for username/password...
-    username = CMD.username;
-    password = CMD.password;
+    username = CMD.username
+    password = CMD.password
     
     # ...if there was nothing passed in then try to read it from config file
     if ((username is None or username == '') and (password is None or password == '')):
@@ -234,8 +236,10 @@ def collect_storage_system_statistics(storage_system):
         graphite_package = []
         storage_id = storage_system['id']
         storage_name = storage_system.get('name', storage_id)
-        drives = session.get('{}/{}/drives'.format(
-            PROXY_BASE_URL, storage_id)).json()
+        # Graphite doesn't like it when there is an empty string for the name. Include a default name.
+        if not storage_name:
+            storage_name = DEFAULT_SYSTEM_NAME
+
         # Get Drive statistics
         graphite_drive_root = (('{}.{}.drive_statistics'.format(
             CMD.root, storage_name)))
@@ -297,8 +301,8 @@ def collect_storage_system_statistics(storage_system):
         if not CMD.doNotPost:
             post_to_graphite(storage_id, graphite_package)
     except RuntimeError:
-        LOG.error('Error when attempting to post statistics for {}'.format(
-            storage_system['name']))
+        LOG.error('Error when attempting to post statistics for {}/{}'.format(
+            storage_system['name'], storage_system['id']))
 
 
 #######################
