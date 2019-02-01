@@ -2,7 +2,9 @@ version: '2'
 services:
 
   netapp_web_services:
-    image: netapp/eseries-webservices:3.00
+    image: webservices:3.00
+    build:
+      context: ./webservices
     container_name: webservices
     restart: on-failure
     ports:
