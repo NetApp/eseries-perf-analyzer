@@ -2,7 +2,7 @@
 
 This project is intended to allow you to quickly and simply deploy a Grafana instance for monitoring your E-Series storage. We
 incorporate various open source components and tools in order to do so. While it is intended primarily to serve as a reference 
-implementation for the use of Grafana to visualize the performance of your E-Series systems. It is also intended to be
+implementation for the use of Grafana to visualize the performance of your E-Series systems, it is also intended to be
 customizable and extensible based on your individual needs.
 
 
@@ -40,7 +40,7 @@ performance metrics, we have also provided some additional collector example scr
 [Grafana](https://grafana.com/) is an open-source tool designed to help you visualize time-series data. It has the capability
 to accept plug-ins for additional functionality, but its core provides a lot of power with no add-ons.
 
-Data from a configure datasource is displayed in Grafana via user-defined dashboards. Grafana dashboards are
+Data from a configured datasource is displayed in Grafana via user-defined dashboards. Grafana dashboards are
 built/generated in the GUI, but are stored/represented in JSON format on disk. While we provide several pre-built dashboards,
 it is entirely possible (and encouraged), for you to [create your own](http://docs.grafana.org/guides/getting_started/) in
 Grafana. The pre-built dashboards are available in: ** *&lt;install_dir&gt;/ansible/dashboards/* **
@@ -83,7 +83,7 @@ Primarily, we utilize Ansible to configure Grafana and import/export the dashboa
 [Docker](https://www.docker.com/) allows you to define an environment to run a particular application in code, including the
 OS, dependencies, and any required configuration/customization. It is similar to creating a custom virtual machine image for
 each component, but much easier, more dynamic, and lighter weight resource-wise. Such a configuration is known as a Docker
-image. Each component either has an Official, Unofficial, or custom-built Docker image that defines the environment
+image. Each component of our solution has an official, unofficial, or custom-built Docker image that defines its environment
 and configuration such that only installation of Docker is required to utilize it.
 
 [Docker-Compose](https://docs.docker.com/compose/) allows multiple Docker images to be orchestrated together to solve a larger
@@ -108,15 +108,15 @@ The dashboards are located in ** *&lt;install_dir&gt;*/ansible/dashboards/ ** an
  Dashboards can also be imported from within the Grafana interface by navigating to **Dashboards->Home**, clicking on the
  drop-down at the top of the page, and selecting **Import Dashboard**.
 
-Dashboards are imported/exported using JSON and that documentation can be found [here](http://docs.grafana
-.org/reference/dashboard/). You may use the provided pre-configured dashboards as a reference for creating your own.
-
+Dashboards are imported/exported using JSON and that documentation can be found [here](http://docs.grafana.org/reference/dashboard/). 
+You may use the provided pre-configured dashboards as a reference for creating your own.
 We have provided an export script ** *&lt;install_dir&gt;*/backup.sh ** for automatically exporting new / user-modified dashboards to disk for backup. This pulls current dashboards from the service and stores them locally in the ** *&lt;install_dir&gt;*/ansible/dashboards/backup ** directory in JSON format. The Grafana service must be running when you execute this script.
 
 #### Storage Arrays
 Arrays to be monitored are located in ** *&lt;install_dir&gt;*/ansible/arrays/ ** and will be automatically added to the Web Services Proxy
 when the services start. These are currently represented with JSON files, in which you provide the IP address[es] and a
-unique ID for each storage-system that you wish to manage. This is intended to be a simplified workflow. Each set of arrays should preferably be added to their own JSON file with a unique ID and their IPs represented as a comma separated list with additional parameters like so:
+unique ID for each storage-system that you wish to manage. This is intended to be a simplified workflow. Each array should preferably be 
+added to its own JSON file with a unique ID and its  controller IPs represented as a comma separated list with additional parameters like so:
 ```json
 {
   "id": "string",
