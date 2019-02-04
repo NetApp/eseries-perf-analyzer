@@ -17,6 +17,8 @@ services:
       options:
         max-file: "5"
         max-size: 10m
+    volumes:
+      - "arraydata:/opt/netapp/santricity_web_services_proxy/working/arraydata.xml"
 
   graphite:
     image: graphite:${TAG}
@@ -76,3 +78,4 @@ services:
 
 volumes:
   grafana_vol:
+  arraydata:
