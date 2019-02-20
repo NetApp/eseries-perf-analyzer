@@ -1,7 +1,8 @@
-FROM python:2.7.15
+FROM python:3.7.2-alpine3.9
 WORKDIR /home
-RUN pip install --default-timeout=3 ansible ||\
-  pip install --trusted-host repoproxy-rtp.eng.netapp.com --default-timeout=3 -i http://repoproxy-rtp.eng.netapp.com:8081/artifactory/api/pypi/python-package-index/simple ansible
+# Determine if we have a connection to the public internet (flawed, yes), and use an offline mirror repo if not.
+RUN (ping -c 1 google.com && apk --update add ansible) || \
+(echo 'http://repomirror-ict.eng.netapp.com/alpine-linux/v3.9/main' > /etc/apk/repositories && apk --update add ansible)
 ADD tasks /home/tasks
 ADD main.yml /home/
 ADD backup.yml /home/
