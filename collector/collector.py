@@ -18,6 +18,7 @@ except ImportError:
     import pickle
 
 __author__ = 'kevin5'
+__version__ = '1.0'
 
 DEFAULT_USERNAME = 'admin'
 DEFAULT_PASSWORD = 'admin'
@@ -177,7 +178,9 @@ def get_session():
             password = DEFAULT_PASSWORD
 
     request_session.auth = (username, password)
-    request_session.headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+    request_session.headers = {'Accept': 'application/json',
+                               'Content-Type': 'application/json',
+                               'netapp-client-type': 'grafana-' + __version__}
     # Ignore the self-signed certificate issues for https
     request_session.verify = False
     return request_session
