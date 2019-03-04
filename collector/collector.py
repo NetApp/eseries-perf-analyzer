@@ -151,6 +151,15 @@ PROXY_BASE_URL = 'http://{}/devmgr/v2/storage-systems'.format(CMD.proxySocketAdd
 # HELPER FUNCTIONS#####
 #######################
 
+def get_configuration():
+    try:
+        with open('config.json') as config_file:
+            config_data = json.load(config_file)
+            if config_data:
+                return config_data
+    except:
+        return dict()
+
 def get_session():
     """
     Returns a session with the appropriate content type and login information.
@@ -173,7 +182,7 @@ def get_session():
                     username = config_data["username"]
                     password = config_data["password"]
         except:
-            LOG.info("Unable to open \'/collector/config.json\' file")
+            LOG.exception("Unable to open \'/collector/config.json\' file")
             username = DEFAULT_USERNAME
             password = DEFAULT_PASSWORD
 
@@ -316,6 +325,20 @@ if __name__ == '__main__':
     executor = concurrent.futures.ProcessPoolExecutor(NUMBER_OF_THREADS)
     SESSION = get_session()
     loopIteration = 1
+
+    try:
+        # Ensure we can connect. Wait for 2 minutes for WSP to startup.
+        SESSION.get(PROXY_BASE_URL, timeout=120)
+        configuration = get_configuration()
+        for system in configuration.get('storage_systems', list()):
+            body = dict(controllerAddresses=system.get('addresses'),
+                        password=system.get('array_password', configuration.get('array_password')))
+            response = SESSION.post(PROXY_BASE_URL, json=body)
+            response.raise_for_status()
+    except requests.exceptions.HTTPError or requests.exceptions.ConnectionError:
+        LOG.exception("Failed to add configured systems!")
+    except json.decoder.JSONDecodeError:
+        LOG.exception("Failed to open configuration file due to invalid JSON!")
 
     while True:
         time_start = time.time()

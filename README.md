@@ -1,9 +1,23 @@
 # NetApp E-Series Grafana Performance Dashboards
 
 This project is intended to allow you to quickly and simply deploy a Grafana instance for monitoring your E-Series storage. We
-incorporate various open source components and tools in order to do so. While it is intended primarily to serve as a reference 
+incorporate various open source components and tools in order to do so. While it is intended primarily to serve as a reference
 implementation for the use of Grafana to visualize the performance of your E-Series systems, it is also intended to be
 customizable and extensible based on your individual needs.
+
+## Quickstart Guide
+
+You'll need to have Docker (1.13.0+) and Docker-Compose installed in order to get started. [Installation](https://docs.docker.com/install/)
+
+The storage-systems to be monitored must be defined in the 'collector/config.json' file. There is an example file located at
+collector/config.sample.json for your reference. You may also choose to add the systems to Web Services manually, as detailed
+below.
+
+Once Docker is installed and the storage-systems are configured, run the start.sh script. Within a few minutes, all
+dependencies should be retrieved, installed, and started.
+
+Open http://<host>:3000/d/fiyRzQCik/netapp-e-series-overview?refresh=1m&panelId=20&orgId=1&tab=options to reach the
+Grafana login page and the E-Series Landing Page. Use the default login credentials of admin/admin to login for the first time.
 
 
 ## Overview
@@ -86,6 +100,8 @@ each component, but much easier, more dynamic, and lighter weight resource-wise.
 image. Each component of our solution has an official, unofficial, or custom-built Docker image that defines its environment
 and configuration such that only installation of Docker is required to utilize it.
 
+We use version 2 of the Compose file format, with features that require at least Docker v1.13.0+.
+
 [Docker-Compose](https://docs.docker.com/compose/) allows multiple Docker images to be orchestrated together to solve a larger
 problem. A common example is a Web Server that also requires a Database.
 
@@ -97,7 +113,7 @@ accessible, all via the docker-compose.yml file.
 ## Getting Started
 ### Dependencies
 You'll need to install [Docker](https://docs.docker.com/install/) and [Docker-Compose](https://docs.docker.com/compose/install/).
- Virtually all of the other dependencies are provided through other Docker images.
+ All other dependencies are provided through use of our Docker images.
 
 ### Configuration
 
@@ -113,55 +129,11 @@ You may use the provided pre-configured dashboards as a reference for creating y
 We have provided an export script ** *&lt;install_dir&gt;*/backup.sh ** for automatically exporting new / user-modified dashboards to disk for backup. This pulls current dashboards from the service and stores them locally in the ** *&lt;install_dir&gt;*/ansible/dashboards/backup ** directory in JSON format. The Grafana service must be running when you execute this script.
 
 #### Storage Arrays
-Arrays to be monitored are located in ** *&lt;install_dir&gt;*/ansible/arrays/ ** and will be automatically added to the Web Services Proxy
-when the services start. These are currently represented with JSON files, in which you provide the IP address[es] and a
-unique ID for each storage-system that you wish to manage. This is intended to be a simplified workflow. Each array should preferably be 
-added to its own JSON file with a unique ID and its  controller IPs represented as a comma separated list with additional parameters like so:
-```json
-{
-  "id": "string",
-  "controllerAddresses": [
-    "string",
-    "string",
-    "string"
-  ],
-  "acceptCertificate": false,
-  "validate": false,
-  "password": "string",
-  "wwn": "string",
-  "enableTrace": true,
-  "metaTags": [
-    {
-      "key": "string",
-      "valueList": [
-        "string"
-      ]
-    }
-  ]
-}
-```
-Please note that if the JSON is formatted improperly this step will fail and notify you. Also be aware that the ID *must be unique* or the add will fail because that system already exists. You can omit the ID line from the JSON file and a valid unique ID will be generated for you. Here is an example of what a simple array JSON file might look like:
-```json
-{
-  "controllerAddresses": [
-    "10.1.1.1",
-    "10.1.2.3",
-    "10.3.4.5"
-  ],
-  "acceptCertificate": true,
-  "validate": true,
-  "password": "myPass",
-  "metaTags": [
-    {
-      "key": "myTag",
-      "valueList": [
-        "value1", 
-        "value2"
-      ]
-    }
-  ]
-}
-```
+Arrays to be monitored should be added to the collector/config.json file. A sample configuration file is provided at
+collector/config.sample.json for reference. For most systems, you will also need to provide a valid password to login to the
+target storage-system. If you do not, or you provide an incorrect password, it's possible that we won't be able to pull
+performance data for that system.
+
 It is also possible to
  manually add storage-systems using the Web Services Proxy interactive API documentation found at **yourhost:8080/devmgr/docs/#/Storage-Systems/new_StorageSystem**.
 

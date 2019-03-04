@@ -18,7 +18,7 @@ services:
         max-file: "5"
         max-size: 10m
     volumes:
-      - "arraydata:/opt/netapp/santricity_web_services_proxy/working/arraydata.xml"
+      - arraydata:/opt/netapp/santricity_web_services_proxy/working/arraydata.xml
 
   graphite:
     image: graphite:${TAG}
@@ -27,7 +27,7 @@ services:
     container_name: graphite
     depends_on:
       - netapp_web_services
-    mem_limit: 1G
+    mem_limit: 2G
     ports: 
       - 80:80
       - 2003-2004:2003-2004
@@ -61,7 +61,7 @@ services:
       context: ./collector
     depends_on:
       - grafana
-    container_name: collect
+    container_name: collector
     restart: on-failure
     logging:
       driver: "json-file"
