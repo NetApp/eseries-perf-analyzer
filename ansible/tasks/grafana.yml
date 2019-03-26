@@ -43,10 +43,3 @@
     body_format: json
     force_basic_auth: yes
   with_items: "{{ dashboards.files }}"
-
-- name: Find array files
-  find:
-    paths: ./arrays
-    recurse: yes
-  register: arrays_result
-
