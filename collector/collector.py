@@ -332,8 +332,8 @@ if __name__ == '__main__':
         configuration = get_configuration()
         for system in configuration.get('storage_systems', list()):
             body = dict(controllerAddresses=system.get('addresses'),
-                        password=system.get('array_password', configuration.get('array_password'),
-                        acceptCertificate=True))
+                        password=system.get('password') or configuration.get('array_password'),
+                        acceptCertificate=True)
             response = SESSION.post(PROXY_BASE_URL, json=body)
             response.raise_for_status()
     except requests.exceptions.HTTPError or requests.exceptions.ConnectionError:
