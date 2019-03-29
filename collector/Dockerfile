@@ -1,4 +1,4 @@
-FROM python:3.7.2-alpine3.9
+FROM python:3.7-alpine3.9
 WORKDIR /home
 ENV COLLECTION_INTERVAL=30
 ENV PROXY_ADDRESS=localhost:8080

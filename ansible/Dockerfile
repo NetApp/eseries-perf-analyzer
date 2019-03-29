@@ -1,4 +1,4 @@
-FROM python:3.7.2-alpine3.9
+FROM python:3.7-alpine3.9
 WORKDIR /home
 # Determine if we have a connection to the public internet (flawed, yes), and use an offline mirror repo if not.
 RUN (ping -c 1 google.com && apk --update add ansible) || \
