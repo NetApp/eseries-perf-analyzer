@@ -16,6 +16,9 @@ below.
 Once Docker is installed and the storage-systems are configured, run the start.sh script. Within a few minutes, all
 dependencies should be retrieved, installed, and started.
 
+When you run this script, it will prompt you for a confirmation on whether or not you wish to continue and allow the script to
+download the default container images. If you wish to update to a newer image tag, you can cancel out and do so now.
+
 Open http://<host>:3000/d/fiyRzQCik/netapp-e-series-overview?refresh=1m&panelId=20&orgId=1&tab=options to reach the
 Grafana login page and the E-Series Landing Page. Use the default login credentials of admin/admin to login for the first time.
 
@@ -155,6 +158,15 @@ Note that changes made to retention rates will invalidate data collected before 
 ### Starting It Up
 It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping.
 
+When you run this script, it will prompt you for a confirmation on whether or not you wish to continue and allow the script to 
+download the default container images. If you wish to update to a newer image tag, you can cancel out and do so now.
+
+We've done our best to ensure that the configured Docker images not only build and work in most environments, but that they are
+ also well-used and tested by the community, and don't have security holes. New security issues are found all of the time,
+ however, and we may not be able to update the image tags immediately. You may choose to change the image tags to a newer or
+ different version, just be aware that we haven't tested that variation and you might run into problems with the build or at
+ runtime.
+
 Once everything is started, you have access to several pages to control and configure.
 
 #### Accessing the Web Services Proxy
@@ -214,3 +226,8 @@ address and port. Secondly, check the carbon.log file mentioned above to ensure 
 While we do encourage variations, improvements, and additions, these are definitely something we can't support. While you may
 enter an issue and/or ask for help, we can't guarantee that we can, or will try to fix your deployment and may ask
  you to revert to a known good configuration.
+
+### I get prompted each time I run the startup script!
+
+You may add the --quiet or -q option to keep from being prompted each time you run the script. This will automatically choose
+'yes' when prompted.
