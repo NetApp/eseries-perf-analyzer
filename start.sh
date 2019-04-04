@@ -17,13 +17,14 @@ set -- "${POSITIONAL[@]}"
 # If they haven't passed the --quiet argument.
 if [ -z "$QUIET" ]; then
     echo "##########################################################################################"
-    echo "In order to run this application, we need to download and use the following Docker images:"
+    echo "In order to run this application the following Docker images will be downloaded and installed:"
     find . -iname "Dockerfile" -exec cat {} \; | grep ^FROM | awk '{print $2}' |sort -u
     echo ''
-    echo "You may continue, or cancel and change the relevant tags to a newer version in the Dockerfile[s]."
+    echo "If you agree with the above you may continue, otherwise cancel and
+  change the relevant tags to a newer version in the Dockerfile[s]."
     echo "Be aware that the images configured in the repository
-    are the tested images and we cannot guarantee correct
-    behavior if you update the images to a new tag."
+  are the tested images and we cannot guarantee correct
+  behavior if you update the images to a new tag."
     read -rp "Would you like to continue? [y/n] "
 else
     REPLY=yes
