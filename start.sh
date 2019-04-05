@@ -18,6 +18,7 @@ set -- "${POSITIONAL[@]}"
 if [ -z "$QUIET" ]; then
     echo "##########################################################################################"
     echo "In order to run this application the following Docker images will be downloaded and installed:"
+    echo ''
     find . -iname "Dockerfile" -exec cat {} \; | grep ^FROM | awk '{print $2}' |sort -u
     echo ''
     echo "If you agree with the above you may continue, otherwise cancel and
