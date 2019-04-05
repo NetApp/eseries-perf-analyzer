@@ -2,7 +2,7 @@ version: '2'
 services:
 
   netapp_web_services:
-    image: webservices:3.10
+    image: webservices:${TAG}
     build:
       context: ./webservices
     container_name: webservices
