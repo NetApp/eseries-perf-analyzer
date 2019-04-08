@@ -77,7 +77,7 @@ services:
         # otherwise it will default to admin
         #- PASSWORD=myPass
         - COLLECTION_INTERVAL=30
-        - PROXY_ADDRESS=webservices:8080
+        - PROXY_ADDRESS=netapp_web_services:8080
 
 volumes:
   grafana_vol:
