@@ -18,7 +18,7 @@ set -- "${POSITIONAL[@]}"
 if [ -z "$QUIET" ]; then
     echo "##########################################################################################"
     echo "In order to run this application the following Docker images will be downloaded and installed:"
-    find . -iname "Dockerfile" -exec cat {} \; | grep ^FROM | awk '{print $2}' |sort -u
+    find . -iname "Dockerfile" -exec cat {} \; | grep ^FROM | grep -vG "\${" | grep -v "ntap-grafana" | awk '{print $2}' |sort -u
     echo ''
     echo "If you agree with the above you may continue, otherwise cancel and
   change the relevant tags to a newer version in the Dockerfile[s]."
@@ -33,24 +33,12 @@ fi
 if [[ ${REPLY,,} =~ ^(y|yes|Yes|YES)$ ]]; then
 
 
-   # Build/rebuild any images that can be built
-   docker-compose build
-
-   # Start using our compose file and run in the background
-   docker-compose up -d
-
-   # Build an image that will allow us to run an Ansible playbook
-   docker build -t ansible ansible
-
-   # Start an instance of our Ansible image to perform setup on the running instance
-   #  We run using the host network so that we can access not only the WSP instance, but also the individual containers.
-   docker run --network "host" ansible
-
-   docker ps
+   exit 0
 else
     echo ''
     echo "You have elected to not continue."
     echo "Update the Docker images in the relevant files and then re-run this script:"
     find . -iname "Dockerfile" -exec echo {} \;
+    exit 1
 fi
 

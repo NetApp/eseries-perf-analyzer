@@ -6,14 +6,20 @@ pipeline {
                 TAG = "${BUILD_NUMBER}"
                 PROJECT_NAME = "grafana"
                 RETRIES = 3
+                QUIET = "yes"
             }
             steps {
-                sh 'docker-compose -p ${PROJECT_NAME}-${BRANCH_NAME}-${BUILD_NUMBER} build --pull --no-cache --parallel'
-                retry ("${RETRIES}") {
-                    sh 'docker build ansible'
-                }
+				sh'''
+					make build-nc
+					make rm
+				'''
                 sh 'echo ${GIT_COMMIT}'
             }
         }
     }
+    post {
+		always {
+			cleanWs deleteDirs: true
+		}
+	}
 }

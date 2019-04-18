@@ -2,11 +2,9 @@ version: '2'
 services:
 
   netapp_web_services:
-    image: webservices:${TAG}
-    build:
-      context: ./webservices
+    image: ${PROJ_NAME}/webservices:${TAG}
     container_name: webservices
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - 8080:8080
       - 8443:8443
@@ -21,19 +19,20 @@ services:
       - arraydata:/opt/netapp/santricity_web_services_proxy/working/arraydata.xml
 
   graphite:
-    image: graphite:${TAG}
+    image: ${PROJ_NAME}/graphite:${TAG}
     build:
       context: ./graphite
     container_name: graphite
+    restart: unless-stopped
     depends_on:
       - netapp_web_services
     mem_limit: 2G
-    ports: 
-      - 80:80
-      - 2003-2004:2003-2004
-      - 2023-2024:2023-2024
-      - 8125:8125/udp
-      - 8126:8126
+    ports:
+      - 80
+      - 2003-2004
+      - 2023-2024
+      - 8125/udp
+      - 8126
     logging:
       driver: "json-file"
       options:
@@ -44,10 +43,9 @@ services:
       - ./graphite-database:/opt/graphite/storage/whisper
 
   grafana:
-    image: grafana:${TAG}
-    build:
-      context: ./grafana
+    image: ${PROJ_NAME}/grafana:${TAG}
     container_name: grafana
+    restart: unless-stopped
     depends_on:
       - graphite
     ports:
@@ -59,13 +57,11 @@ services:
         max-size: 10m
 
   stats_collector:
-    image: collector:${TAG}
-    build:
-      context: ./collector
+    image: ${PROJ_NAME}/collector:${TAG}
     depends_on:
       - grafana
     container_name: collector
-    restart: on-failure
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:

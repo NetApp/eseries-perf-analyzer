@@ -1,14 +1,16 @@
-FROM python:3.7-alpine3.9
-WORKDIR /home
-# Determine if we have a connection to the public internet (flawed, yes), and use an offline mirror repo if not.
-RUN (ping -c 1 google.com && apk --update add ansible) || \
-(echo 'http://repomirror-ict.eng.netapp.com/alpine-linux/v3.9/main' > /etc/apk/repositories && apk --update add ansible)
-ADD tasks /home/tasks
-ADD main.yml /home/
-ADD backup.yml /home/
-ADD datastore.json /home/
-ADD arrays /home/arrays
-ADD dashboards /home/dashboards
+ARG TAG=latest
+ARG IMAGE=ntap-grafana/python-base:${TAG}
+# Installing Ansible requires gcc and other dependencies to build packages from source. We'll do this in 2 stages so we don't
+#   have to have all of the build-time dependencies in the final image.
+FROM ${IMAGE} as builder
+RUN apk add --update gcc musl-dev libffi-dev make openssl-dev
+RUN pip3 --default-timeout=1000 --retries 15 install --upgrade --prefix=/install -r requirements.txt
+
+FROM ${IMAGE}
+COPY --from=builder /install /usr/local
+ADD *.yml *.json ./
+ADD dashboards/ ./dashboards
+ADD tasks/ ./tasks
 RUN mkdir -p /etc/ansible && touch /etc/ansible/hosts && mkdir -p /home/dashboards/backup
 ENTRYPOINT ["ansible-playbook", "-v"]
 CMD ["main.yml"]
