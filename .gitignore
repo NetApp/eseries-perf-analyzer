@@ -1,6 +1,6 @@
 # ignore the graphite database
 graphite-database/*
-
+.idea/*
 # ignore all array files except the example
 !ansible/arrays/example_array.json
 ansible/arrays/*

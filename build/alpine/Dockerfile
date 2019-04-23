@@ -1,4 +1,3 @@
-ARG TAG=latest
 FROM alpine:3.9
 ARG REPO_FILE=repositories
 ADD $REPO_FILE /etc/apk/repositories
