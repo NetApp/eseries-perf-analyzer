@@ -93,7 +93,3 @@ warn: ##
 ifndef QUIET
 	sh scripts/images.sh
 endif
-
-docker-clean: rm ## Remove all Docker cached docker images and non-running containers from the system
-	docker container prune -f
-	docker image prune -af

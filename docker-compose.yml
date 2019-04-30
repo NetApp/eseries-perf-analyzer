@@ -73,7 +73,8 @@ services:
         # otherwise it will default to admin
         #- PASSWORD=myPass
         - COLLECTION_INTERVAL=30
-        - PROXY_ADDRESS=netapp_web_services:8080
+        # You can use this to modify the location of the Web Services instance if you have one running externally you wish to use
+        #- PROXY_ADDRESS=webservices:8080
 
 volumes:
   grafana_vol:
