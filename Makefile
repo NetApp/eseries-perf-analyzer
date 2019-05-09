@@ -52,7 +52,7 @@ run: build ## Build and run
 
 	# Start an instance of our Ansible image to perform setup on the running instance
 	#  We run using the host network so that we can access not only the WSP instance, but also the individual containers.
-	docker run --network "host" $(PROJ_NAME)/ansible:${TAG}
+	docker run --rm --network "host" $(PROJ_NAME)/ansible:${TAG}
 
 	docker ps
 
@@ -62,7 +62,7 @@ run-nc: build-nc ## Build and run
 
 	# Start an instance of our Ansible image to perform setup on the running instance
 	#  We run using the host network so that we can access not only the WSP instance, but also the individual containers.
-	docker run --network "host" $(PROJ_NAME)/ansible:${TAG}
+	docker run --rm --network "host" $(PROJ_NAME)/ansible:${TAG}
 
 export-nc: build-nc ## Build the images and export them
 	mkdir -p images
@@ -81,13 +81,17 @@ export: build ## Build the images and export them
 	docker save $(PROJ_NAME)/graphite:${TAG} > images/graphite.tar
 
 backup-dashboards: ## Backup the Grafana dashboards and any changes made to them
-	docker run --network "host" $(PROJ_NAME)/ansible:${TAG} backup.yml
+	docker run --network "host" --rm $(PROJ_NAME)/ansible:${TAG} backup.yml
 
 stop: ## Stop all of our running services
 	docker-compose stop
 
 rm: ## Remove all existing containers defined by the project
 	docker-compose rm -s -f
+
+clean: stop rm ## Remove all images and containers built by the project
+	rm -rf images
+	docker image rm $(docker-compose images -q)
 
 warn: ##
 ifndef QUIET
