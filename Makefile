@@ -81,7 +81,7 @@ export: build ## Build the images and export them
 	docker save $(PROJ_NAME)/graphite:${TAG} > images/graphite.tar
 
 backup-dashboards: ## Backup the Grafana dashboards and any changes made to them
-	docker run --network "host" --rm $(PROJ_NAME)/ansible:${TAG} backup.yml
+	docker run --network "host" --rm -v $(shell pwd)/backups:/home/dashboards/backup $(PROJ_NAME)/ansible:${TAG} backup.yml
 
 stop: ## Stop all of our running services
 	docker-compose stop
