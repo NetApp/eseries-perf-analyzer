@@ -91,7 +91,10 @@ rm: ## Remove all existing containers defined by the project
 
 clean: stop rm ## Remove all images and containers built by the project
 	rm -rf images
-	docker image rm $(docker-compose images -q)
+	# There are certain images created by the multi-stage builds that will not otherwise be removed. If not removed first,
+	# it will cause the next command to fail.
+	docker rmi -f $(shell docker images -q -f "label=autodelete=true")
+	docker rmi -f $(shell docker images -q --filter "reference=ntap-grafana/*:${TAG}")
 
 warn: ##
 ifndef QUIET

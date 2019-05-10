@@ -19,6 +19,9 @@ pipeline {
     }
     post {
 		always {
+		    sh'''
+		        make clean
+		    '''
 			cleanWs deleteDirs: true
 		}
 	}
