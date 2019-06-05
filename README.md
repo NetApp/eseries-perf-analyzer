@@ -1,5 +1,8 @@
 # NetApp E-Series Grafana Performance Dashboards
 
+This project provides an automated installation and deployment of Grafana software, NetApp E-Series Web Services, and other supporting
+software for performance monitoring of NetApp E-Series Storage Systems.
+
 This project is intended to allow you to quickly and simply deploy a Grafana instance for monitoring your E-Series storage. We
 incorporate various open source components and tools in order to do so. While it is intended primarily to serve as a reference
 implementation for the use of Grafana to visualize the performance of your E-Series systems, it is also intended to be
