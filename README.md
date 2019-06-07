@@ -22,7 +22,7 @@ dependencies should be retrieved, installed, and started.
 When you run this script, it will prompt you for a confirmation on whether or not you wish to continue and allow the script to
 download the default container images. If you wish to update to a newer image tag, you can cancel out and do so now.
 
-Open http://<host>:3000/d/fiyRzQCik/netapp-e-series-overview?refresh=1m&panelId=20&orgId=1&tab=options to reach the
+Open http://\<host\>:3000/d/fiyRzQCik/netapp-e-series-overview?refresh=1m&panelId=20&orgId=1&tab=options to reach the
 Grafana login page and the E-Series Landing Page. Use the default login credentials of admin/admin to login for the first time.
 
 
