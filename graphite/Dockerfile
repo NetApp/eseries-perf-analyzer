@@ -1,4 +1,4 @@
-FROM graphiteapp/graphite-statsd:1.1.5-10
+FROM graphiteapp/graphite-statsd:1.1.5-11
 ADD storage-schemas.conf /opt/graphite/conf
 ADD carbon.conf /opt/graphite/conf
 RUN (ping -c 1 google.com && sed -i -e 's/v3\.8/v3.9/g' /etc/apk/repositories) || \
