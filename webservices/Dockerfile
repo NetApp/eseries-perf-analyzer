@@ -1,5 +1,5 @@
 ARG TAG=latest
-FROM netapp/eseries-webservices:3.10 as base
+FROM netapp/eseries-webservices:3.20 as base
 ADD wsconfig.xml ./wsconfig.xml
 
 FROM ntap-grafana/alpine-base:${TAG}
