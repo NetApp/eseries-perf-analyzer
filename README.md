@@ -10,13 +10,13 @@ customizable and extensible based on your individual needs.
 
 ## Quickstart Guide
 
-You'll need to have Docker (1.13.0+) and Docker-Compose installed in order to get started. [Installation](https://docs.docker.com/install/)
-
+You'll need to have Docker 17.05.0-ce+ and Docker-Compose installed in order to get started
+[Installation](https://docs.docker.com/install/). You'll also need GNU Make installed (`yum/apt install make`).
 The storage-systems to be monitored must be defined in the 'collector/config.json' file. There is an example file located at
 collector/config.sample.json for your reference. You may also choose to add the systems to Web Services manually, as detailed
 below.
 
-Once Docker is installed and the storage-systems are configured, run the start.sh script. Within a few minutes, all
+Once Docker is installed and the storage-systems are configured, run `make run`. Within a few minutes, all
 dependencies should be retrieved, installed, and started.
 
 When you run this script, it will prompt you for a confirmation on whether or not you wish to continue and allow the script to
@@ -27,7 +27,7 @@ Grafana login page and the E-Series Landing Page. Use the default login credenti
 
 
 ## Overview
-In a nutshell, the Web Services Proxy will periodically poll your storage-system[s] for performance data, which we will collect
+The Web Services Proxy will periodically poll your storage-system[s] for performance data, which we will collect
  at a regular and consistent interval using a simple Python script. This script will push the data into a Graphite database,
  which is a database for storing metrics data. Grafana, a data visualization engine for time-series data, is then utilized
  along with several customized dashboards to present the data graphically. All of these components are integrated together by
@@ -66,7 +66,7 @@ it is entirely possible (and encouraged), for you to [create your own](http://do
 Grafana. The pre-built dashboards are available in: ** *&lt;install_dir&gt;/ansible/dashboards/* **
 
 ### NetApp SANtricity Web Services Proxy
-The Web Services Proxy, provides a RESTful interface for managing/monitoring E-Series storage systems. Our newest hardware
+The Web Services Proxy provides a RESTful interface for managing/monitoring E-Series storage systems. Our newest hardware
  models provide a RESTful API out-of-the-box, but the Web Services Proxy will support the newest systems as well as the legacy
  storage systems that do not. It is highly scalable and can support upwards of 500 E-Series systems while using < 2 GB of
  memory.
@@ -86,8 +86,11 @@ netapp_web_services:
   The Web Services Proxy installation includes a GUI component that can be utilized to manage the newest E-Series systems (systems running
   firmware levels 11.40 and above), which may or may not work for your environment.
 
-  By default we will utilize default credentials for accessing the Web Services Proxy (*admin/admin*). These credentials may be updated, but
-  you will need to update the credentials file for the collector script when doing so (** *&lt;install_dir&gt;/collector/config.json* **). These credentials can optionally be passed as arguments to the collector script (*-u USERNAME -p PASSWORD*) which will cause the *config.json* credentials to be ignored. Environment variables for this purpose are exposed in the docker-compose.yml file's stats_collector section.
+  By default we will utilize default credentials for accessing the Web Services Proxy (*admin/admin*). These credentials should be updated, but
+  you will also need to update the credentials file for the collector script when doing so
+  (** *&lt;install_dir&gt;/collector/config.json* **). These credentials can optionally be passed as arguments to the collector
+  script (*-u USERNAME -p PASSWORD*) which will cause the *config.json* credentials to be ignored. Environment variables for this
+  purpose are exposed in the docker-compose.yml file's stats_collector section.
 
 ## Supporting Tools
 Installing each of these components and configuring them properly on an arbitrary OS version can be difficult. Rather than
@@ -159,7 +162,8 @@ This file is responsible for defining retention rates for metric storage. The re
 Note that changes made to retention rates will invalidate data collected before the changes were made.
 
 ### Starting It Up
-It's pretty simple: run the start.sh script. This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping.
+Starting the application is simple: run`make run` from the shell. 
+This will begin the process of building, setting up, and running everything. When you want to stop it, run the stop.sh script. If you're trying to monitor the status of any of these tools, you can do so using standard Docker commands. To remove any current container instances, run the clean.sh script after stopping.
 
 When you run this script, it will prompt you for a confirmation on whether or not you wish to continue and allow the script to 
 download the default container images. If you wish to update to a newer image tag, you can cancel out and do so now.
@@ -184,7 +188,9 @@ Documentation for additional configuration and navigation can be found [here](ht
 
 ### I don't have access to Docker
 
-At this time (and unlikely to change), Docker is a hard requirement for using this project.
+At this time (and unlikely to change), Docker is a hard requirement for using this project. While you can certainly utilize the
+scripts and configuration provided here, 90% of the benefit of this project is in the automation through Docker. Without it,
+setup and configuration would take hours or days for a new deployment.
 
 ### I don't have network access on this machine
 
@@ -230,7 +236,11 @@ While we do encourage variations, improvements, and additions, these are definit
 enter an issue and/or ask for help, we can't guarantee that we can, or will try to fix your deployment and may ask
  you to revert to a known good configuration.
 
-### I get prompted each time I run the startup script!
+### I get prompted for confirmation each time I run `make run`!
 
-You may add the --quiet or -q option to keep from being prompted each time you run the script. This will automatically choose
+You may add 'QUIET=true' to the .env file to keep from being prompted each time you run the script. This will automatically choose
 'yes' when prompted.
+
+### Do I have to re-run `make run` after I reboot my server?
+
+No, you don't have to re-run it after a reboot. The images are configured to automatically restart (unless you stop them).
