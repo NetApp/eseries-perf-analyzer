@@ -7,6 +7,8 @@ pipeline {
                 PROJECT_NAME = "grafana"
                 RETRIES = 3
                 QUIET = "yes"
+                PIP_CONF = 'pip.conf.internal'
+                ALPINE_REPO_FILE = 'repositories.internal'
             }
             steps {
 				sh'''
