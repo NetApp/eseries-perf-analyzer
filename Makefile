@@ -7,6 +7,9 @@ export $(shell sed 's/=.*//' $(cnf))
 configuration ?= ""
 
 TAG ?= 1.0
+PIP_CONF ?= pip.conf
+ALPINE_REPO_FILE ?= repositories
+
 
 configuration := .$(configuration)
 
