@@ -1,3 +1,4 @@
+@Library('hub') _
 pipeline {
     agent {
         label 'hub'
@@ -7,6 +8,8 @@ pipeline {
     }
     options {
         timeout(time: 1, unit: 'HOURS')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '3'))
     }
     environment {
         TAG = "${BUILD_NUMBER}"
@@ -24,7 +27,7 @@ pipeline {
             }
             steps {
 				sh'''
-					make build-nc
+					make build
 				'''
                 sh 'echo ${GIT_COMMIT}'
             }
@@ -39,18 +42,18 @@ pipeline {
         stage('Security Scan'){
             when{
                 // When triggered based on time or based on a user interaction
-                anyOf { triggeredBy 'TimerTrigger'; triggeredBy cause: "UserCause"}
+                not { triggeredBy 'SCMTrigger' }
             }
             steps {
                 // Validate the images, running a security scan
-                hubScan("${PROJECT_NAME}", "${VERSION}")
+                hubScan("${PROJECT_NAME}", "${VERSION}", coreCount: -1)
             }
         }
     }
     post {
 		always {
 		    sh'''
-		        make clean
+		        make clean || true
 		    '''
 			cleanWs deleteDirs: true
 		}
