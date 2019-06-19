@@ -95,7 +95,14 @@ rm: ## Remove all existing containers defined by the project
 clean: stop rm ## Remove all images and containers built by the project
 	rm -rf images
 	# There are certain images created by the multi-stage builds that will not otherwise be removed. If not removed first,
-	# it will cause the next command to fail.
+	# it will cause the next commands to fail.
+	docker image prune -f
+
+	docker rmi $(PROJ_NAME)/ansible:${TAG}
+	docker rmi $(PROJ_NAME)/collector:${TAG}
+	docker rmi $(PROJ_NAME)/webservices:${TAG}
+	docker rmi $(PROJ_NAME)/grafana:${TAG}
+	docker rmi $(PROJ_NAME)/graphite:${TAG}
 	docker rmi -f $(shell docker images -q -f "label=autodelete=true")
 	docker rmi -f $(shell docker images -q --filter "reference=ntap-grafana/*:${TAG}")
 
