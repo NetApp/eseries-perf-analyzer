@@ -12,19 +12,16 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
     environment {
-        TAG = "${BUILD_NUMBER}"
+        TAG = "${BRANCH_NAME}-${BUILD_NUMBER}"
         PROJECT_NAME = "esg-grafana"
-        VERSION = "1.0"
+        VERSION = "dist-1.0"
+        QUIET = "yes"
+        // This determines what repositories to use for building the images
+        PIP_CONF = 'pip.conf.internal'
+        ALPINE_REPO_FILE = 'repositories.internal'
     }
     stages {
         stage('Run docker builds') {
-            environment {
-                TAG = "${BUILD_NUMBER}"
-                QUIET = "yes"
-                # This determines what repositories to use for building the images
-                PIP_CONF = 'pip.conf.internal'
-                ALPINE_REPO_FILE = 'repositories.internal'
-            }
             steps {
 				sh'''
 					make build
