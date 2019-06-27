@@ -1,8 +1,6 @@
 @Library('hub') _
 pipeline {
-    agent {
-        label 'hub'
-    }
+    agent any
     triggers {
         cron('H H(17-20) * * *')
     }
@@ -23,10 +21,17 @@ pipeline {
     stages {
         stage('Run docker builds') {
             steps {
-				sh'''
-					make build
-				'''
+                sh'''
+                    # Overwrite the default environment options
+                    printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\n" > .env
+                    make build
+                '''
                 sh 'echo ${GIT_COMMIT}'
+            }
+        }
+        stage('Security Scan'){
+            steps{
+                hubScan("${PROJECT_NAME}", "${VERSION}", coreCount: -1)
             }
         }
         stage('Prepare for scan'){
@@ -36,23 +41,23 @@ pipeline {
                 '''
             }
         }
-        stage('Security Scan'){
+        stage('Security Scan Images'){
             when{
                 // When triggered based on time or based on a user interaction
                 not { triggeredBy 'SCMTrigger' }
             }
             steps {
-                // Validate the images, running a security scan
-                hubScan("${PROJECT_NAME}", "${VERSION}", coreCount: -1)
+                // Validate the images, running a security scan on all docker images
+                hubScanDocker("${PROJECT_NAME}", "${VERSION}", "${WORKSPACE}/images", coreCount: -1)
             }
         }
     }
     post {
-		always {
-		    sh'''
-		        make clean || true
-		    '''
-			cleanWs deleteDirs: true
-		}
-	}
+        always {
+            sh'''
+                make clean
+            '''
+            cleanWs deleteDirs: true
+        }
+    }
 }
