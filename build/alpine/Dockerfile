@@ -1,5 +1,5 @@
 ARG TAG=latest
-FROM alpine:3.9
+FROM alpine:3.10
 LABEL VERSION=${TAG}
 ARG REPO_FILE=repositories
 ADD $REPO_FILE /etc/apk/repositories
