@@ -1,9 +1,10 @@
 {
   "name":"WSP",
   "label": "WSP",
-  "type": "graphite",
-  "url":"http://graphite",
+  "type": "influxdb",
+  "url":"http://influxdb:8086",
   "access":"proxy",
   "basicAuth": false,
-  "isDefault": true
+  "isDefault": true,
+  "database":"eseries"
 }

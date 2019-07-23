@@ -1,6 +1,6 @@
 [global]
 timeout = 10
-index-url = http://esgweb.eng.netapp.com/~lorenp/python-mirror
+index-url = http://esgweb.eng.netapp.com/~lorenp/mirror
 trusted-host = esgweb.eng.netapp.com
-               repoproxy-rtp.eng.netapp.com
-extra-index-url = http://repoproxy-rtp.eng.netapp.com:8081/artifactory/api/pypi/python-package-index/simple
+#               repoproxy-rtp.eng.netapp.com
+#extra-index-url = http://repoproxy-rtp.eng.netapp.com:8081/artifactory/api/pypi/python-package-index/simple

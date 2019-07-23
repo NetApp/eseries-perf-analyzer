@@ -7,6 +7,8 @@ export $(shell sed 's/=.*//' $(cnf))
 configuration ?= ""
 
 TAG ?= 1.0
+
+# external repos
 PIP_CONF ?= pip.conf
 ALPINE_REPO_FILE ?= repositories
 
@@ -38,6 +40,7 @@ build: warn ## Build the container
 	docker build --build-arg TAG=$(TAG) -t $(PROJ_NAME)/collector:${TAG} collector
 	docker build --build-arg TAG=$(TAG) -t $(PROJ_NAME)/webservices:$(TAG) webservices
 	docker build --build-arg TAG=$(TAG) -t $(PROJ_NAME)/grafana:$(TAG) grafana
+	docker build --build-arg TAG=$(TAG) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
 	docker-compose build
 
 build-nc: warn ## Build the container without caching
@@ -47,6 +50,7 @@ build-nc: warn ## Build the container without caching
 	docker build --no-cache --build-arg TAG=$(TAG) -t $(PROJ_NAME)/collector:${TAG} collector
 	docker build --no-cache --build-arg TAG=$(TAG) -t $(PROJ_NAME)/webservices:$(TAG) webservices
 	docker build --no-cache --build-arg TAG=$(TAG) -t $(PROJ_NAME)/grafana:$(TAG) grafana
+	docker build --no-cache --build-arg TAG=$(TAG) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
 	docker-compose build --pull --no-cache
 
 run: build ## Build and run
@@ -73,7 +77,8 @@ export-nc: build-nc ## Build the images and export them
 	docker save $(PROJ_NAME)/collector:${TAG} > images/collector.tar
 	docker save $(PROJ_NAME)/webservices:${TAG} > images/webservices.tar
 	docker save $(PROJ_NAME)/grafana:${TAG} > images/grafana.tar
-	docker save $(PROJ_NAME)/graphite:${TAG} > images/graphite.tar
+#	docker save $(PROJ_NAME)/graphite:${TAG} > images/graphite.tar
+	docker save $(PROJ_NAME)/influxdb:${TAG} > images/influxdb.tar
 
 export: build ## Build the images and export them
 	mkdir -p images
@@ -81,13 +86,16 @@ export: build ## Build the images and export them
 	docker save $(PROJ_NAME)/collector:${TAG} > images/collector.tar
 	docker save $(PROJ_NAME)/webservices:${TAG} > images/webservices.tar
 	docker save $(PROJ_NAME)/grafana:${TAG} > images/grafana.tar
-	docker save $(PROJ_NAME)/graphite:${TAG} > images/graphite.tar
+#	docker save $(PROJ_NAME)/graphite:${TAG} > images/graphite.tar
+	docker save $(PROJ_NAME)/influxdb:${TAG} > images/influxdb.tar
 
 backup-dashboards: ## Backup the Grafana dashboards and any changes made to them
 	docker run --network "host" --rm -v $(shell pwd)/backups:/home/dashboards/backup $(PROJ_NAME)/ansible:${TAG} backup.yml
 
 stop: ## Stop all of our running services
 	docker-compose stop
+
+restart: stop run ## 'stop' followed by 'run'
 
 rm: ## Remove all existing containers defined by the project
 	docker-compose rm -s -f
@@ -102,7 +110,7 @@ clean: stop rm ## Remove all images and containers built by the project
 	docker rmi $(PROJ_NAME)/collector:${TAG}
 	docker rmi $(PROJ_NAME)/webservices:${TAG}
 	docker rmi $(PROJ_NAME)/grafana:${TAG}
-	docker rmi $(PROJ_NAME)/graphite:${TAG}
+	docker rmi $(PROJ_NAME)/influxdb:${TAG}
 	docker rmi -f $(shell docker images -q -f "label=autodelete=true")
 	docker rmi -f $(shell docker images -q --filter "reference=ntap-grafana/*:${TAG}")
 

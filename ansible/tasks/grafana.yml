@@ -1,4 +1,4 @@
-- name: Get graphite datasource
+- name: Get influxdb datasource
   uri:
     url: "http://localhost:3000/api/datasources/id/WSP"
     method: GET
@@ -10,13 +10,13 @@
       Accept: "application/json"
   register: resp
 
-- name: Define graphite datasource
+- name: Define influxdb datasource
   uri:
     url: "http://localhost:3000/api/datasources"
     method: POST
     user: "{{ grafana_username }}"
     password: "{{ grafana_password }}"
-    body: "{{ lookup('file', 'datastore.json') | from_json}}"
+    body: "{{ lookup('file', 'datastore.json') | from_json }}"
     status_code: 200
     body_format: json
     force_basic_auth: yes
@@ -24,13 +24,13 @@
       Content-Type: "application/json"
   when: resp.status == 404
 
-- name: Find dashboard files
+- name: Find local dashboards
   find:
     paths: ./dashboards
     recurse: yes
   register: dashboards
 
-- name: Create grafana dashboards
+- name: Create Grafana dashboards
   uri:
     url: "http://localhost:3000/api/dashboards/import"
     method: POST
@@ -38,7 +38,7 @@
       Content-Type: "application/json"
     user: "{{ grafana_username }}"
     password: "{{ grafana_password }}"
-    body: "{{ lookup('file', item.path) | from_json}}"
+    body: "{{ lookup('file', item.path) | from_json }}"
     status_code: 200
     body_format: json
     force_basic_auth: yes

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 Retrieves and collects data from the the NetApp E-series web server
-and sends the data to a graphite server
+and sends the data to an influxdb server
 """
 import struct
 import time
@@ -11,25 +11,55 @@ import argparse
 import concurrent.futures
 import requests
 import json
+from datetime import datetime
+
+from influxdb import InfluxDBClient
 
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
 
-__author__ = 'kevin5'
-__version__ = '1.0'
-
 DEFAULT_USERNAME = 'admin'
 DEFAULT_PASSWORD = 'admin'
 
-DEFAULT_SYSTEM_NAME = 'Unnamed'
+DEFAULT_SYSTEM_NAME = 'unnamed'
+
+INFLUXDB_HOSTNAME = 'influxdb'
+INFLUXDB_PORT = 8086
+INFLUXDB_DATABASE = 'eseries'
+
+__version__ = '1.0'
 
 #######################
 # LIST OF METRICS######
 #######################
 
-VOLUME_PARAMETERS = [
+DRIVE_PARAMS = [
+    'averageReadOpSize',
+    'averageWriteOpSize',
+    'combinedIOps',
+    'combinedResponseTime',
+    'combinedThroughput',
+    'otherIOps',
+    'readIOps',
+    'readOps',
+    'readPhysicalIOps',
+    'readResponseTime',
+    'readThroughput',
+    'writeIOps',
+    'writeOps',
+    'writePhysicalIOps',
+    'writeResponseTime',
+    'writeThroughput'
+]
+
+SYSTEM_PARAMS = [
+    "maxCpuUtilization",
+    "cpuAvgUtilization"
+]
+
+VOLUME_PARAMS = [
     'averageReadOpSize',
     'averageWriteOpSize',
     'combinedIOps',
@@ -61,23 +91,10 @@ VOLUME_PARAMETERS = [
     'writeThroughput'
 ]
 
-DRIVE_PARAMETERS = [
-    'averageReadOpSize',
-    'averageWriteOpSize',
-    'combinedIOps',
-    'combinedResponseTime',
-    'combinedThroughput',
-    'otherIOps',
-    'readIOps',
-    'readOps',
-    'readPhysicalIOps',
-    'readResponseTime',
-    'readThroughput',
-    'writeIOps',
-    'writeOps',
-    'writePhysicalIOps',
-    'writeResponseTime',
-    'writeThroughput'
+MEL_PARAMS = [
+    'id',
+    'description',
+    'location'
 ]
 
 
@@ -112,23 +129,11 @@ PARSER.add_argument('-p', '--password', default='',
                          'Otherwise, it will default to \'' + DEFAULT_PASSWORD + '\'')
 PARSER.add_argument('-t', '--intervalTime', type=int, default=5,
                     help='Provide the time (seconds) in which the script polls and sends data '
-                         'from the SANtricity webServer to the Graphite backend. '
+                         'from the SANtricity webserver to the influxdb backend. '
                          'If not specified, will use the default time of 60 seconds. <time>')
-PARSER.add_argument('-r', '--root', default='storage.eseries',
-                    help='the metrics root to place onto Graphite. The default is storage.eseries '
-                         'as to match the given Grafana templates. If this is changed, '
-                         'you must also manually change the Grafana templates. '
-                         '<period separated list>')
 PARSER.add_argument('--proxySocketAddress', default='webservices',
                     help='Provide both the IP address and the port for the SANtricity webserver. '
                          'If not specified, will default to localhost. <IPv4 Address:port>')
-PARSER.add_argument('--graphiteIpAddress', default='graphite',
-                    help='Provide the IP address of the graphite server. If not specified, '
-                         'will default to localhost. <IPv4 Address>')
-PARSER.add_argument('--graphitePort', type=int, default=2004,
-                    help='Provide the port number used for the graphite backend (Carbon).'
-                         ' When Graphite is installed, by default this is port is 2004.'
-                         ' If this parameter is not specified, this will default to 2004 <port>')
 PARSER.add_argument('-s', '--showStorageNames', action='store_true',
                     help='Outputs the storage array names found from the SANtricity webserver')
 PARSER.add_argument('-v', '--showVolumeNames', action='store_true', default=0,
@@ -139,13 +144,18 @@ PARSER.add_argument('-d', '--showDriveNames', action='store_true', default=0,
                     help='Outputs the drive names found from the SANtricity webserver')
 PARSER.add_argument('-b', '--showDriveMetrics', action='store_true', default=0,
                     help='Outputs the drive payload metrics before it is sent')
+PARSER.add_argument('-c', '--showSystemMetrics', action='store_true', default=0,
+                    help='Outputs the system payload metrics before it is sent')
+PARSER.add_argument('-m', '--showMELMetrics', action='store_true', default=0,
+                    help='Outputs the MEL payload metrics before it is sent')
+PARSER.add_argument('-e', '--showStateMetrics', action='store_true', default=0,
+                    help='Outputs the state payload metrics before it is sent')
 PARSER.add_argument('-i', '--showIteration', action='store_true', default=0,
                     help='Outputs the current loop iteration')
 PARSER.add_argument('-n', '--doNotPost', action='store_true', default=0,
-                    help='Pull information, but do not post to graphite')
+                    help='Pull information, but do not post to influxdb')
 CMD = PARSER.parse_args()
 PROXY_BASE_URL = 'http://{}/devmgr/v2/storage-systems'.format(CMD.proxySocketAddress)
-
 
 #######################
 # HELPER FUNCTIONS#####
@@ -153,12 +163,13 @@ PROXY_BASE_URL = 'http://{}/devmgr/v2/storage-systems'.format(CMD.proxySocketAdd
 
 def get_configuration():
     try:
-        with open('config.json') as config_file:
+        with open("config.json") as config_file:
             config_data = json.load(config_file)
             if config_data:
                 return config_data
     except:
         return dict()
+
 
 def get_session():
     """
@@ -172,45 +183,28 @@ def get_session():
     password = CMD.password
     
     # ...if there was nothing passed in then try to read it from config file
-    if ((username is None or username == '') and (password is None or password == '')):
+    if ((username is None or username == "") and (password is None or password == "")):
         # Try to read username and password from config file, if it exists
         # Otherwise default to DEFAULT_USERNAME/DEFAULT_PASSWORD
         try:
-            with open('config.json') as config_file:
+            with open("config.json") as config_file:
                 config_data = json.load(config_file)
                 if (config_data):
                     username = config_data["username"]
                     password = config_data["password"]
         except:
-            LOG.exception("Unable to open \'/collector/config.json\' file")
+            LOG.exception("Unable to open \"/collector/config.json\" file")
             username = DEFAULT_USERNAME
             password = DEFAULT_PASSWORD
 
     request_session.auth = (username, password)
-    request_session.headers = {'Accept': 'application/json',
-                               'Content-Type': 'application/json',
-                               'netapp-client-type': 'grafana-' + __version__}
+    request_session.headers = {"Accept": "application/json",
+                               "Content-Type": "application/json",
+                               "netapp-client-type": "grafana-" + __version__}
     # Ignore the self-signed certificate issues for https
     request_session.verify = False
     return request_session
 
-def post_to_graphite(system_id, graphite_metrics):
-    """
-    Posts the graphite metrics to carbon (graphite's backend).
-    """
-    LOG.info("Sending to graphite, points=%s, system=%s", len(graphite_metrics), system_id)
-    chunk_size = 400
-    chunks = [graphite_metrics[x:x+chunk_size] for x in range(0, len(graphite_metrics), chunk_size)]
-    LOG.debug("Sending %s chunks for system=%s.", len(chunks), system_id)
-    for data in chunks:
-        payload = pickle.dumps(data, protocol=2)
-        header = struct.pack("!L", len(payload))
-        message = header + payload
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as graphite_server:
-            graphite_server.connect((CMD.graphiteIpAddress, CMD.graphitePort))
-            bytesSent = graphite_server.send(message)
-            LOG.debug("\t%s bytes sent", bytesSent)
-            graphite_server.close()
 
 def get_drive_location(storage_id, session):
     """
@@ -219,120 +213,264 @@ def get_drive_location(storage_id, session):
     ::return: returns a dictionary containing the disk id matched up against
     the tray id it is located in:
     """
-    hardware_list = session.get('{}/{}/hardware-inventory'.format(
+    hardware_list = session.get("{}/{}/hardware-inventory".format(
         PROXY_BASE_URL, storage_id)).json()
-    tray_list = hardware_list['trays']
-    drive_list = hardware_list['drives']
+    tray_list = hardware_list["trays"]
+    drive_list = hardware_list["drives"]
     tray_ids = {}
     drive_location = {}
 
     for tray in tray_list:
-        tray_ids[tray['trayRef']] = tray['trayId']
+        tray_ids[tray["trayRef"]] = tray["trayId"]
 
     for drive in drive_list:
-        drive_tray = drive['physicalLocation']['trayRef']
+        drive_tray = drive["physicalLocation"]["trayRef"]
         tray_id = tray_ids.get(drive_tray)
-        if tray_id != 'none':
-            drive_location[drive['driveRef']] = [tray_id, drive['physicalLocation']['slot']]
+        if tray_id != "none":
+            drive_location[drive["driveRef"]] = [tray_id, drive["physicalLocation"]["slot"]]
         else:
-            LOG.error('Error matching drive to a tray in the storage system')
+            LOG.error("Error matching drive to a tray in the storage system")
     return drive_location
 
-def collect_storage_system_statistics(storage_system):
+def collect_storage_metrics(sys):
     """
-    Collects and sends statistics of a single storage system to graphite.
-    :param storage_system: The JSON object of a storage_system
+    Collects all defined storage metrics and posts them to influxdb
+    :param sys: The JSON object of a storage_system
     """
     try:
         session = get_session()
-        graphite_package = []
-        storage_id = storage_system['id']
-        storage_name = storage_system.get('name', storage_id)
-        # Graphite doesn't like it when there is an empty string for the name. Include a default name.
-        if not storage_name:
-            storage_name = DEFAULT_SYSTEM_NAME
+        client = InfluxDBClient(host=INFLUXDB_HOSTNAME, port=INFLUXDB_PORT, database=INFLUXDB_DATABASE)
+
+        sys_id = sys["id"]
+        sys_name = sys.get("name", sys_id)
+        # If this storage device lacks a name, use the id
+        if not sys_name or len(sys_name) <= 0:
+            sys_name = sys_id
+        # If this storage device still lacks a name, use a default
+        if not sys_name or len(sys_name) <= 0:
+            sys_name = DEFAULT_SYSTEM_NAME
+
+        json_body = list()
 
         # Get Drive statistics
-        graphite_drive_root = (('{}.{}.drive_statistics'.format(
-            CMD.root, storage_name)))
-        drive_stats_list = session.get('{}/{}/analysed-drive-statistics'.format(
-            PROXY_BASE_URL, storage_id)).json()
-        drive_locations = get_drive_location(storage_id, session)
-
+        drive_stats_list = session.get(("{}/{}/analysed-drive-statistics").format(
+            PROXY_BASE_URL, sys_id)).json()
+        drive_locations = get_drive_location(sys_id, session)
         if CMD.showDriveNames:
-            for driveStats in drive_stats_list:
-                location_send = drive_locations.get(driveStats['diskId'])
-                LOG.info('tray{:02.0f}.slot{:03.0f}'.format(location_send[0], location_send[1]))
+            for stats in drive_stats_list:
+                location_send = drive_locations.get(stats["diskId"])
+                LOG.info(("Tray{:02.0f}, Slot{:03.0f}").format(location_send[0], location_send[1]))
+        # Add Drive statistics to json body
+        for stats in drive_stats_list:
+            disk_location_info = drive_locations.get(stats["diskId"])
+            disk_item = dict(
+                measurement = "disks",
+                tags = dict(
+                    sys_id = sys_id,
+                    sys_name = sys_name,
+                    sys_tray = disk_location_info[0],
+                    sys_tray_slot = disk_location_info[1]
+                ),
+                fields = dict(
+                    (metric, stats.get(metric)) for metric in DRIVE_PARAMS
+                )
+            )
+            if CMD.showDriveMetrics:
+                LOG.info("Drive payload: %s", disk_item)
+            json_body.append(disk_item)
 
-        # Add drive statistics to list
-        for driveStats in drive_stats_list:
-            for metricsToCheck in DRIVE_PARAMETERS:
-                if driveStats.get(metricsToCheck) != 'none':
-                    location_send = drive_locations.get(driveStats['diskId'])
-                    graphite_payload = ('{}.Tray-{:02.0f}.Disk-{:03.0f}.{}'.format(
-                        graphite_drive_root,
-                        location_send[0],
-                        location_send[1],
-                        metricsToCheck), (int(time.time()), driveStats.get(metricsToCheck)))
-                    if CMD.showDriveMetrics:
-                        LOG.info(graphite_payload)
-                    graphite_package.append(graphite_payload)
-                    # With pool information
-                    graphite_payload = ('{}.Tray-{:02.0f}.Disk-{:03.0f}.{}'.format(
-                        graphite_drive_root,
-                        location_send[0],
-                        location_send[1],
-                        metricsToCheck), (int(time.time()), driveStats.get(metricsToCheck)))
-                    if CMD.showDriveMetrics:
-                        LOG.info(graphite_payload)
-                    graphite_package.append(graphite_payload)
-
+        # Get System statistics
+        system_stats_list = session.get(("{}/{}/analysed-system-statistics").format(
+            PROXY_BASE_URL, sys_id)).json()
+        # Add System statistics to json body
+        sys_item = dict(
+            measurement = "systems",
+            tags = dict(
+                sys_id = sys_id,
+                sys_name = sys_name
+            ),
+            fields = dict(
+                (metric, system_stats_list.get(metric)) for metric in SYSTEM_PARAMS
+            )
+        )
+        if CMD.showSystemMetrics:
+            LOG.info("System payload: %s", sys_item)
+        json_body.append(sys_item)
+        
         # Get Volume statistics
-        graphite_volume_root = ('{}.{}.volume_statistics'.format(
-            CMD.root, storage_name))
-        volume_stats_list = session.get('{}/{}/analysed-volume-statistics'.format(
-            PROXY_BASE_URL, storage_id)).json()
-
+        volume_stats_list = session.get(("{}/{}/analysed-volume-statistics").format(
+            PROXY_BASE_URL, sys_id)).json()
         if CMD.showVolumeNames:
-            for volumeStats in volume_stats_list:
-                LOG.info(volumeStats['volumeName'])
-
-        # Add volume statistics to list
-        for volumeStats in volume_stats_list:
-            for metricsToCheck in VOLUME_PARAMETERS:
-                this_metric = volumeStats.get(metricsToCheck)
-                if this_metric is not None:
-                    graphite_payload = ('{}.{}.{}'.format(
-                        graphite_volume_root,
-                        volumeStats.get('volumeName'),
-                        metricsToCheck), (int(time.time()), this_metric))
-                    if CMD.showVolumeMetrics:
-                        LOG.debug(graphite_payload)
-                    graphite_package.append(graphite_payload)
+            for stats in volume_stats_list:
+                LOG.info(stats["volumeName"]);
+        # Add Volume statistics to json body
+        for stats in volume_stats_list:
+            vol_item = dict(
+                measurement = "volumes",
+                tags = dict(
+                    sys_id = sys_id,
+                    sys_name = sys_name,
+                    vol_id = stats["volumeId"],
+                    vol_name = stats["volumeName"]
+                ),
+                fields = dict(
+                    (metric, stats.get(metric)) for metric in VOLUME_PARAMS
+                )
+            )
+            if CMD.showVolumeMetrics:
+                LOG.info("Volume payload: %s", vol_item)
+            json_body.append(vol_item)
 
         if not CMD.doNotPost:
-            post_to_graphite(storage_id, graphite_package)
+            client.write_points(json_body, database=INFLUXDB_DATABASE)
+
     except RuntimeError:
-        LOG.error('Error when attempting to post statistics for {}/{}'.format(
-            storage_system['name'], storage_system['id']))
+        LOG.error(("Error when attempting to post statistics for {}/{}").format(sys["name"], sys["id"]))
+
+
+def collect_major_event_log(sys):
+    """
+    Collects all defined MEL metrics and posts them to influxdb
+    :param sys: The JSON object of a storage_system
+    """
+    try:
+        session = get_session()
+        client = InfluxDBClient(host=INFLUXDB_HOSTNAME, port=INFLUXDB_PORT, database=INFLUXDB_DATABASE)
+        
+        sys_id = sys["id"]
+        sys_name = sys.get("name", sys_id)
+        # If this storage device lacks a name, use the id
+        if not sys_name or len(sys_name) <= 0:
+            sys_name = sys_id
+        # If this storage device still lacks a name, use a default
+        if not sys_name or len(sys_name) <= 0:
+            sys_name = DEFAULT_SYSTEM_NAME
+        
+        json_body = list()
+        start_from = -1
+        mel_grab_count = 8192
+        query = client.query("SELECT id FROM major_event_log WHERE sys_id='%s' ORDER BY time DESC LIMIT 1" % sys_id)
+
+        if query:
+            start_from = int(next(query.get_points())["id"]) + 1
+            
+        mel_response = session.get(("{}/{}/mel-events").format(PROXY_BASE_URL, sys_id),
+                                   params = {"count": mel_grab_count, "startSequenceNumber": start_from}).json();
+        if CMD.showMELMetrics:
+            LOG.info("Starting from %s", str(start_from))
+            LOG.info("Grabbing %s MELs", str(len(mel_response)))
+        for mel in mel_response:
+            item = dict(
+                measurement = "major_event_log",
+                tags = dict(
+                    sys_id = sys_id,
+                    sys_name = sys_name,
+                    event_type = mel["eventType"],
+                    time_stamp = mel["timeStamp"],
+                    category = mel["category"],
+                    priority = mel["priority"],
+                    critical = mel["critical"],
+                    ascq = mel["ascq"],
+                    asc = mel["asc"]
+                ),
+                fields = dict(
+                    (metric, mel.get(metric)) for metric in MEL_PARAMS
+                ),
+                time = datetime.utcfromtimestamp(int(mel["timeStamp"])).isoformat()
+            )
+            if CMD.showMELMetrics:
+                LOG.info("MEL payload: %s", item)
+            json_body.append(item)
+        
+        client.write_points(json_body, database=INFLUXDB_DATABASE)
+    except RuntimeError:
+        LOG.error(("Error when attempting to post MEL for {}/{}").format(sys["name"], sys["id"]))
+
+
+def collect_system_state(sys):
+    """
+    Collects state information from the storage system and posts it to influxdb
+    :param sys: The JSON object of a storage_system
+    """
+    try:
+        session = get_session()
+        client = InfluxDBClient(host=INFLUXDB_HOSTNAME, port=INFLUXDB_PORT, database=INFLUXDB_DATABASE)
+        
+        sys_id = sys["id"]
+        sys_name = sys.get("name", sys_id)
+        # If this storage device lacks a name, use the id
+        if not sys_name or len(sys_name) <= 0:
+            sys_name = sys_id
+        # If this storage device still lacks a name, use a default
+        if not sys_name or len(sys_name) <= 0:
+            sys_name = DEFAULT_SYSTEM_NAME
+        
+        json_body = list()
+        query = client.query("SELECT * FROM failures WHERE sys_id='%s'" % sys_id)
+                    
+        failure_response = session.get(("{}/{}/failures").format(PROXY_BASE_URL, sys_id)).json();
+        for failure in failure_response:
+            found = False
+            fail_type = failure["failureType"]
+            obj_ref = failure["objectRef"]
+            obj_type = failure["objectType"]
+
+            # check to see if we've seen this failure before
+            if query:
+                failure_points = (query.get_points(measurement='failures'))
+                for point in failure_points:
+                    if fail_type == point.failure_type and obj_ref == point.object_ref and obj_type == point.object_type:
+                        found = True
+                        break
+            # if this is a new failure, we want to post it to influxdb
+            if not found:
+                item = dict(
+                    measurement = "failures",
+                    tags = dict(
+                        sys_id = sys_id,
+                        sys_name = sys_name,
+                        failure_type = fail_type,
+                        object_ref = obj_ref,
+                        object_type = obj_type
+                    ),
+                    fields = dict(
+                        value = True
+                    ),
+                    time = datetime.utcnow().isoformat()
+                )
+                if CMD.showStateMetrics:
+                    LOG.info("Failure payload: %s", item)
+                json_body.append(item)
+        
+        num = len(json_body)
+        if num > 0:
+            LOG.info("Found %s new failures", str(num))
+        client.write_points(json_body, database=INFLUXDB_DATABASE)
+    except RuntimeError:
+        LOG.error(("Error when attempting to post state information for {}/{}").format(sys["name"], sys["id"]))
 
 
 #######################
 # MAIN FUNCTIONS#######
 #######################
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     executor = concurrent.futures.ProcessPoolExecutor(NUMBER_OF_THREADS)
     SESSION = get_session()
     loopIteration = 1
+
+    client = InfluxDBClient(host=INFLUXDB_HOSTNAME, port=INFLUXDB_PORT, database=INFLUXDB_DATABASE)
+
+    client.create_database(INFLUXDB_DATABASE)
 
     try:
         # Ensure we can connect. Wait for 2 minutes for WSP to startup.
         SESSION.get(PROXY_BASE_URL, timeout=120)
         configuration = get_configuration()
-        for system in configuration.get('storage_systems', list()):
-            body = dict(controllerAddresses=system.get('addresses'),
-                        password=system.get('password') or configuration.get('array_password'),
+        for system in configuration.get("storage_systems", list()):
+            LOG.info("system: %s", str(system))
+            body = dict(controllerAddresses=system.get("addresses"),
+                        password=system.get("password") or configuration.get("array_password"),
                         acceptCertificate=True)
             response = SESSION.post(PROXY_BASE_URL, json=body)
             response.raise_for_status()
@@ -356,22 +494,37 @@ if __name__ == '__main__':
             LOG.info("Names: %s", len(storageList))
             if CMD.showStorageNames:
                 for storage in storageList:
-                    LOG.info(storage['name'])
+                    storage_name = storage["name"]
+                    if not storage_name or len(storage_name) <= 0:
+                        storage_name = storage["id"]
+                    if not storage_name or len(storage_name) <= 0:
+                        storage_name = DEFAULT_STORAGE_NAME
+                    LOG.info(storage_name)
 
-            # Iterate through all storage systems
-            collector = [executor.submit(collect_storage_system_statistics, s) for s in storageList]
+            # Iterate through all storage systems and collect metrics
+            collector = [executor.submit(collect_storage_metrics, sys) for sys in storageList]
+            concurrent.futures.wait(collector)
+
+            # Iterate through all storage system and collect state information
+            collector = [executor.submit(collect_system_state, sys) for sys in storageList]
+            concurrent.futures.wait(collector)
+
+            # Iterate through all storage system and collect MEL entries
+            collector = [executor.submit(collect_major_event_log, sys) for sys in storageList]
             concurrent.futures.wait(collector)
 
         time_difference = time.time() - time_start
         if CMD.showIteration:
-            LOG.info('Time interval: {:07.4f} Time to collect and send:'
-                     ' {:07.4f} Iteration: {:00.0f}'
+            LOG.info("Time interval: {:07.4f} Time to collect and send:"
+                     " {:07.4f} Iteration: {:00.0f}"
                      .format(CMD.intervalTime, time_difference, loopIteration))
             loopIteration += 1
 
         # Dynamic wait time to get the proper interval
+        wait_time = CMD.intervalTime - time_difference
         if CMD.intervalTime < time_difference:
-            LOG.error('The interval specified is not long enough. Time used: {:07.4f} '
-                      'Time interval specified: {:07.4f}'
+            LOG.error("The interval specified is not long enough. Time used: {:07.4f} "
+                      "Time interval specified: {:07.4f}"
                       .format(time_difference, CMD.intervalTime))
-        time.sleep(CMD.intervalTime - time_difference)
+            wait_time = time_difference
+        time.sleep(wait_time)
