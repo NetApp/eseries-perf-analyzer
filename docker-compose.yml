@@ -18,21 +18,16 @@ services:
     volumes:
       - arraydata:/opt/netapp/santricity_web_services_proxy/working/arraydata.xml
 
-  graphite:
-    image: ${PROJ_NAME}/graphite:${TAG}
-    build:
-      context: ./graphite
-    container_name: graphite
-    restart: unless-stopped
+  influxdb:
+    image: ${PROJ_NAME}/influxdb:${TAG}
+    container_name: influxdb
     depends_on:
       - netapp_web_services
     mem_limit: 2G
     ports:
-      - 80
-      - 2003-2004
-      - 2023-2024
-      - 8125/udp
-      - 8126
+      - 8086:8086
+      - 8083:8083
+      - 2003
     logging:
       driver: "json-file"
       options:
@@ -40,14 +35,14 @@ services:
         max-size: 10m
     volumes:
     #  - ./graphite/configs:/opt/graphite/conf
-      - ./graphite-database:/opt/graphite/storage/whisper
+      - ./influx-database:/opt/graphite/storage/whisper
 
   grafana:
     image: ${PROJ_NAME}/grafana:${TAG}
     container_name: grafana
     restart: unless-stopped
     depends_on:
-      - graphite
+      - influxdb
     ports:
       - 3000:3000
     logging:
