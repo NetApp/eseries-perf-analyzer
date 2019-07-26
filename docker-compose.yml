@@ -34,8 +34,7 @@ services:
         max-file: "5"
         max-size: 10m
     volumes:
-    #  - ./graphite/configs:/opt/graphite/conf
-      - ./influx-database:/opt/graphite/storage/whisper
+      - ./influx-database:/var/lib/influxdb
 
   grafana:
     image: ${PROJ_NAME}/grafana:${TAG}
