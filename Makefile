@@ -89,7 +89,7 @@ export: build ## Build the images and export them
 #	docker save $(PROJ_NAME)/graphite:${TAG} > images/graphite.tar
 	docker save $(PROJ_NAME)/influxdb:${TAG} > images/influxdb.tar
 
-backup-dashboards: ## Backup the Grafana dashboards and any changes made to them
+backup-dashboards: ## Backup the Grafana dashboards and any changes made to them (Grafana must be running)
 	docker run --network "host" --rm -v $(shell pwd)/backups:/home/dashboards/backup $(PROJ_NAME)/ansible:${TAG} backup.yml
 
 stop: ## Stop all of our running services
