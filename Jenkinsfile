@@ -30,8 +30,11 @@ pipeline {
             }
         }
         stage('Security Scan'){
+            when {
+                anyOf { branch '1.0'; branch '1.1'; branch '1.2'; changelog '.*^hubScan$' }
+            }
             steps{
-                hubScan("${PROJECT_NAME}", "${VERSION}", coreCount: -1)
+                hubScan("${PROJECT_NAME}", "${BRANCH}", coreCount: -1)
             }
         }
         stage('Prepare for scan'){
@@ -42,13 +45,12 @@ pipeline {
             }
         }
         stage('Security Scan Images'){
-            when{
-                // When triggered based on time or based on a user interaction
-                not { triggeredBy 'SCMTrigger' }
+            when {
+                anyOf { branch '1.0'; branch '1.1'; branch '1.2'; changelog '.*^hubScan$' }
             }
             steps {
                 // Validate the images, running a security scan on all docker images
-                hubScanDocker("${PROJECT_NAME}", "${VERSION}", "${WORKSPACE}/images", coreCount: -1)
+                hubScanDocker("${PROJECT_NAME}", "${BRANCH}", "${WORKSPACE}/images", coreCount: -1)
             }
         }
     }
