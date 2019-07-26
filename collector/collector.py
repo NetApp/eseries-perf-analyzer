@@ -88,9 +88,9 @@ DRIVE_PARAMETERS = [
 NUMBER_OF_THREADS = 10
 
 # LOGGING
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 requests.packages.urllib3.disable_warnings()
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("collector")
 
 # Disables reset connection warning message if the connection time is too long
 logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.WARNING)
