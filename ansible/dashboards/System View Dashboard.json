@@ -14,10 +14,11 @@
 	    ]
 	},
 	"editable": true,
+	"folderId": "eseriesdashfolder",
 	"gnetId": null,
 	"graphTooltip": 0,
 	"id": null,
-	"iteration": 1563570832070,
+	"iteration": 1564429558733,
 	"links": [
 	    {
 		"asDropdown": true,
@@ -78,6 +79,7 @@
 			],
 			"decimals": 2,
 			"link": true,
+			"linkTargetBlank": true,
 			"linkTooltip": "Disk Dashboard for ${__cell}",
 			"linkUrl": "./d/VsgedHNWk/disk-view-dashboard?orgId=1&var-System=${__cell}",
 			"pattern": "sys_name",
@@ -96,6 +98,7 @@
 			"dateFormat": "YYYY-MM-DD HH:mm:ss",
 			"decimals": 0,
 			"link": true,
+			"linkTargetBlank": true,
 			"linkTooltip": "Disk Dashboard for ${__cell_1}, Tray ${__cell_2}, Slot ${__cell}",
 			"linkUrl": "./d/VsgedHNWk/disk-view-dashboard?orgId=1&var-System=${__cell_1}&var-Tray=${__cell_2}&var-Slot=${__cell}",
 			"mappingType": 1,
@@ -131,6 +134,7 @@
 			"dateFormat": "YYYY-MM-DD HH:mm:ss",
 			"decimals": 0,
 			"link": true,
+			"linkTargetBlank": true,
 			"linkTooltip": "Disk Dashboard for ${__cell_1}, Tray ${__cell}",
 			"linkUrl": "./d/VsgedHNWk/disk-view-dashboard?orgId=1&var-System=${__cell_1}&var-Tray=${__cell}",
 			"mappingType": 1,
@@ -233,6 +237,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name",
 			"groupBy": [
 			    {
 				"params": [
@@ -359,6 +364,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name",
 			"groupBy": [
 			    {
 				"params": [
@@ -485,6 +491,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name",
 			"groupBy": [
 			    {
 				"params": [
@@ -620,6 +627,7 @@
 			],
 			"decimals": 2,
 			"link": true,
+			"linkTargetBlank": true,
 			"linkTooltip": "Volume Dashboard for ${__cell}",
 			"linkUrl": "./d/_LGD-NNWz/volume-view-dashboard?orgId=1&var-System=${__cell}",
 			"pattern": "sys_name",
@@ -638,6 +646,7 @@
 			"dateFormat": "YYYY-MM-DD HH:mm:ss",
 			"decimals": 0,
 			"link": true,
+			"linkTargetBlank": true,
 			"linkTooltip": "Volume Dashboard for ${__cell_1}, ${__cell}",
 			"linkUrl": "./d/_LGD-NNWz/volume-view-dashboard?orgId=1&var-System=${__cell_1}&var-Volume=${__cell}",
 			"mappingType": 1,
@@ -750,6 +759,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name",
 			"groupBy": [
 			    {
 				"params": [
@@ -876,6 +886,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name",
 			"groupBy": [
 			    {
 				"params": [
@@ -1002,6 +1013,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name",
 			"groupBy": [
 			    {
 				"params": [
@@ -1092,102 +1104,6 @@
 		}
 	    },
 	    {
-		"gridPos": {
-		    "h": 6,
-		    "w": 24,
-		    "x": 0,
-		    "y": 16
-		},
-		"id": 6,
-		"interval": "",
-		"links": [],
-		"options": {
-		    "fieldOptions": {
-			"calcs": [
-			    "last"
-			],
-			"defaults": {
-			    "max": 100,
-			    "min": 0
-			},
-			"mappings": [],
-			"override": {},
-			"thresholds": [
-			    {
-				"color": "green",
-				"index": 0,
-				"value": null
-			    },
-			    {
-				"color": "red",
-				"index": 1,
-				"value": 80
-			    }
-			],
-			"values": false
-		    },
-		    "orientation": "auto",
-		    "showThresholdLabels": false,
-		    "showThresholdMarkers": true
-		},
-		"pluginVersion": "6.2.2",
-		"targets": [
-		    {
-			"alias": "$tag_sys_name",
-			"groupBy": [
-			    {
-				"params": [
-				    "$__interval"
-				],
-				"type": "time"
-			    },
-			    {
-				"params": [
-				    "sys_name"
-				],
-				"type": "tag"
-			    },
-			    {
-				"params": [
-				    "previous"
-				],
-				"type": "fill"
-			    }
-			],
-			"measurement": "systems",
-			"orderByTime": "ASC",
-			"policy": "default",
-			"refId": "A",
-			"resultFormat": "time_series",
-			"select": [
-			    [
-				{
-				    "params": [
-					"maxCpuUtilization"
-				    ],
-				    "type": "field"
-				},
-				{
-				    "params": [],
-				    "type": "mean"
-				}
-			    ]
-			],
-			"tags": [
-			    {
-				"key": "sys_name",
-				"operator": "=~",
-				"value": "/^$System$/"
-			    }
-			]
-		    }
-		],
-		"timeFrom": null,
-		"timeShift": null,
-		"title": "Maximum CPU Utilization",
-		"type": "gauge"
-	    },
-	    {
 		"aliasColors": {},
 		"bars": false,
 		"dashLength": 10,
@@ -1196,9 +1112,9 @@
 		"fill": 2,
 		"gridPos": {
 		    "h": 10,
-		    "w": 24,
+		    "w": 19,
 		    "x": 0,
-		    "y": 22
+		    "y": 16
 		},
 		"id": 4,
 		"legend": {
@@ -1227,6 +1143,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name",
 			"groupBy": [
 			    {
 				"params": [
@@ -1320,13 +1237,123 @@
 	    },
 	    {
 		"columns": [],
+		"fontSize": "100%",
+		"gridPos": {
+		    "h": 10,
+		    "w": 5,
+		    "x": 19,
+		    "y": 16
+		},
+		"id": 6,
+		"links": [],
+		"options": {},
+		"pageSize": null,
+		"pluginVersion": "6.2.2",
+		"scroll": true,
+		"showHeader": true,
+		"sort": {
+		    "col": 0,
+		    "desc": true
+		},
+		"styles": [
+		    {
+			"alias": "Time",
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"pattern": "Time",
+			"type": "hidden"
+		    },
+		    {
+			"alias": "System",
+			"colorMode": null,
+			"colors": [
+			    "rgba(245, 54, 54, 0.9)",
+			    "rgba(237, 129, 40, 0.89)",
+			    "rgba(50, 172, 45, 0.97)"
+			],
+			"decimals": 2,
+			"link": true,
+			"linkTargetBlank": false,
+			"linkTooltip": "System Dashboard for ${__cell}",
+			"linkUrl": "/d/ZOshR4NZk/e-series-system-view-dashboard?orgId=1&var-System=${__cell}",
+			"pattern": "sys_name",
+			"thresholds": [],
+			"type": "string",
+			"unit": "short"
+		    },
+		    {
+			"alias": "Utilization",
+			"colorMode": "value",
+			"colors": [
+			    "rgba(50, 172, 45, 0.97)",
+			    "rgba(237, 129, 40, 0.89)",
+			    "rgba(245, 54, 54, 0.9)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 1,
+			"mappingType": 1,
+			"pattern": "last",
+			"thresholds": [
+			    "50",
+			    " 80"
+			],
+			"type": "number",
+			"unit": "percent"
+		    }
+		],
+		"targets": [
+		    {
+			"alias": "$tag_sys_name",
+			"groupBy": [
+			    {
+				"params": [
+				    "sys_name"
+				],
+				"type": "tag"
+			    }
+			],
+			"measurement": "systems",
+			"orderByTime": "ASC",
+			"policy": "default",
+			"refId": "A",
+			"resultFormat": "table",
+			"select": [
+			    [
+				{
+				    "params": [
+					"maxCpuUtilization"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "last"
+				}
+			    ]
+			],
+			"tags": [
+			    {
+				"key": "sys_name",
+				"operator": "=~",
+				"value": "/^$System$/"
+			    }
+			]
+		    }
+		],
+		"timeFrom": null,
+		"timeShift": null,
+		"title": "Maximum CPU Utilization",
+		"transform": "table",
+		"type": "table"
+	    },
+	    {
+		"columns": [],
 		"description": "",
 		"fontSize": "100%",
 		"gridPos": {
 		    "h": 10,
 		    "w": 15,
 		    "x": 0,
-		    "y": 32
+		    "y": 26
 		},
 		"id": 2,
 		"links": [],
@@ -1366,7 +1393,7 @@
 			"dateFormat": "YYYY-MM-DD HH:mm:ss",
 			"decimals": 2,
 			"link": true,
-			"linkTargetBlank": true,
+			"linkTargetBlank": false,
 			"linkTooltip": "System Dashboard for ${__cell}",
 			"linkUrl": "/d/ZOshR4NZk/e-series-system-view-dashboard?orgId=1&var-System=${__cell}",
 			"mappingType": 1,
@@ -1495,7 +1522,7 @@
 		    "h": 10,
 		    "w": 9,
 		    "x": 15,
-		    "y": 32
+		    "y": 26
 		},
 		"id": 24,
 		"links": [],
@@ -1535,7 +1562,7 @@
 			"dateFormat": "YYYY-MM-DD HH:mm:ss",
 			"decimals": 2,
 			"link": true,
-			"linkTargetBlank": true,
+			"linkTargetBlank": false,
 			"linkTooltip": "System Dashboard for ${__cell}",
 			"linkUrl": "/d/ZOshR4NZk/e-series-system-view-dashboard?orgId=1&var-System=${__cell}",
 			"mappingType": 1,
@@ -1669,7 +1696,9 @@
 		    "allValue": null,
 		    "current": {
 			"text": "All",
-			"value": "$__all"
+			"value": [
+			    "$__all"
+			]
 		    },
 		    "datasource": "WSP",
 		    "definition": "SHOW TAG VALUES FROM \"major_event_log\" WITH KEY = \"sys_name\"",
@@ -1721,9 +1750,9 @@
 		"30d"
 	    ]
 	},
-	"timezone": "",
+	"timezone": "browser",
 	"title": "System View Dashboard",
 	"uid": "ZOshR4NZk",
-	"version": 21
+	"version": 2
     }
 }
