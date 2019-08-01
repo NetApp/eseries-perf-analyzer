@@ -34,8 +34,8 @@ help: ## This help.
 # DOCKER TASKS
 # Build the container
 build: warn ## Build the container
-	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t ntap-grafana/alpine-base:${TAG} build/alpine
-	docker build --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) -t ntap-grafana/python-base:${TAG} build/python
+	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
+	docker build --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --build-arg TAG=$(TAG) -t $(PROJ_NAME)/ansible:${TAG} ansible
 	docker build --build-arg TAG=$(TAG) -t $(PROJ_NAME)/collector:${TAG} collector
 	docker build --build-arg TAG=$(TAG) -t $(PROJ_NAME)/webservices:$(TAG) webservices
@@ -44,8 +44,8 @@ build: warn ## Build the container
 	docker-compose build
 
 build-nc: warn ## Build the container without caching
-	docker build --no-cache -f build/alpine/Dockerfile --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t ntap-grafana/alpine-base:${TAG} build/alpine
-	docker build --no-cache -f build/python/Dockerfile --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) -t ntap-grafana/python-base:${TAG} build/python
+	docker build --no-cache -f build/alpine/Dockerfile --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
+	docker build --no-cache -f build/python/Dockerfile --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --no-cache --build-arg TAG=$(TAG) -t $(PROJ_NAME)/ansible:${TAG} ansible
 	docker build --no-cache --build-arg TAG=$(TAG) -t $(PROJ_NAME)/collector:${TAG} collector
 	docker build --no-cache --build-arg TAG=$(TAG) -t $(PROJ_NAME)/webservices:$(TAG) webservices
@@ -92,6 +92,9 @@ export: build ## Build the images and export them
 backup-dashboards: ## Backup the Grafana dashboards and any changes made to them (Grafana must be running)
 	docker run --network "host" --rm -v $(shell pwd)/backups:/home/dashboards/backup $(PROJ_NAME)/ansible:${TAG} backup.yml
 
+migrate-graphite: ## Migrate previous Performance Analyzer Graphite database to InfluxDB (must be running)
+	docker run --network "host" --rm -v $(shell pwd)/scripts:/home/scripts $(PROJ_NAME)/python-base:${TAG} /bin/sh -c "chmod +x /home/scripts/migrate.sh;/home/scripts/migrate.sh"
+
 stop: ## Stop all of our running services
 	docker-compose stop
 
@@ -112,7 +115,7 @@ clean: stop rm ## Remove all images and containers built by the project
 	docker rmi $(PROJ_NAME)/grafana:${TAG}
 	docker rmi $(PROJ_NAME)/influxdb:${TAG}
 	docker rmi -f $(shell docker images -q -f "label=autodelete=true")
-	docker rmi -f $(shell docker images -q --filter "reference=ntap-grafana/*:${TAG}")
+	docker rmi -f $(shell docker images -q --filter "reference=$(PROJ_NAME)/*:${TAG}")
 
 warn: ##
 ifndef QUIET

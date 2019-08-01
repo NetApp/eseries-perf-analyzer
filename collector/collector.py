@@ -268,8 +268,8 @@ def collect_storage_metrics(sys):
                 tags = dict(
                     sys_id = sys_id,
                     sys_name = sys_name,
-                    sys_tray = disk_location_info[0],
-                    sys_tray_slot = disk_location_info[1]
+                    sys_tray = ("{:02.0f}").format(disk_location_info[0]),
+                    sys_tray_slot = ("{:03.0f}").format(disk_location_info[1])
                 ),
                 fields = dict(
                     (metric, stats.get(metric)) for metric in DRIVE_PARAMS
