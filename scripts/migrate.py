@@ -33,60 +33,6 @@ CMD = PARSER.parse_args()
 QUERY_BASE_URL = ("http://{}:3000").format(CMD.hostname)
 GRAFANA_AUTH = (CMD.username, CMD.password)
 
-##
-# Metrics
-##
-DRIVE_PARAMS = [
-    "averageReadOpSize",
-    "averageWriteOpSize",
-    "combinedIOps",
-    "combinedResponseTime",
-    "combinedThroughput",
-    "otherIOps",
-    "readIOps",
-    "readOps",
-    "readPhysicalIOps",
-    "readResponseTime",
-    "readThroughput",
-    "writeIOps",
-    "writeOps",
-    "writePhysicalIOps",
-    "writeResponseTime",
-    "writeThroughput"
-]
-
-VOLUME_PARAMS = [
-    "averageReadOpSize",
-    "averageWriteOpSize",
-    "combinedIOps",
-    "combinedResponseTime",
-    "combinedThroughput",
-    "flashCacheHitPct",
-    "flashCacheReadHitBytes",
-    "flashCacheReadHitOps",
-    "flashCacheReadResponseTime",
-    "flashCacheReadThroughput",
-    "otherIOps",
-    "queueDepthMax",
-    "queueDepthTotal",
-    "readCacheUtilization",
-    "readHitBytes",
-    "readHitOps",
-    "readIOps",
-    "readOps",
-    "readPhysicalIOps",
-    "readResponseTime",
-    "readThroughput",
-    "writeCacheUtilization",
-    "writeHitBytes",
-    "writeHitOps",
-    "writeIOps",
-    "writeOps",
-    "writePhysicalIOps",
-    "writeResponseTime",
-    "writeThroughput"
-]
-
 
 ##
 # Logging
