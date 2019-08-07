@@ -1,5 +1,5 @@
 ARG TAG=latest
-FROM grafana/grafana:6.2.2 as base
+FROM grafana/grafana:6.3.2 as base
 FROM ntap-grafana/alpine-base:${TAG}
 
 ARG GF_UID="1000"
