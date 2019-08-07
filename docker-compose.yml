@@ -16,7 +16,8 @@ services:
         max-file: "5"
         max-size: 10m
     volumes:
-      - arraydata:/opt/netapp/santricity_web_services_proxy/working/arraydata.xml
+      #- arraydata:/opt/netapp/santricity_web_services_proxy/working/arraydata.xml
+      - ./webservices_working:/opt/netapp/webservices_proxy/working
 
   influxdb:
     image: ${PROJ_NAME}/influxdb:${TAG}
