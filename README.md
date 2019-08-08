@@ -89,6 +89,44 @@ Once everything is started, you have access to several pages to control and conf
 The Web Services Proxy can be accessed at **http://<host\>:8080**. From here you can access the SANtricity® Unified Manager using default credentials of _admin/admin_. This is a UI frontend for managing storage arrays. There are also links to the Web Services API reference as well as the NetApp support site.
 ### Accessing the Grafana Interface and Dashboards
 The dashboards are available at **http://<host\>:3000** using default credentials _admin/admin_. Grafana should be pre-configured for immediate access to your data. Documentation for additional configuration and navigation can be found [here](http://docs.grafana.org/guides/getting_started/).
+### Migrating data from a previous Performance Analyzer instance
+If you have been using a previous version of the Performance Analyzer, your metric data was stored in a Graphite database. Newer versions of the Performance Analyzer rely on InfluxDB for its data backend. We have provided a method for migrating your previous data over to this new backend by following a few simple steps:
+##### 1. Verify you have a graphite_database folder in the root of your project
+This ensures that there is indeed data that needs migrating. If such a folder doesn't exist, there is no need for migration.
+##### 2. Re-enable the Graphite backend
+Because we no longer user Graphite as our data backend, the service is no longer required to be running. We have, however, left it available for the purposes of data migration. Open the *"<project_dir\>/docker-compose.yml"* file and find the commented-out section labeled graphite:
+~~~~
+#  graphite:
+#    image: ${PROJ_NAME}/graphite:${TAG}
+#    build:
+#      context: ./graphite
+#    container_name: graphite
+#    depends_on:
+#      - netapp_web_services
+#    mem_limit: 2G
+#    restart: unless-stopped
+#    ports:
+#      - 80
+#      - 2003-2004
+#      - 2023-2024
+#      - 8125/udp
+#      - 8126
+#    logging:
+#      driver: "json-file"
+#      options:
+#        max-file: "5"
+#        max-size: 10m
+#    volumes:
+#      - ./graphite-database:/opt/graphite/storage/whisper
+~~~~
+Uncomment this block (remove all of the #s) and save the file. Open the *"<project_dir\>/ansible/main.yml"* file and uncomment this line (remove the #):
+~~~~
+#- include_tasks: tasks/graphite_datasource.yml
+~~~~
+
+Simply start everything up by running _"make run"_ (or _"make restart"_ if services are already running).
+##### 3. Initiate data migration
+Once it has started back up, you can initiate data migration by running the command _"make migrate-graphite"_. Once this is completed, and you have verified that your data correctly appears on your dashboards, you may recomment the blocks shown above and restart the services one final time.
 
 ## Troubleshooting
 ### I don't have access to Docker
