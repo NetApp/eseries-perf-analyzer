@@ -25,6 +25,7 @@ services:
     depends_on:
       - netapp_web_services
     mem_limit: 2G
+    restart: unless-stopped
     ports:
       - 8086:8086
       - 8083:8083
@@ -36,6 +37,29 @@ services:
         max-size: 10m
     volumes:
       - ./influx-database:/var/lib/influxdb
+
+#  graphite:
+#    image: ${PROJ_NAME}/graphite:${TAG}
+#    build:
+#      context: ./graphite
+#    container_name: graphite
+#    depends_on:
+#      - netapp_web_services
+#    mem_limit: 2G
+#    restart: unless-stopped
+#    ports:
+#      - 80
+#      - 2003-2004
+#      - 2023-2024
+#      - 8125/udp
+#      - 8126
+#    logging:
+#      driver: "json-file"
+#      options:
+#        max-file: "5"
+#        max-size: 10m
+#    volumes:
+#      - ./graphite-database:/opt/graphite/storage/whisper
 
   grafana:
     image: ${PROJ_NAME}/grafana:${TAG}
@@ -72,5 +96,4 @@ services:
         #- PROXY_ADDRESS=webservices:8080
 
 volumes:
-  grafana_vol:
   arraydata:
