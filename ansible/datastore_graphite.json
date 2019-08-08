@@ -1,0 +1,9 @@
+{
+  "name":"WSP_graphite",
+  "label": "WSP_graphite",
+  "type": "graphite",
+  "url":"http://graphite",
+  "access":"proxy",
+  "basicAuth": false,
+  "isDefault": false
+}
