@@ -1,6 +1,7 @@
 ARG TAG=latest
+ARG PROJ_NAME=ntap-grafana
 FROM grafana/grafana:6.3.2 as base
-FROM ntap-grafana/alpine-base:${TAG}
+FROM ${PROJ_NAME}/alpine-base:${TAG}
 
 ARG GF_UID="1000"
 ARG GF_GID="1000"

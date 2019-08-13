@@ -1,5 +1,6 @@
 ARG TAG=latest
-FROM ntap-grafana/python-base:${TAG}
+ARG PROJ_NAME=ntap-grafana
+FROM ${PROJ_NAME}/python-base:${TAG}
 ENV COLLECTION_INTERVAL=30
 ENV PROXY_ADDRESS=webservices:8080
 RUN pip install -r requirements.txt && rm -rf /root/.cache
