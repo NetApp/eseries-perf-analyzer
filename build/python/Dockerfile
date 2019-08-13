@@ -1,5 +1,6 @@
 ARG TAG=latest
-FROM ntap-grafana/alpine-base:${TAG} as builder
+ARG PROJ_NAME=ntap-grafana
+FROM ${PROJ_NAME}/alpine-base:${TAG} as builder
 # Signifies this is a temporary image that can be purged
 LABEL autodelete="true"
 
