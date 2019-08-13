@@ -18,4 +18,4 @@ source ./env/bin/activate
 # install dependencies
 pip install -r /home/scripts/requirements.txt --default-timeout=5 --retries 15
 # run migration script
-exec python /home/scripts/migration/migrate.py -n ${HOST_NAME} -u ${GRAFANA_USERNAME} -p ${GRAFANA_PASSWORD} -w ${PROXY_USERNAME} -a ${PROXY_PASSWORD}
+exec python /home/scripts/migrate.py -n ${HOST_NAME} -u ${GRAFANA_USERNAME} -p ${GRAFANA_PASSWORD} -w ${PROXY_USERNAME} -a ${PROXY_PASSWORD}
