@@ -1,5 +1,6 @@
 ARG TAG=latest
-ARG IMAGE=ntap-grafana/python-base:${TAG}
+ARG PROJ_NAME=ntap-grafana
+ARG IMAGE=${PROJ_NAME}/python-base:${TAG}
 # Installing Ansible requires gcc and other dependencies to build packages from source. We'll do this in 2 stages so we don't
 #   have to have all of the build-time dependencies in the final image.
 FROM ${IMAGE} as builder
