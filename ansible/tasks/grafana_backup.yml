@@ -25,7 +25,7 @@
   copy: 
     force: True
     content: "{{ item.json | to_nice_json}}"
-    dest: "./dashboards/backup/{{item.json.meta.slug}}.json"
+    dest: "/home/dashboards/backup/{{item.json.meta.slug}}.json"
   with_items: "{{ dashboards.results }}"      
   loop_control:
     label: "{{ item.json.meta.slug }}"

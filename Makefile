@@ -90,10 +90,10 @@ export: build ## Build the images and export them
 	docker save $(PROJ_NAME)/influxdb:${TAG} > images/influxdb.tar
 
 backup-dashboards: ## Backup the Grafana dashboards and any changes made to them (Grafana must be running)
-	docker run --network "host" --rm -v $(shell pwd)/backups:/home/dashboards/backup $(PROJ_NAME)/ansible:${TAG} backup.yml
+	docker run --network=container:grafana --rm -v $(shell pwd)/backups:/home/dashboards/backup $(PROJ_NAME)/ansible:${TAG} backup.yml
 
 migrate-graphite: ## Migrate previous Performance Analyzer Graphite database to InfluxDB (must be running)
-	docker run --network "host" --rm -v $(shell pwd)/scripts/migration:/home/scripts $(PROJ_NAME)/python-base:${TAG} /bin/sh -c "chmod +x /home/scripts/migrate.sh;/home/scripts/migrate.sh"
+	docker run --network=container:grafana --rm -v $(shell pwd)/scripts/migration:/home/scripts $(PROJ_NAME)/python-base:${TAG} /bin/sh -c "chmod +x /home/scripts/migrate.sh;/home/scripts/migrate.sh"
 
 stop: ## Stop all of our running services
 	docker-compose stop
