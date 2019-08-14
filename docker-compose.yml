@@ -50,12 +50,6 @@ services:
 #      - netapp_web_services
 #    mem_limit: 2G
 #    restart: unless-stopped
-#    ports:
-#      - 80
-#      - 2003-2004
-#      - 2023-2024
-#      - 8125/udp
-#      - 8126
 #    logging:
 #      driver: "json-file"
 #      options:
