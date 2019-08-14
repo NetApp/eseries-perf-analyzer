@@ -105,7 +105,7 @@
 			"pattern": "sys_tray_slot",
 			"thresholds": [],
 			"type": "number",
-			"unit": "locale"
+			"unit": "short"
 		    },
 		    {
 			"alias": "",
@@ -121,7 +121,7 @@
 			"pattern": "last",
 			"thresholds": [],
 			"type": "hidden",
-			"unit": "none"
+			"unit": "short"
 		    },
 		    {
 			"alias": "Tray",
@@ -141,7 +141,7 @@
 			"pattern": "sys_tray",
 			"thresholds": [],
 			"type": "number",
-			"unit": "locale"
+			"unit": "short"
 		    }
 		],
 		"targets": [
@@ -253,7 +253,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -290,7 +290,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Latency",
+		"title": "Average Latency",
 		"tooltip": {
 		    "shared": true,
 		    "sort": 0,
@@ -380,7 +380,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -400,7 +400,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -417,7 +417,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Throughput",
+		"title": "Total Throughput",
 		"tooltip": {
 		    "shared": true,
 		    "sort": 0,
@@ -507,7 +507,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -527,7 +527,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -544,7 +544,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "IOps",
+		"title": "Total IOps",
 		"tooltip": {
 		    "shared": true,
 		    "sort": 0,
@@ -775,7 +775,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -812,7 +812,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Latency",
+		"title": "Average Latency",
 		"tooltip": {
 		    "shared": true,
 		    "sort": 0,
@@ -902,7 +902,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -922,7 +922,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -939,7 +939,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Throughput",
+		"title": "Total Throughput",
 		"tooltip": {
 		    "shared": true,
 		    "sort": 0,
@@ -1029,7 +1029,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -1049,7 +1049,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -1066,7 +1066,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "IOps",
+		"title": "Total IOps",
 		"tooltip": {
 		    "shared": true,
 		    "sort": 0,
@@ -1159,7 +1159,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -1167,7 +1167,7 @@
 			"measurement": "systems",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT \"cpuAvgUtilization\" FROM \"systems\" WHERE $timeFilter GROUP BY time($__interval), \"sys_name\" fill(linear)",
+			"query": "SELECT \"cpuAvgUtilization\" FROM \"systems\" WHERE $timeFilter GROUP BY time($__interval), \"sys_name\" fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1703,7 +1703,7 @@
 		    "datasource": "WSP",
 		    "definition": "SHOW TAG VALUES FROM \"major_event_log\" WITH KEY = \"sys_name\"",
 		    "hide": 0,
-		    "includeAll": true,
+		    "includeAll": false,
 		    "label": null,
 		    "multi": true,
 		    "name": "System",

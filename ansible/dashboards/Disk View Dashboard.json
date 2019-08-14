@@ -90,7 +90,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -98,7 +98,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT mean(\"combinedResponseTime\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
+			"query": "SELECT mean(\"combinedResponseTime\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -141,7 +141,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Latency",
+		"title": "Average Latency",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -236,7 +236,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -244,7 +244,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT mean(\"combinedThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
+			"query": "SELECT sum(\"combinedThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -258,7 +258,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -287,7 +287,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Throughput",
+		"title": "Total Throughput",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -382,7 +382,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -390,7 +390,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT mean(\"combinedIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
+			"query": "SELECT sum(\"combinedIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -404,7 +404,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -433,7 +433,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "IOPs",
+		"title": "Total IOPs",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -528,7 +528,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -536,7 +536,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT mean(\"readResponseTime\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
+			"query": "SELECT mean(\"readResponseTime\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -579,7 +579,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Read Latency",
+		"title": "Average Read Latency",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -674,7 +674,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -682,7 +682,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT mean(\"readThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
+			"query": "SELECT sum(\"readThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -696,7 +696,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -725,7 +725,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Read Throughput",
+		"title": "Total Read Throughput",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -820,7 +820,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -828,7 +828,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT mean(\"readIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
+			"query": "SELECT sum(\"readIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -842,7 +842,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -871,7 +871,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Read IOPs",
+		"title": "Total Read IOPs",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -966,7 +966,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -974,7 +974,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT mean(\"writeResponseTime\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
+			"query": "SELECT mean(\"writeResponseTime\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1017,7 +1017,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Write Latency",
+		"title": "Average Write Latency",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -1112,7 +1112,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -1132,7 +1132,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -1161,7 +1161,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Write Throughput",
+		"title": "Total Write Throughput",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -1256,7 +1256,7 @@
 			    },
 			    {
 				"params": [
-				    "linear"
+				    "none"
 				],
 				"type": "fill"
 			    }
@@ -1276,7 +1276,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "sum"
 				}
 			    ]
 			],
@@ -1305,7 +1305,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "Write IOPs",
+		"title": "Total Write IOPs",
 		"tooltip": {
 		    "msResolution": false,
 		    "shared": true,
@@ -1361,7 +1361,7 @@
 		    "datasource": "WSP",
 		    "definition": "SHOW TAG VALUES ON \"eseries\" FROM \"disks\" WITH KEY = \"sys_name\"",
 		    "hide": 0,
-		    "includeAll": true,
+		    "includeAll": false,
 		    "label": null,
 		    "multi": true,
 		    "name": "System",
