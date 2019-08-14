@@ -85,7 +85,7 @@
 			"pattern": "sys_name",
 			"thresholds": [],
 			"type": "number",
-			"unit": "short"
+			"unit": "locale"
 		    },
 		    {
 			"alias": "Slot",
@@ -105,7 +105,7 @@
 			"pattern": "sys_tray_slot",
 			"thresholds": [],
 			"type": "number",
-			"unit": "short"
+			"unit": "locale"
 		    },
 		    {
 			"alias": "",
@@ -121,7 +121,7 @@
 			"pattern": "last",
 			"thresholds": [],
 			"type": "hidden",
-			"unit": "short"
+			"unit": "locale"
 		    },
 		    {
 			"alias": "Tray",
@@ -141,7 +141,7 @@
 			"pattern": "sys_tray",
 			"thresholds": [],
 			"type": "number",
-			"unit": "short"
+			"unit": "locale"
 		    }
 		],
 		"targets": [
