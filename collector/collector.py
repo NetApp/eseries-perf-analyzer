@@ -11,6 +11,8 @@ import argparse
 import concurrent.futures
 import requests
 import json
+import hashlib
+from datetime import datetime
 
 from datetime import datetime
 from influxdb import InfluxDBClient
@@ -306,7 +308,7 @@ def collect_storage_metrics(sys):
             PROXY_BASE_URL, sys_id)).json()
         if CMD.showVolumeNames:
             for stats in volume_stats_list:
-                LOG.info(stats["volumeName"]);
+                LOG.info(stats["volumeName"])
         # Add Volume statistics to json body
         for stats in volume_stats_list:
             vol_item = dict(
@@ -356,9 +358,9 @@ def collect_major_event_log(sys):
 
         if query:
             start_from = int(next(query.get_points())["id"]) + 1
-            
+        
         mel_response = session.get(("{}/{}/mel-events").format(PROXY_BASE_URL, sys_id),
-                                   params = {"count": mel_grab_count, "startSequenceNumber": start_from}).json();
+                                   params = {"count": mel_grab_count, "startSequenceNumber": start_from}, timeout=(6.10, CMD.intervalTime*2)).json()
         if CMD.showMELMetrics:
             LOG.info("Starting from %s", str(start_from))
             LOG.info("Grabbing %s MELs", str(len(mel_response)))
@@ -390,7 +392,26 @@ def collect_major_event_log(sys):
         LOG.error(("Error when attempting to post MEL for {}/{}").format(sys["name"], sys["id"]))
 
 
-def collect_system_state(sys):
+def create_failure_dict_item(sys_id, sys_name, fail_type, obj_ref, obj_type, is_active, the_time):
+    item = dict(
+        measurement = "failures",
+        tags = dict(
+            sys_id = sys_id,
+            sys_name = sys_name,
+            failure_type = fail_type,
+            object_ref = obj_ref,
+            object_type = obj_type,
+            active = is_active
+        ),
+        fields = dict(
+            name_of = sys_name,
+            type_of = fail_type
+        ),
+        time = the_time
+    )
+    return item
+
+def collect_system_state(sys, checksums):
     """
     Collects state information from the storage system and posts it to influxdb
     :param sys: The JSON object of a storage_system
@@ -407,48 +428,86 @@ def collect_system_state(sys):
         # If this storage device still lacks a name, use a default
         if not sys_name or len(sys_name) <= 0:
             sys_name = DEFAULT_SYSTEM_NAME
-        
-        json_body = list()
-        query = client.query("SELECT * FROM failures WHERE sys_id='%s'" % sys_id)
-                    
-        failure_response = session.get(("{}/{}/failures").format(PROXY_BASE_URL, sys_id)).json();
-        for failure in failure_response:
-            found = False
-            fail_type = failure["failureType"]
-            obj_ref = failure["objectRef"]
-            obj_type = failure["objectType"]
 
-            # check to see if we've seen this failure before
-            if query:
-                failure_points = (query.get_points(measurement='failures'))
-                for point in failure_points:
-                    if fail_type == point.failure_type and obj_ref == point.object_ref and obj_type == point.object_type:
-                        found = True
-                        break
-            # if this is a new failure, we want to post it to influxdb
-            if not found:
-                item = dict(
-                    measurement = "failures",
-                    tags = dict(
-                        sys_id = sys_id,
-                        sys_name = sys_name,
-                        failure_type = fail_type,
-                        object_ref = obj_ref,
-                        object_type = obj_type
-                    ),
-                    fields = dict(
-                        value = True
-                    ),
-                    time = datetime.utcnow().isoformat()
-                )
+        # query the api and get a list of current failures for this system
+        failure_response = session.get(("{}/{}/failures").format(PROXY_BASE_URL, sys_id)).json()
+
+        # we can skip us if this is the same response we handled last time
+        old_checksum = checksums.get(str(sys_id))
+        new_checksum = hashlib.md5(str(failure_response).encode("utf-8")).hexdigest()
+        if old_checksum is not None and str(new_checksum) == str(old_checksum):
+            return
+        checksums.update({str(sys_id) : str(new_checksum)})
+
+        # pull most recent failures for this system from our database, including their active status
+        query_string = ("SELECT last(\"type_of\"),failure_type,object_ref,object_type,active FROM \"failures\" WHERE (\"sys_id\" = '{}') GROUP BY \"sys_name\", \"failure_type\"").format(sys_id)
+        query = client.query(query_string)
+        failure_points = list(query.get_points())
+
+        json_body = list()
+
+        # take care of active failures we don't know about
+        for failure in failure_response:
+            r_fail_type = failure.get("failureType")
+            r_obj_ref = failure.get("objectRef")
+            r_obj_type = failure.get("objectType")
+            
+            # we push if we haven't seen this, or we think it's inactive
+            push = True
+            for point in failure_points:
+                p_fail_type = point["failure_type"]
+                p_obj_ref = point["object_ref"]
+                p_obj_type = point["object_type"]
+                p_active = point["active"]
+                if (r_fail_type == p_fail_type
+                    and r_obj_ref == p_obj_ref
+                    and r_obj_type == p_obj_type):
+                    if p_active == "True":
+                        push = False # we already know this is an active failure so don't push
+                    break
+
+            if push:
                 if CMD.showStateMetrics:
-                    LOG.info("Failure payload: %s", item)
-                json_body.append(item)
-        
-        num = len(json_body)
-        if num > 0:
-            LOG.info("Found %s new failures", str(num))
-        client.write_points(json_body, database=INFLUXDB_DATABASE, time_precision="s")
+                    LOG.info("Failure payload T1: %s", item)
+                json_body.append(create_failure_dict_item(sys_id, sys_name,
+                                                          r_fail_type, r_obj_ref, r_obj_type,
+                                                          True, datetime.utcnow().isoformat()))
+
+        # take care of failures that are no longer active
+        for point in failure_points:
+            # we only care about points that we think are active
+            p_active = point["active"]
+            if not p_active:
+                continue
+
+            p_fail_type = point["failure_type"]
+            p_obj_ref = point["object_ref"]
+            p_obj_type = point["object_type"]
+            
+            # we push if we are no longer active, but think that we are
+            push = True
+            for failure in failure_response:
+                r_fail_type = failure.get("failureType")
+                r_obj_ref = failure.get("objectRef")
+                r_obj_type = failure.get("objectType")
+                if (r_fail_type == p_fail_type
+                    and r_obj_ref == p_obj_ref
+                    and r_obj_type == p_obj_type):
+                    push = False # we are still active, so don't push
+                    break
+
+            if push:
+                if CMD.showStateMetrics:
+                    LOG.info("Failure payload T2: %s", item)
+                json_body.append(create_failure_dict_item(sys_id, sys_name,
+                                                          p_fail_type, p_obj_ref, p_obj_type,
+                                                          False, datetime.utcnow().isoformat()))
+                
+        # write failures to influxdb
+        if CMD.showStateMetrics:
+            LOG.info("Writing {} failures".format(len(json_body)))
+        client.write_points(json_body, database=INFLUXDB_DATABASE)
+
     except RuntimeError:
         LOG.error(("Error when attempting to post state information for {}/{}").format(sys["name"], sys["id"]))
 
@@ -458,7 +517,7 @@ def collect_system_state(sys):
 #######################
 
 if __name__ == "__main__":
-    executor = concurrent.futures.ProcessPoolExecutor(NUMBER_OF_THREADS)
+    executor = concurrent.futures.ThreadPoolExecutor(NUMBER_OF_THREADS)
     SESSION = get_session()
     loopIteration = 1
 
@@ -491,6 +550,7 @@ if __name__ == "__main__":
     except json.decoder.JSONDecodeError:
         LOG.exception("Failed to open configuration file due to invalid JSON!")
 
+    checksums = dict()
     while True:
         time_start = time.time()
         try:
@@ -518,9 +578,9 @@ if __name__ == "__main__":
             concurrent.futures.wait(collector)
 
             # Iterate through all storage system and collect state information
-            collector = [executor.submit(collect_system_state, sys) for sys in storageList]
+            collector = [executor.submit(collect_system_state, sys, checksums) for sys in storageList]
             concurrent.futures.wait(collector)
-
+            
             # Iterate through all storage system and collect MEL entries
             collector = [executor.submit(collect_major_event_log, sys) for sys in storageList]
             concurrent.futures.wait(collector)
@@ -539,4 +599,5 @@ if __name__ == "__main__":
                       "Time interval specified: {:07.4f}"
                       .format(time_difference, CMD.intervalTime))
             wait_time = time_difference
+            
         time.sleep(wait_time)

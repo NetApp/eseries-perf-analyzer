@@ -1,8 +1,8 @@
 {
     "dashboard": {
 	"annotations": {
-	    "list": [
-		{
+            "list": [
+	        {
 		    "builtIn": 1,
 		    "datasource": "-- Grafana --",
 		    "enable": true,
@@ -10,6 +10,34 @@
 		    "iconColor": "rgba(0, 211, 255, 1)",
 		    "name": "Annotations & Alerts",
 		    "type": "dashboard"
+		},
+		{
+		    "datasource": "WSP",
+		    "enable": true,
+		    "hide": false,
+		    "iconColor": "#C4162A",
+		    "limit": 100,
+		    "name": "Failure Discovered",
+		    "query": "SELECT name_of,type_of FROM (SELECT name_of,type_of,active FROM \"failures\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter GROUP BY \"sys_name\", \"failure_type\", \"object_type\" LIMIT 25) WHERE (\"active\" = 'True')",
+		    "showIn": 0,
+		    "tags": [],
+		    "tagsColumn": "type_of",
+		    "textColumn": "name_of",
+		    "type": "tags"
+		},
+		{
+		    "datasource": "WSP",
+		    "enable": true,
+		    "hide": false,
+		    "iconColor": "#56A64B",
+		    "limit": 100,
+		    "name": "Failure Resolved",
+		    "query": "SELECT name_of,type_of FROM (SELECT name_of,type_of,active FROM \"failures\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter GROUP BY \"sys_name\", \"failure_type\", \"object_type\" LIMIT 25) WHERE (\"active\" = 'False')",
+		    "showIn": 0,
+		    "tags": [],
+		    "tagsColumn": "type_of",
+		    "textColumn": "name_of",
+		    "type": "tags"
 		}
 	    ]
 	},

@@ -1,8 +1,8 @@
 {
     "dashboard": {
 	"annotations": {
-	    "list": [
-		{
+            "list": [
+	        {
 		    "builtIn": 1,
 		    "datasource": "-- Grafana --",
 		    "enable": true,
@@ -10,6 +10,34 @@
 		    "iconColor": "rgba(0, 211, 255, 1)",
 		    "name": "Annotations & Alerts",
 		    "type": "dashboard"
+		},
+		{
+		    "datasource": "WSP",
+		    "enable": true,
+		    "hide": false,
+		    "iconColor": "#C4162A",
+		    "limit": 100,
+		    "name": "Failure Discovered",
+		    "query": "SELECT name_of,type_of FROM (SELECT name_of,type_of,active FROM \"failures\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter GROUP BY \"sys_name\", \"failure_type\", \"object_type\" LIMIT 25) WHERE (\"active\" = 'True')",
+		    "showIn": 0,
+		    "tags": [],
+		    "tagsColumn": "type_of",
+		    "textColumn": "name_of",
+		    "type": "tags"
+		},
+		{
+		    "datasource": "WSP",
+		    "enable": true,
+		    "hide": false,
+		    "iconColor": "#56A64B",
+		    "limit": 100,
+		    "name": "Failure Resolved",
+		    "query": "SELECT name_of,type_of FROM (SELECT name_of,type_of,active FROM \"failures\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter GROUP BY \"sys_name\", \"failure_type\", \"object_type\" LIMIT 25) WHERE (\"active\" = 'False')",
+		    "showIn": 0,
+		    "tags": [],
+		    "tagsColumn": "type_of",
+		    "textColumn": "name_of",
+		    "type": "tags"
 		}
 	    ]
 	},
@@ -1561,7 +1589,7 @@
 		    "h": 10,
 		    "w": 9,
 		    "x": 15,
-		    "y": 29
+		    "y": 26
 		},
 		"id": 24,
 		"links": [],
@@ -1575,7 +1603,7 @@
 		},
 		"styles": [
 		    {
-			"alias": "Pull Time",
+			"alias": "Discovery Time",
 			"colorMode": null,
 			"colors": [
 			    "rgba(245, 54, 54, 0.9)",
@@ -1661,6 +1689,22 @@
 			"thresholds": [],
 			"type": "hidden",
 			"unit": "short"
+		    },
+		    {
+			"alias": "",
+			"colorMode": null,
+			"colors": [
+			    "rgba(245, 54, 54, 0.9)",
+			    "rgba(237, 129, 40, 0.89)",
+			    "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "active",
+			"thresholds": [],
+			"type": "hidden",
+			"unit": "short"
 		    }
 		],
 		"targets": [
@@ -1688,15 +1732,15 @@
 			"measurement": "failures",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT \"id\", \"location\", \"description\" FROM \"major_event_log\" WHERE (\"sys_name\" =~ /^$System$/) GROUP BY \"sys_name\"",
-			"rawQuery": false,
+			"query": "SELECT * FROM (SELECT last(\"name_of\"),active FROM \"failures\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter GROUP BY \"sys_name\", \"failure_type\", \"object_type\") WHERE (\"active\" = 'True')",
+			"rawQuery": true,
 			"refId": "A",
 			"resultFormat": "table",
 			"select": [
 			    [
 				{
 				    "params": [
-					"value"
+					"name_of"
 				    ],
 				    "type": "field"
 				},
@@ -1711,6 +1755,12 @@
 				"key": "sys_name",
 				"operator": "=~",
 				"value": "/^$System$/"
+			    },
+			    {
+				"condition": "AND",
+				"key": "active",
+				"operator": "=",
+				"value": "True"
 			    }
 			]
 		    }
@@ -1740,14 +1790,14 @@
 			]
 		    },
 		    "datasource": "WSP",
-		    "definition": "SHOW TAG VALUES FROM \"major_event_log\" WITH KEY = \"sys_name\"",
+		    "definition": "SHOW TAG VALUES FROM \"disks\" WITH KEY = \"sys_name\"",
 		    "hide": 0,
 		    "includeAll": false,
 		    "label": null,
 		    "multi": true,
 		    "name": "System",
 		    "options": [],
-		    "query": "SHOW TAG VALUES FROM \"major_event_log\" WITH KEY = \"sys_name\"",
+		    "query": "SHOW TAG VALUES FROM \"disks\" WITH KEY = \"sys_name\"",
 		    "refresh": 2,
 		    "regex": "",
 		    "skipUrlSync": false,
