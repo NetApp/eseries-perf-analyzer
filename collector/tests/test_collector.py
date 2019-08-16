@@ -104,7 +104,7 @@ class TestCollector(unittest.TestCase):
         }
 
         mock_get_session.assert_called()
-        mock_session.get.assert_called_with(req_url_mel, params=call_params)
+        mock_session.get.assert_called_with(req_url_mel, params=call_params, timeout=(6.10, 10))
 
 
     # Test that we properly write points to influxdb when collecting mel events
@@ -135,7 +135,8 @@ class TestCollector(unittest.TestCase):
         req_url_fails = ("{}/{}/failures").format(collector.PROXY_BASE_URL, sys_id)
 
         mock_session = mock_get_session.return_value
-        collector.collect_system_state(system)
+        Checksums = dict()
+        collector.collect_system_state(system, Checksums)
         
         mock_get_session.assert_called()
         mock_session.get.assert_called_with(req_url_fails)
@@ -151,7 +152,8 @@ class TestCollector(unittest.TestCase):
         }
 
         mock_session = mock_get_session.return_value
-        collector.collect_system_state(system)
+        Checksums = dict()
+        collector.collect_system_state(system, Checksums)
 
         mock_influxclient = mock_influxdb.return_value
         mock_influxclient.write_points.assert_called()
