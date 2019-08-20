@@ -8,4 +8,6 @@ ADD influxdb.conf /etc/influxdb
 COPY --from=builder /etc/apk/repositories /etc/apk/repositories
 RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 
+EXPOSE 8086
+
 CMD ["influxd"]
