@@ -27,6 +27,8 @@ services:
       - netapp_web_services
     mem_limit: 2G
     restart: unless-stopped
+# Internal ports to be exposed to other linked services
+# They will not be exposed to the host machine
 #    expose:
 #      - 8086
 #      - 8083
