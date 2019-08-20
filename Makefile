@@ -40,7 +40,7 @@ build: warn ## Build the container
 	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/collector:${TAG} collector
 	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/webservices:$(TAG) webservices
 	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/grafana:$(TAG) grafana
-	docker build --build-arg TAG=$(TAG) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
+	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
 	docker-compose build
 
 build-nc: warn ## Build the container without caching
