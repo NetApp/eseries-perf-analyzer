@@ -10,3 +10,4 @@ ADD $PIP_CONF /etc/pip.conf
 COPY --from=builder /etc/apk/repositories /etc/apk/repositories
 ONBUILD WORKDIR /home
 ONBUILD COPY requirements.txt .
+ONBUILD RUN apk update && apk upgrade && rm -rf /var/cache/apk/*

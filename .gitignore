@@ -4,3 +4,8 @@ graphite-database/*
 # ignore all array files except the example
 !ansible/arrays/example_array.json
 ansible/arrays/*
+# ignore the influxbdb database
+influx-database/*
+# ignore the web services working directory
+webservices_working/*
+
