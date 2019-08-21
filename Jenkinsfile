@@ -12,7 +12,7 @@ pipeline {
     environment {
         TAG = "${BRANCH_NAME}-${BUILD_NUMBER}"
         PROJECT_NAME = "esg-grafana"
-        VERSION = "1.1"
+        VERSION = "2.0"
         QUIET = "yes"
         // This determines what repositories to use for building the images
         PIP_CONF = 'pip.conf.internal'
@@ -31,7 +31,7 @@ pipeline {
         }
         stage('Security Scan'){
             when {
-                anyOf { branch '1.0'; branch '1.1'; branch '1.2'; changelog '.*^hubScan$' }
+                anyOf { branch '1.0'; branch '2.0'; branch '2.1'; changelog '.*^hubScan$' }
             }
             steps{
                 hubScan("${PROJECT_NAME}", "${VERSION}", coreCount: -1)
@@ -46,7 +46,7 @@ pipeline {
         }
         stage('Security Scan Images'){
             when {
-                anyOf { branch '1.0'; branch '1.1'; branch '1.2'; changelog '.*^hubScan$' }
+                anyOf { branch '1.0'; branch '2.0'; branch '2.1'; changelog '.*^hubScan$' }
             }
             steps {
                 // Validate the images, running a security scan on all docker images
