@@ -310,7 +310,6 @@ def collect_storage_metrics(sys):
                 tags = dict(
                     sys_id = sys_id,
                     sys_name = sys_name,
-                    vol_id = stats["volumeId"],
                     vol_name = stats["volumeName"]
                 ),
                 fields = dict(
@@ -322,7 +321,7 @@ def collect_storage_metrics(sys):
             json_body.append(vol_item)
 
         if not CMD.doNotPost:
-            client.write_points(json_body, database=INFLUXDB_DATABASE)
+            client.write_points(json_body, database=INFLUXDB_DATABASE, time_precision="s")
 
     except RuntimeError:
         LOG.error(("Error when attempting to post statistics for {}/{}").format(sys["name"], sys["id"]))
@@ -382,7 +381,7 @@ def collect_major_event_log(sys):
                 LOG.info("MEL payload: %s", item)
             json_body.append(item)
         
-        client.write_points(json_body, database=INFLUXDB_DATABASE)
+        client.write_points(json_body, database=INFLUXDB_DATABASE, time_precision="s")
     except RuntimeError:
         LOG.error(("Error when attempting to post MEL for {}/{}").format(sys["name"], sys["id"]))
 
@@ -445,7 +444,7 @@ def collect_system_state(sys):
         num = len(json_body)
         if num > 0:
             LOG.info("Found %s new failures", str(num))
-        client.write_points(json_body, database=INFLUXDB_DATABASE)
+        client.write_points(json_body, database=INFLUXDB_DATABASE, time_precision="s")
     except RuntimeError:
         LOG.error(("Error when attempting to post state information for {}/{}").format(sys["name"], sys["id"]))
 
