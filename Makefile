@@ -12,14 +12,7 @@ TAG ?= 1.0
 PIP_CONF ?= pip.conf
 ALPINE_REPO_FILE ?= repositories
 
-
 configuration := .$(configuration)
-
-# import deploy config
-# You can change the default deploy config with `make dpl="deploy_special.env" release`
-dpl ?= deploy.env
-include $(dpl)
-export $(shell sed 's/=.*//' $(dpl))
 
 # HELP
 # This will output the help for each task
@@ -55,7 +48,7 @@ build-nc: warn ## Build the container without caching
 
 run: build ## Build and run
 	# Start using our compose file and run in the background
-	docker-compose up -d
+	docker-compose up -d 
 
 	# Start an instance of our Ansible image to perform setup on the running instance
 	#  We run using the host network so that we can access not only the WSP instance, but also the individual containers.

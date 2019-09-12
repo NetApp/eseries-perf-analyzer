@@ -11,9 +11,10 @@ import argparse
 import concurrent.futures
 import requests
 import json
-from datetime import datetime
 
+from datetime import datetime
 from influxdb import InfluxDBClient
+from influxdb.exceptions import InfluxDBClientError
 
 try:
     import cPickle as pickle
@@ -134,6 +135,8 @@ PARSER.add_argument('-t', '--intervalTime', type=int, default=5,
 PARSER.add_argument('--proxySocketAddress', default='webservices',
                     help='Provide both the IP address and the port for the SANtricity webserver. '
                          'If not specified, will default to localhost. <IPv4 Address:port>')
+PARSER.add_argument('-r', '--retention', type=str, default='52w',
+                    help='The default retention duration for influxdb')
 PARSER.add_argument('-s', '--showStorageNames', action='store_true',
                     help='Outputs the storage array names found from the SANtricity webserver')
 PARSER.add_argument('-v', '--showVolumeNames', action='store_true', default=0,
@@ -156,6 +159,7 @@ PARSER.add_argument('-n', '--doNotPost', action='store_true', default=0,
                     help='Pull information, but do not post to influxdb')
 CMD = PARSER.parse_args()
 PROXY_BASE_URL = 'http://{}/devmgr/v2/storage-systems'.format(CMD.proxySocketAddress)
+RETENTION_DUR = CMD.retention
 
 #######################
 # HELPER FUNCTIONS#####
@@ -466,6 +470,15 @@ if __name__ == "__main__":
         # Ensure we can connect. Wait for 2 minutes for WSP to startup.
         SESSION.get(PROXY_BASE_URL, timeout=120)
         configuration = get_configuration()
+
+        # set up our default retention policies if we have that configured
+        try:
+            client.create_retention_policy("default_retention", RETENTION_DUR, "1", INFLUXDB_DATABASE, True)
+        except InfluxDBClientError:
+            LOG.info("Updating retention policy to {}...".format(RETENTION_DUR))
+            client.alter_retention_policy("default_retention", INFLUXDB_DATABASE,
+                                          RETENTION_DUR, "1", True)
+            
         for system in configuration.get("storage_systems", list()):
             LOG.info("system: %s", str(system))
             body = dict(controllerAddresses=system.get("addresses"),

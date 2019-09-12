@@ -8,4 +8,5 @@ ansible/arrays/*
 influx-database/*
 # ignore the web services working directory
 webservices_working/*
-
+# ignore python test cache
+collector/tests/__pycache__/*

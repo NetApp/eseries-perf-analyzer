@@ -99,6 +99,8 @@ services:
         - COLLECTION_INTERVAL=30
         # You can use this to modify the location of the Web Services instance if you have one running externally you wish to use
         #- PROXY_ADDRESS=webservices:8080
+        # Retention period
+        - RETENTION_PERIOD=${RETENTION_PERIOD}
 
 networks:
   perf_analyzer:
