@@ -95,6 +95,9 @@ backup-dashboards: ## Backup the Grafana dashboards and any changes made to them
 migrate-graphite: ## Migrate previous Performance Analyzer Graphite database to InfluxDB (must be running)
 	docker run --network=container:grafana --rm -v $(shell pwd)/scripts/migration:/home/scripts $(PROJ_NAME)/python-base:${TAG} /bin/sh -c "chmod +x /home/scripts/migrate.sh;/home/scripts/migrate.sh"
 
+run-tests: ## Run python unit tests
+	docker run --rm -v $(shell pwd)/collector:/home/collector $(PROJ_NAME)/python-base:${TAG} /bin/sh -c "chmod +x /home/collector/tests/runtests.sh;/home/collector/tests/runtests.sh"
+
 stop: ## Stop all of our running services
 	docker-compose stop
 
