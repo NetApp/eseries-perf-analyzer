@@ -69,6 +69,18 @@ Arrays to be monitored should be added to the *"<project_dir\>/collector/config.
 It is also possible to manually add storage systems using the Web Services Proxy interactive API documentation found at **http://<host\>:8080/devmgr/docs/#/Storage-Systems/new_StorageSystem**.
 
 Once everything is started, arrays can also be managed through the SANtricity® Unified Manager as described below. Note that although they will still be monitored, legacy arrays added through the API/config files will not appear in this manager.
+#### Disk Usage & Data Retention
+With our data collection we use ~260 KB per drive/volume per day. Based on this, you can expect to consume 250-300 GB of storage space for 100 systems for one year.
+
+By default, we retain performance metrics for one year before they are dropped. This retention period is modifiable and we utilize an environment variable *"RETENTION_PERIOD"* for this purpose. The best place to set this is within the *"<project_dir\>/.env"* file. For example, setting a retention period of 4 weeks would look like this:
+~~~~
+...
+RETENTION_PERIOD=4w
+...
+~~~~
+A list of possible durations and valid duration formats can be found [here](https://docs.influxdata.com/influxdb/v1.7/query_language/spec/#durations). Note that the minimum possible retention duration is 1 hour. Setting this variable to a value of **INF** will result in performance metrics that are retained indefinitely.
+
+**Note:** A change in the retention period requires a restart of the services before it will take effect.
 #### InfluxDB
 InfluxDB is configurable through the config file located at *"<project_dir\>/influxdb/influxdb.conf"*. Information about configuration options can be found [here](https://docs.influxdata.com/influxdb/v1.7/administration/config/).
 #### Dashboards
@@ -146,4 +158,4 @@ If you have added your own metrics that aren't showing up, verify that you're se
 ### I made some changes to <X\> and now everything is broken!
 While we do encourage variations, improvements, and additions, these are definitely something we can't support. While you may enter an issue and/or ask for help, we can't guarantee that we can, or will try to fix your deployment and may ask you to revert to a known configuration.
 ### I get prompted each time I perform "make run"
-You may add _"QUIET=1"_ to the *"<project_dir\>/deploy.env"* file. This will automatically choose "yes" when prompted by the build/run process.
+You may add _"QUIET=1"_ to the *"<project_dir\>/.env"* file. This will automatically choose "yes" when prompted by the build/run process.
