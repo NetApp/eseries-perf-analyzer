@@ -25,6 +25,7 @@ pipeline {
                     # Overwrite the default environment options
                     printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\n" > .env
                     make build
+		    collector/tests/initiate_testing.sh
                 '''
                 sh 'echo ${GIT_COMMIT}'
             }
