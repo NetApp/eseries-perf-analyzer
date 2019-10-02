@@ -25,9 +25,17 @@ pipeline {
                     # Overwrite the default environment options
                     printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\n" > .env
                     make build
-		    collector/tests/initiate_testing.sh ${PROJECT_NAME} ${TAG}
                 '''
                 sh 'echo ${GIT_COMMIT}'
+            }
+        }
+        stage('Run python unit tests') {
+            steps {
+                sh'''
+                    # Overwrite the default environment options
+                    printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\n" > .env
+		    collector/tests/initiate_testing.sh ${PROJECT_NAME} ${TAG}
+                '''
             }
         }
         stage('Security Scan'){
