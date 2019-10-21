@@ -13,7 +13,7 @@ RUN pip3 --default-timeout=5 --retries 15 install --upgrade --prefix=/install -r
 FROM ${IMAGE}
 COPY --from=builder /install /usr/local
 ADD *.yml *.json ./
-#ADD dashboards/ ./dashboards
+ADD dashboards/ ./dashboards
 ADD tasks/ ./tasks
 RUN mkdir -p /etc/ansible && touch /etc/ansible/hosts && mkdir -p /home/dashboards/backup
 ENTRYPOINT ["ansible-playbook", "-v"]

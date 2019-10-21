@@ -19,6 +19,29 @@ services:
       - eseries-grafana_perf_analyzer
     volumes:
       - ./webservices_working:/opt/netapp/webservices_proxy/working
+
+  stats_collector:
+    image: ${PROJ_NAME}-plugin/eseries_monitoring/collector
+    depends_on:
+      - netapp_web_services
+    container_name: collector
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
+    networks:
+      - eseries-grafana_perf_analyzer
+    environment:
+        - USERNAME=admin
+        # you can modify the password for webservices here
+        # otherwise it will default to admin
+        #- PASSWORD=myPass
+        - COLLECTION_INTERVAL=30
+        # You can use this to modify the location of the Web Services instance if you have one running externally you wish to use
+        #- PROXY_ADDRESS=webservices:8080
+
 networks:
   eseries-grafana_perf_analyzer:
     external: true

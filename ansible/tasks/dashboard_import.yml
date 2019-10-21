@@ -1,0 +1,21 @@
+- name: Find dashboards
+  find:
+    file_type: file
+    paths: ./dashboards
+    patterns: "*.json"
+    recurse: yes
+  register: dashboards
+
+- name: Create Grafana dashboards
+  uri:
+    url: "http://localhost:3000/api/dashboards/import"
+    method: POST
+    headers:
+      Content-Type: "application/json"
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    body: "{{ lookup('file', item.path) | from_json }}"
+    status_code: 200
+    body_format: json
+    force_basic_auth: yes
+  with_items: "{{ dashboards.files }}"

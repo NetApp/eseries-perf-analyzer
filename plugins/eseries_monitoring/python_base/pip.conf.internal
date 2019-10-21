@@ -1,0 +1,4 @@
+[global]
+timeout = 10
+index-url = http://esgweb.eng.netapp.com/~lorenp/python-mirror
+trusted-host = esgweb.eng.netapp.com

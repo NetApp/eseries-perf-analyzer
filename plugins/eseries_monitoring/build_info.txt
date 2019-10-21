@@ -1,2 +1,4 @@
 alpine-base alpine_base
+python-base python_base
 webservices webservices
+collector collector
