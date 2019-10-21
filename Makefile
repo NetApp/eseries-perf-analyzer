@@ -14,6 +14,24 @@ ALPINE_REPO_FILE ?= repositories
 
 configuration := .$(configuration)
 
+# @TODO: dynamically run each plugin's docker compose file
+run-plugins: build-plugins ## Build and run plugins
+	docker-compose -f plugins/eseries_monitoring/docker-compose.yml up -d
+
+build-plugins:
+	$(shell ./scripts/plugin_build_info.sh)
+
+stop-plugins:
+	docker-compose -f plugins/eseries_monitoring/docker-compose.yml stop
+
+down-plugins:
+	docker-compose -f plugins/eseries_monitoring/docker-compose.yml down
+
+# @TODO: find all images made in the plugin compose files
+#        and run a docker rmi on them
+#clean-plugins:
+#	
+
 # HELP
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
