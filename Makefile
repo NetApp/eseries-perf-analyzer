@@ -18,20 +18,20 @@ configuration := .$(configuration)
 ##
 # plugin targets
 ##
-run-plugins: build-plugins ## Build and run plugins
-	$(shell ./scripts/plugin_compose_info.sh "up -d")
+run-plugins: ## Run all plugins
+	@$(shell ./scripts/plugin_compose_info.sh "up -d")
 
 build-plugins: ## Build all plugins
-	$(shell PROJ_NAME=$(PROJ_NAME) ./scripts/plugin_build_info.sh)
+	@$(shell PROJ_NAME=$(PROJ_NAME) ./scripts/plugin_build_info.sh)
 
 stop-plugins: ## Stop all plugins
-	$(shell ./scripts/plugin_compose_info.sh "stop")
+	@$(shell ./scripts/plugin_compose_info.sh "stop")
 
 down-plugins: ## Run docker-compose down on all plugins
-	$(shell ./scripts/plugin_compose_info.sh "down")
+	@$(shell ./scripts/plugin_compose_info.sh "down")
 
 clean-plugins: ## Remove all images built by plugins
-	$(shell PROJ_NAME=$(PROJ_NAME) ./scripts/plugin_remove_info.sh)
+	@$(shell PROJ_NAME=$(PROJ_NAME) ./scripts/plugin_remove_info.sh)
 
 
 # HELP
@@ -47,6 +47,10 @@ help: ## This help.
 # DOCKER TASKS
 # Build the container
 build: __docker-find warn ## Build the container
+	# Prepare dashboards for import
+	$(shell ls plugins/*/dashboards/*.json | xargs -I{} cp "{}" ansible/dashboards/)
+
+	# Build core services
 	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
 	docker build --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/ansible:${TAG} ansible
@@ -55,6 +59,10 @@ build: __docker-find warn ## Build the container
 	docker-compose build
 
 build-nc: __docker-find warn ## Build the container without caching
+	# Build plugins
+	@$(MAKE) --no-print-directory build-plugins
+
+build-nc: warn ## Build the container without caching
 	docker build --no-cache -f build/alpine/Dockerfile --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
 	docker build --no-cache -f build/python/Dockerfile --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --no-cache --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/ansible:${TAG} ansible
@@ -62,14 +70,16 @@ build-nc: __docker-find warn ## Build the container without caching
 	docker build --no-cache --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/grafana:$(TAG) grafana
 	docker-compose build --pull --no-cache
 
-run: build build-plugins ## Build and run
+run: build ## Build and run
 	# Start using our compose file and run in the background
 	docker-compose up -d 
 
 	# Start an instance of our Ansible image to perform setup on the running instance
 	docker run --rm --network=container:grafana $(PROJ_NAME)/ansible:${TAG}
+	@$(shell rm -rf ansible/dashboards/*)
 
-	make run-plugins
+	# Run plugins
+	@$(MAKE) --no-print-directory run-plugins
 	docker ps
 
 run-nc: build-nc ## Build and run
@@ -78,8 +88,10 @@ run-nc: build-nc ## Build and run
 
 	# Start an instance of our Ansible image to perform setup on the running instance
 	docker run --rm --network=container:grafana $(PROJ_NAME)/ansible:${TAG}
+	@$(shell rm -rf ansible/dashboards/*)
 
-	make run-plugins
+	# Run plugins
+	@$(MAKE) --no-print-directory run-plugins
 	docker ps
 
 export-nc: build-nc ## Build the images and export them
@@ -96,7 +108,9 @@ export: build ## Build the images and export them
 
 stop: __docker-find ## Stop all of our running services
 	docker-compose stop
-	make stop-plugins
+
+	# Stop running plugins
+	@$(MAKE) --no-print-directory stop-plugins
 
 restart: stop run ## 'stop' followed by 'run'
 
@@ -115,7 +129,9 @@ clean: stop rm ## Remove all images and containers built by the project
 	docker rmi $(PROJ_NAME)/grafana:${TAG}
 	docker rmi -f $(shell docker images -q -f "label=autodelete=true")
 	docker rmi -f $(shell docker images -q --filter "reference=$(PROJ_NAME)/*:${TAG}")
-	make clean-plugins
+
+	# Clean plugins
+	@$(MAKE) --no-print-directory clean-plugins
 
 warn: ##
 ifndef QUIET

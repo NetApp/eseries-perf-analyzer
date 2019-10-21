@@ -1,0 +1,15 @@
+{
+    "username": "admin",
+    "password": "admin",
+    "array_password": "myPass",
+    "storage_systems": [
+        {
+            "addresses": ["1.1.1.1", "2.2.2.2"],
+            "password": "myPassOther"
+        },
+        {
+            "addresses": ["1.1.1.1", "1.1.1.2"]
+        }
+
+    ]
+}
