@@ -2,7 +2,7 @@ version: '2'
 services:
 
   netapp_web_services:
-    image: plugin/eseries_monitoring/webservices
+    image: ${PROJ_NAME}-plugin/eseries_monitoring/webservices
     container_name: webservices
     restart: unless-stopped
     ports:
