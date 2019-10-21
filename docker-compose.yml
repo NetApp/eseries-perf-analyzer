@@ -1,30 +1,9 @@
 version: '2'
 services:
 
-  netapp_web_services:
-    image: ${PROJ_NAME}/webservices:${TAG}
-    container_name: webservices
-    restart: unless-stopped
-    ports:
-      - 8080:8080
-      - 8443:8443
-    environment:
-      - ACCEPT_EULA=true
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "5"
-        max-size: 10m
-    networks:
-      - perf_analyzer
-    volumes:
-      - ./webservices_working:/opt/netapp/webservices_proxy/working
-
   influxdb:
     image: ${PROJ_NAME}/influxdb:${TAG}
     container_name: influxdb
-    depends_on:
-      - netapp_web_services
     mem_limit: 2G
     restart: unless-stopped
 # Internal ports to be exposed to other linked services
@@ -43,25 +22,6 @@ services:
     volumes:
       - ./influx-database:/var/lib/influxdb
 
-#  graphite:
-#    image: ${PROJ_NAME}/graphite:${TAG}
-#    build:
-#      context: ./graphite
-#    container_name: graphite
-#    depends_on:
-#      - netapp_web_services
-#    mem_limit: 2G
-#    restart: unless-stopped
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-file: "5"
-#        max-size: 10m
-#    networks:
-#      - perf_analyzer
-#    volumes:
-#      - ./graphite-database:/opt/graphite/storage/whisper
-
   grafana:
     image: ${PROJ_NAME}/grafana:${TAG}
     container_name: grafana
@@ -79,30 +39,6 @@ services:
         max-size: 10m
     networks:
       - perf_analyzer
-
-  stats_collector:
-    image: ${PROJ_NAME}/collector:${TAG}
-    depends_on:
-      - grafana
-    container_name: collector
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "5"
-        max-size: 10m
-    networks:
-      - perf_analyzer
-    environment:
-        - USERNAME=admin
-        # you can modify the password for webservices here
-        # otherwise it will default to admin
-        #- PASSWORD=myPass
-        - COLLECTION_INTERVAL=30
-        # You can use this to modify the location of the Web Services instance if you have one running externally you wish to use
-        #- PROXY_ADDRESS=webservices:8080
-        # Retention period
-        - RETENTION_PERIOD=${RETENTION_PERIOD}
 
 networks:
   perf_analyzer:
