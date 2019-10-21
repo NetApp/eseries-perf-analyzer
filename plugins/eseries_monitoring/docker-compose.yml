@@ -1,0 +1,24 @@
+version: '2'
+services:
+
+  netapp_web_services:
+    image: plugin/eseries_monitoring/webservices
+    container_name: webservices
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+      - 8443:8443
+    environment:
+      - ACCEPT_EULA=true
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
+    networks:
+      - eseries-grafana_perf_analyzer
+    volumes:
+      - ./webservices_working:/opt/netapp/webservices_proxy/working
+networks:
+  eseries-grafana_perf_analyzer:
+    external: true
