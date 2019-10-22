@@ -1,6 +1,6 @@
 ARG TAG=latest
 ARG PROJ_NAME=ntap-grafana
-FROM ntap-grafana-plugin/eseries_monitoring/python-base
+FROM ${PROJ_NAME}-plugin/eseries_monitoring/python-base
 ENV COLLECTION_INTERVAL=30
 ENV RETENTION_PERIOD=52w
 ENV PROXY_ADDRESS=webservices:8080
