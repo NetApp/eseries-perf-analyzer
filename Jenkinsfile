@@ -34,7 +34,7 @@ pipeline {
                 sh'''
                     # Overwrite the default environment options
                     printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\n" > .env
-		    collector/tests/initiate_testing.sh ${PROJECT_NAME} ${TAG}
+		    plugins/eseries_monitoring/collector/tests/initiate_testing.sh ${PROJECT_NAME} ${TAG}
                 '''
             }
         }

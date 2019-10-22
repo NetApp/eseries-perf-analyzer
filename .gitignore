@@ -9,4 +9,5 @@ influx-database/*
 # ignore the web services working directory
 plugins/eseries_monitoring/webservices_working/*
 # ignore python test cache
-collector/tests/__pycache__/*
+plugins/eseries_monitoring/collector/tests/__pycache__/*
+plugins/eseries_monitoring/collector/tests/collector.py
