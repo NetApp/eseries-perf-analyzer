@@ -7,6 +7,7 @@
   register: dashboards
 
 - name: Create Grafana dashboards
+  ignore_errors: yes
   uri:
     url: "http://localhost:3000/api/dashboards/import"
     method: POST

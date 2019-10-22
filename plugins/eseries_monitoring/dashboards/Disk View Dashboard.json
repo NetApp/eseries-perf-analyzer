@@ -1490,5 +1490,6 @@
 	"title": "Disk View Dashboard",
 	"uid": "VsgedHNWk",
 	"version": 12
-    }
+    },
+    "overwrite": true
 }
