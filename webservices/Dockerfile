@@ -1,6 +1,6 @@
 ARG TAG=latest
 ARG PROJ_NAME=ntap-grafana
-FROM netapp/eseries-webservices:3.20 as base
+FROM netapp/eseries-webservices:4.00 as base
 ADD wsconfig.xml ./wsconfig.xml
 LABEL autodelete="true"
 FROM ${PROJ_NAME}/alpine-base:${TAG}
