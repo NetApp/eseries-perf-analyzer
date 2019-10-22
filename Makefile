@@ -26,7 +26,7 @@ help: ## This help.
 
 # DOCKER TASKS
 # Build the container
-build: warn ## Build the container
+build: docker_find warn ## Build the container
 	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
 	docker build --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/ansible:${TAG} ansible
@@ -36,7 +36,7 @@ build: warn ## Build the container
 	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
 	docker-compose build
 
-build-nc: warn ## Build the container without caching
+build-nc: docker_find warn ## Build the container without caching
 	docker build --no-cache -f build/alpine/Dockerfile --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
 	docker build --no-cache -f build/python/Dockerfile --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --no-cache --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/ansible:${TAG} ansible
@@ -82,18 +82,18 @@ export: build ## Build the images and export them
 #	docker save $(PROJ_NAME)/graphite:${TAG} > images/graphite.tar
 	docker save $(PROJ_NAME)/influxdb:${TAG} > images/influxdb.tar
 
-backup-dashboards: ## Backup the Grafana dashboards and any changes made to them (Grafana must be running)
+backup-dashboards: docker_find ## Backup the Grafana dashboards and any changes made to them (Grafana must be running)
 	docker run --network=container:grafana --rm -v $(shell pwd)/backups:/home/dashboards/backup $(PROJ_NAME)/ansible:${TAG} backup.yml
 
-migrate-graphite: ## Migrate previous Performance Analyzer Graphite database to InfluxDB (must be running)
+migrate-graphite: docker_find ## Migrate previous Performance Analyzer Graphite database to InfluxDB (must be running)
 	docker run --network=container:grafana --rm -v $(shell pwd)/scripts/migration:/home/scripts $(PROJ_NAME)/python-base:${TAG} /bin/sh -c "chmod +x /home/scripts/migrate.sh;/home/scripts/migrate.sh"
 
-stop: ## Stop all of our running services
+stop: docker_find ## Stop all of our running services
 	docker-compose stop
 
 restart: stop run ## 'stop' followed by 'run'
 
-rm: ## Remove all existing containers defined by the project
+rm: docker_find ## Remove all existing containers defined by the project
 	docker-compose rm -s -f
 
 clean: stop rm ## Remove all images and containers built by the project
@@ -115,3 +115,6 @@ ifndef QUIET
 	chmod +x scripts/*
 	scripts/images.sh
 endif
+
+docker_find: ##
+	@sh scripts/docker_exists.sh
