@@ -1,6 +1,6 @@
 ARG TAG=latest
 ARG PROJ_NAME=ntap-grafana
-FROM ntap-grafana-plugin/eseries_monitoring/alpine-base as builder
+FROM ${PROJ_NAME}-plugin/eseries_monitoring/alpine-base as builder
 # Signifies this is a temporary image that can be purged
 LABEL autodelete="true"
 
