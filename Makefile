@@ -48,6 +48,7 @@ help: ## This help.
 # Build the container
 build: __docker-find warn ## Build the container
 	# Prepare dashboards for import
+	$(shell mkdir -p ansible/dashboards)
 	$(shell ls plugins/*/dashboards/*.json | xargs -I{} cp "{}" ansible/dashboards/)
 
 	# Build core services
