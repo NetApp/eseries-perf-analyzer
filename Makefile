@@ -112,10 +112,10 @@ clean: stop rm ## Remove all images and containers built by the project
 
 warn: ##
 ifndef QUIET
-	chmod +x scripts/*
-	scripts/images.sh
+	@chmod +x scripts/*
+	@scripts/images.sh
 endif
 
 __docker-find: ##
-	chmod +x scripts/*
-	scripts/docker_exists.sh
+	@chmod +x scripts/*
+	@scripts/docker_exists.sh
