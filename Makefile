@@ -112,5 +112,6 @@ clean: stop rm ## Remove all images and containers built by the project
 
 warn: ##
 ifndef QUIET
-	sh scripts/images.sh
+	chmod +x scripts/*
+	scripts/images.sh
 endif
