@@ -18,11 +18,28 @@ do
     # build tag: ntap-grafana-plugin/*plugin_dir*/*plugin_component*
     while read -r line
     do
+        # ignore empty lines
+        if [ "$line" = "" ]; then
+            continue
+        fi
+        # ignore commented lines
+        if [ "$(echo $line | cut -b 1)" = "#" ]; then
+            continue
+        fi
+
         arr=($line)
+
+        # the image tag is optional, so if not provided just use the image directory
+        image_dir=${arr[0]}
+        image_tag=${arr[1]}
+        if [ ! $image_tag ]; then
+            image_tag=$image_dir
+        fi
+
         if [ "$plugins_remove_data" = "" ]; then
-                plugins_remove_data="docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${arr[0]}"
+                plugins_remove_data="docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${image_tag}"
                 else
-                plugins_remove_data="$plugins_remove_data; docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${arr[0]}"
+                plugins_remove_data="$plugins_remove_data; docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${image_tag}"
                 fi
         
     done < $file

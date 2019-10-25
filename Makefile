@@ -71,8 +71,11 @@ build-nc: warn ## Build the container without caching
 	docker build --no-cache --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/grafana:$(TAG) grafana
 	docker-compose build --pull --no-cache
 
+	# Build plugins
+	@$(MAKE) --no-print-directory build-plugins
+
 run: build ## Build and run
-	# Start using our compose file and run in the background
+	# Start core services using our compose file and run in the background
 	docker-compose up -d 
 
 	# Start an instance of our Ansible image to perform setup on the running instance
@@ -84,7 +87,7 @@ run: build ## Build and run
 	docker ps
 
 run-nc: build-nc ## Build and run
-	# Start using our compose file and run in the background
+	# Start core services using our compose file and run in the background
 	docker-compose up -d 
 
 	# Start an instance of our Ansible image to perform setup on the running instance
@@ -111,6 +114,7 @@ stop: __docker-find ## Stop all of our running services
 	# Stop running plugins
 	@$(MAKE) --no-print-directory stop-plugins
 
+	# Stop core componenets
 	docker-compose stop
 
 restart: stop run ## 'stop' followed by 'run'
