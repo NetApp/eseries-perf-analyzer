@@ -1,3 +1,11 @@
+# This file defines the order in which components for this plugin are built.
+# Components are built from top to bottom.
+# Per-line: first is the output image name, and second is the folder containing the Dockerfile
+# NOTE: The output image name will be prefixed with "ntap-grafana-plugin/*plugin_directory_name*/"
+
+# ex. The alpine image here will be built from the folder "plugins/eseries_monitoring/alpine_base"
+#     and will be tagged "ntap-grafana-plugin/eseries_monitoring/alpine-base"
+
 alpine-base alpine_base
 python-base python_base
 webservices webservices

@@ -28,5 +28,5 @@ do
     done < $file
 done
 
-# return our final remove command for all plugins
+# return our final remove commands for all plugins
 echo $plugins_remove_data
