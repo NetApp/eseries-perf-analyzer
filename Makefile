@@ -108,10 +108,10 @@ export: build ## Build the images and export them
 	docker save $(PROJ_NAME)/grafana:${TAG} > images/grafana.tar
 
 stop: __docker-find ## Stop all of our running services
-	docker-compose stop
-
 	# Stop running plugins
 	@$(MAKE) --no-print-directory stop-plugins
+
+	docker-compose stop
 
 restart: stop run ## 'stop' followed by 'run'
 
