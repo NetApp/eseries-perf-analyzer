@@ -14,5 +14,5 @@ do
     fi
 done
 
-# return our final compose command for all plugins
+# return our final compose commands for all plugins
 echo $plugins_compose_data
