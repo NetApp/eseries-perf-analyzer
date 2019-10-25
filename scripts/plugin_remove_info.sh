@@ -18,13 +18,13 @@ do
     # build tag: ntap-grafana-plugin/*plugin_dir*/*plugin_component*
     while read -r line
     do
-	arr=($line)
-	if [ "$plugins_remove_data" = "" ]; then
-	        plugins_remove_data="docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${arr[0]}"
-		else
-	        plugins_remove_data="$plugins_remove_data; docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${arr[0]}"
-		fi
-	
+        arr=($line)
+        if [ "$plugins_remove_data" = "" ]; then
+                plugins_remove_data="docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${arr[0]}"
+                else
+                plugins_remove_data="$plugins_remove_data; docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${arr[0]}"
+                fi
+        
     done < $file
 done
 
