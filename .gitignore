@@ -11,3 +11,5 @@ plugins/eseries_monitoring/webservices_working/*
 # ignore python test cache
 plugins/eseries_monitoring/collector/tests/__pycache__/*
 plugins/eseries_monitoring/collector/tests/collector.py
+# ignore emacs backup files
+*~
