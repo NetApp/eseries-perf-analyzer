@@ -7,3 +7,4 @@
   tasks:
     - include_tasks: tasks/grafana.yml
     - include_tasks: tasks/dashboard_import.yml
+    - include_tasks: tasks/plugin_tasks.yml

@@ -1,0 +1,12 @@
+- name: Find tasks defined by plugins
+  find:
+    file_type: file
+    paths: ./tasks/plugin_tasks
+    patterns: "*.yml"
+    recurse: no
+  register: plugin_tasks
+
+- name: Run plugin tasks
+  include_tasks:
+    file: "{{ item.path }}"
+  with_items: "{{ plugin_tasks.files }}"
