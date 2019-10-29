@@ -1,0 +1,25 @@
+- name: Get influxdb internal datasource
+  uri:
+    url: "http://localhost:3000/api/datasources/id/InfluxDB_Internal"
+    method: GET
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    force_basic_auth: yes
+    status_code: 404,200
+    headers:
+      Accept: "application/json"
+  register: resp
+
+- name: Define influxdb internal datasource if it doesn't exist
+  uri:
+    url: "http://localhost:3000/api/datasources"
+    method: POST
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    body: "{{ lookup('file', 'tasks/plugin_tasks/influxdb_internal_monitoring/datastore.json') | from_json }}"
+    status_code: 200
+    body_format: json
+    force_basic_auth: yes
+    headers:
+      Content-Type: "application/json"
+  when: resp.status == 404

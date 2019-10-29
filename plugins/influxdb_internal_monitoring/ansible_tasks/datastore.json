@@ -1,0 +1,10 @@
+{
+  "name":"InfluxDB_Internal",
+  "label": "InfluxDB Internal",
+  "type": "influxdb",
+  "url":"http://influxdb:8086",
+  "access":"proxy",
+  "basicAuth": false,
+  "isDefault": false,
+  "database":"_internal"
+}

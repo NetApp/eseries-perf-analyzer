@@ -12,7 +12,7 @@ do
     mkdir -p "ansible/tasks/plugin_tasks/${plugin_name}"
 
     # find all tasks for this plugin and copy them to ansible's task directory
-    find_tasks=("ls ${folder}/*.yml")
+    find_tasks=("ls ${folder}/*")
     for file in $find_tasks
     do
 	if [ "${file}" != "ls" ]; then

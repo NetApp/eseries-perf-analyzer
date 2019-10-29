@@ -3,7 +3,7 @@
     file_type: file
     paths: ./tasks/plugin_tasks
     patterns: "*.yml"
-    recurse: no
+    recurse: yes
   register: plugin_tasks
 
 - name: Run plugin tasks
