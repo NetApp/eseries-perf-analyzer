@@ -49,7 +49,8 @@ help: ## This help.
 build: __docker-find warn ## Build the container
 	# Prepare dashboards for import
 	$(shell mkdir -p ansible/dashboards)
-	$(shell ls plugins/*/dashboards/*.json | xargs -I{} cp "{}" ansible/dashboards/)
+	@chmod +x scripts/*
+	@scripts/plugin_dashboard_info.sh
 
 	# Prepare plugin tasks
 	$(shell mkdir -p ansible/tasks/plugin_tasks)
@@ -70,7 +71,8 @@ build-nc: __docker-find warn ## Build the container without caching
 build-nc: warn ## Build the container without caching
 	# Prepare dashboards for import
 	$(shell mkdir -p ansible/dashboards)
-	$(shell ls plugins/*/dashboards/*.json | xargs -I{} cp "{}" ansible/dashboards/)
+	@chmod +x scripts/*
+	@scripts/plugin_dashboard_info.sh
 
 	# Prepare plugin tasks
 	$(shell mkdir -p ansible/tasks/plugin_tasks)
