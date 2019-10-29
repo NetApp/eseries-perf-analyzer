@@ -54,7 +54,8 @@ build: __docker-find warn ## Build the container
 
 	# Prepare plugin tasks
 	$(shell mkdir -p ansible/tasks/plugin_tasks)
-	$(shell ls plugins/*/ansible_tasks/* | xargs -I{} cp -r "{}" ansible/tasks/plugin_tasks)
+	@chmod +x scripts/*
+	@scripts/plugin_task_info.sh
 
 	# Build core services
 	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
@@ -76,7 +77,8 @@ build-nc: warn ## Build the container without caching
 
 	# Prepare plugin tasks
 	$(shell mkdir -p ansible/tasks/plugin_tasks)
-	$(shell ls plugins/*/ansible_tasks/* | xargs -I{} cp -r "{}" ansible/tasks/plugin_tasks)
+	@chmod +x scripts/*
+	@scripts/plugin_task_info.sh
 
 	docker build --no-cache -f build/alpine/Dockerfile --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
 	docker build --no-cache -f build/python/Dockerfile --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
