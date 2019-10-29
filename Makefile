@@ -51,6 +51,10 @@ build: __docker-find warn ## Build the container
 	$(shell mkdir -p ansible/dashboards)
 	$(shell ls plugins/*/dashboards/*.json | xargs -I{} cp "{}" ansible/dashboards/)
 
+	# Prepare plugin tasks
+	$(shell mkdir -p ansible/tasks/plugin_tasks)
+	$(shell ls plugins/*/ansible_tasks/* | xargs -I{} cp -r "{}" ansible/tasks/plugin_tasks)
+
 	# Build core services
 	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
 	docker build --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
@@ -64,6 +68,14 @@ build-nc: __docker-find warn ## Build the container without caching
 	@$(MAKE) --no-print-directory build-plugins
 
 build-nc: warn ## Build the container without caching
+	# Prepare dashboards for import
+	$(shell mkdir -p ansible/dashboards)
+	$(shell ls plugins/*/dashboards/*.json | xargs -I{} cp "{}" ansible/dashboards/)
+
+	# Prepare plugin tasks
+	$(shell mkdir -p ansible/tasks/plugin_tasks)
+	$(shell ls plugins/*/ansible_tasks/* | xargs -I{} cp -r "{}" ansible/tasks/plugin_tasks)
+
 	docker build --no-cache -f build/alpine/Dockerfile --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
 	docker build --no-cache -f build/python/Dockerfile --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --no-cache --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/ansible:${TAG} ansible
@@ -78,24 +90,26 @@ run: build ## Build and run
 	# Start core services using our compose file and run in the background
 	docker-compose up -d 
 
+	# Run plugins
+	@$(MAKE) --no-print-directory run-plugins
+
 	# Start an instance of our Ansible image to perform setup on the running instance
 	docker run --rm --network=container:grafana $(PROJ_NAME)/ansible:${TAG}
 	@$(shell rm -rf ansible/dashboards/*)
-
-	# Run plugins
-	@$(MAKE) --no-print-directory run-plugins
+	@$(shell rm -rf ansible/tasks/plugin_tasks/*)
 	docker ps
 
 run-nc: build-nc ## Build and run
 	# Start core services using our compose file and run in the background
 	docker-compose up -d 
 
+	# Run plugins
+	@$(MAKE) --no-print-directory run-plugins
+
 	# Start an instance of our Ansible image to perform setup on the running instance
 	docker run --rm --network=container:grafana $(PROJ_NAME)/ansible:${TAG}
 	@$(shell rm -rf ansible/dashboards/*)
-
-	# Run plugins
-	@$(MAKE) --no-print-directory run-plugins
+	@$(shell rm -rf ansible/tasks/plugin_tasks/*)
 	docker ps
 
 export-nc: build-nc ## Build the images and export them
