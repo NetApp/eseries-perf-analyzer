@@ -20,6 +20,19 @@
 	"links": [],
 	"panels": [
 	    {
+		"collapsed": false,
+		"gridPos": {
+		    "h": 1,
+		    "w": 24,
+		    "x": 0,
+		    "y": 0
+		},
+		"id": 8,
+		"panels": [],
+		"title": "Database",
+		"type": "row"
+	    },
+	    {
 		"columns": [],
 		"datasource": "InfluxDB_Internal",
 		"fontSize": "100%",
@@ -27,7 +40,7 @@
 		    "h": 8,
 		    "w": 5,
 		    "x": 0,
-		    "y": 0
+		    "y": 1
 		},
 		"id": 4,
 		"options": {},
@@ -46,7 +59,7 @@
 			"type": "hidden"
 		    },
 		    {
-			"alias": "Number of Measurements",
+			"alias": "Measurement Count",
 			"colorMode": null,
 			"colors": [
 			    "rgba(245, 54, 54, 0.9)",
@@ -78,7 +91,7 @@
 			"unit": "short"
 		    },
 		    {
-			"alias": "Num Series (Cardinality)",
+			"alias": "Series Count (Cardinality)",
 			"colorMode": null,
 			"colors": [
 			    "rgba(245, 54, 54, 0.9)",
@@ -153,6 +166,132 @@
 	    },
 	    {
 		"aliasColors": {},
+		"bars": true,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": "InfluxDB_Internal",
+		"fill": 1,
+		"fillGradient": 0,
+		"gridPos": {
+		    "h": 8,
+		    "w": 4,
+		    "x": 5,
+		    "y": 1
+		},
+		"id": 10,
+		"legend": {
+		    "avg": false,
+		    "current": false,
+		    "max": false,
+		    "min": false,
+		    "show": false,
+		    "total": false,
+		    "values": false
+		},
+		"lines": false,
+		"linewidth": 5,
+		"nullPointMode": "null",
+		"options": {
+		    "dataLinks": []
+		},
+		"percentage": false,
+		"pointradius": 2,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": true,
+		"targets": [
+		    {
+			"alias": "Queries",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "httpd",
+			"orderByTime": "ASC",
+			"policy": "default",
+			"query": "SELECT non_negative_derivative(\"queryReq\", 1s) FROM \"httpd\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+			"rawQuery": false,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"queryReq"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "last"
+				},
+				{
+				    "params": [
+					"1s"
+				    ],
+				    "type": "non_negative_derivative"
+				}
+			    ]
+			],
+			"tags": []
+		    }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Queries",
+		"tooltip": {
+		    "shared": true,
+		    "sort": 0,
+		    "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		    "buckets": null,
+		    "mode": "time",
+		    "name": null,
+		    "show": true,
+		    "values": []
+		},
+		"yaxes": [
+		    {
+			"format": "ops",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		    },
+		    {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": false
+		    }
+		],
+		"yaxis": {
+		    "align": false,
+		    "alignLevel": null
+		}
+	    },
+	    {
+		"aliasColors": {},
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
@@ -161,17 +300,184 @@
 		"fillGradient": 0,
 		"gridPos": {
 		    "h": 8,
-		    "w": 19,
-		    "x": 5,
-		    "y": 0
+		    "w": 4,
+		    "x": 9,
+		    "y": 1
 		},
-		"id": 6,
+		"id": 12,
 		"legend": {
 		    "avg": false,
 		    "current": false,
 		    "max": false,
 		    "min": false,
 		    "show": true,
+		    "total": false,
+		    "values": false
+		},
+		"lines": false,
+		"linewidth": 1,
+		"nullPointMode": "null",
+		"options": {
+		    "dataLinks": []
+		},
+		"percentage": false,
+		"pointradius": 2,
+		"points": true,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		    {
+			"alias": "OK",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "httpd",
+			"orderByTime": "ASC",
+			"policy": "default",
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"pointsWrittenOK"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "last"
+				},
+				{
+				    "params": [
+					"1s"
+				    ],
+				    "type": "non_negative_derivative"
+				}
+			    ]
+			],
+			"tags": []
+		    },
+		    {
+			"alias": "Fail",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "httpd",
+			"orderByTime": "ASC",
+			"policy": "default",
+			"refId": "B",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"pointsWrittenFail"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "last"
+				},
+				{
+				    "params": [
+					"1s"
+				    ],
+				    "type": "non_negative_derivative"
+				}
+			    ]
+			],
+			"tags": []
+		    }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Point Writes",
+		"tooltip": {
+		    "shared": true,
+		    "sort": 0,
+		    "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		    "buckets": null,
+		    "mode": "time",
+		    "name": null,
+		    "show": true,
+		    "values": []
+		},
+		"yaxes": [
+		    {
+			"format": "ops",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		    },
+		    {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		    }
+		],
+		"yaxis": {
+		    "align": false,
+		    "alignLevel": null
+		}
+	    },
+	    {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": "InfluxDB_Internal",
+		"fill": 1,
+		"fillGradient": 0,
+		"gridPos": {
+		    "h": 8,
+		    "w": 11,
+		    "x": 13,
+		    "y": 1
+		},
+		"id": 14,
+		"legend": {
+		    "avg": false,
+		    "current": false,
+		    "max": false,
+		    "min": false,
+		    "show": false,
 		    "total": false,
 		    "values": false
 		},
@@ -191,7 +497,6 @@
 		"steppedLine": false,
 		"targets": [
 		    {
-			"alias": "$tag_database",
 			"groupBy": [
 			    {
 				"params": [
@@ -201,18 +506,12 @@
 			    },
 			    {
 				"params": [
-				    "database"
-				],
-				"type": "tag"
-			    },
-			    {
-				"params": [
-				    "none"
+				    "null"
 				],
 				"type": "fill"
 			    }
 			],
-			"measurement": "tsm1_wal",
+			"measurement": "httpd",
 			"orderByTime": "ASC",
 			"policy": "default",
 			"refId": "A",
@@ -221,13 +520,19 @@
 			    [
 				{
 				    "params": [
-					"currentSegmentDiskBytes"
+					"writeReqBytes"
 				    ],
 				    "type": "field"
 				},
 				{
 				    "params": [],
-				    "type": "mean"
+				    "type": "last"
+				},
+				{
+				    "params": [
+					"10s"
+				    ],
+				    "type": "non_negative_derivative"
 				}
 			    ]
 			],
@@ -238,7 +543,7 @@
 		"timeFrom": null,
 		"timeRegions": [],
 		"timeShift": null,
-		"title": "WAL Cur Seg Disk Bytes",
+		"title": "Bytes Written",
 		"tooltip": {
 		    "shared": true,
 		    "sort": 0,
@@ -276,6 +581,19 @@
 		}
 	    },
 	    {
+		"collapsed": false,
+		"gridPos": {
+		    "h": 1,
+		    "w": 24,
+		    "x": 0,
+		    "y": 9
+		},
+		"id": 16,
+		"panels": [],
+		"title": "Memory",
+		"type": "row"
+	    },
+	    {
 		"aliasColors": {},
 		"bars": false,
 		"dashLength": 10,
@@ -284,10 +602,10 @@
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
-		    "h": 11,
-		    "w": 24,
+		    "h": 8,
+		    "w": 12,
 		    "x": 0,
-		    "y": 8
+		    "y": 10
 		},
 		"id": 2,
 		"legend": {
@@ -466,6 +784,247 @@
 		    "align": false,
 		    "alignLevel": null
 		}
+	    },
+	    {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": "InfluxDB_Internal",
+		"fill": 1,
+		"fillGradient": 0,
+		"gridPos": {
+		    "h": 8,
+		    "w": 12,
+		    "x": 12,
+		    "y": 10
+		},
+		"id": 6,
+		"legend": {
+		    "avg": false,
+		    "current": false,
+		    "max": false,
+		    "min": false,
+		    "show": true,
+		    "total": false,
+		    "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"nullPointMode": "null",
+		"options": {
+		    "dataLinks": []
+		},
+		"percentage": false,
+		"pointradius": 2,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		    {
+			"alias": "$tag_database",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "database"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "tsm1_wal",
+			"orderByTime": "ASC",
+			"policy": "default",
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"currentSegmentDiskBytes"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "mean"
+				}
+			    ]
+			],
+			"tags": []
+		    }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "WAL Cur Seg Disk Bytes",
+		"tooltip": {
+		    "shared": true,
+		    "sort": 0,
+		    "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		    "buckets": null,
+		    "mode": "time",
+		    "name": null,
+		    "show": true,
+		    "values": []
+		},
+		"yaxes": [
+		    {
+			"format": "bytes",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		    },
+		    {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		    }
+		],
+		"yaxis": {
+		    "align": false,
+		    "alignLevel": null
+		}
+	    },
+	    {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": "InfluxDB_Internal",
+		"fill": 1,
+		"fillGradient": 0,
+		"gridPos": {
+		    "h": 8,
+		    "w": 24,
+		    "x": 0,
+		    "y": 18
+		},
+		"id": 18,
+		"legend": {
+		    "avg": false,
+		    "current": false,
+		    "max": false,
+		    "min": false,
+		    "show": false,
+		    "total": false,
+		    "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"nullPointMode": "null",
+		"options": {
+		    "dataLinks": []
+		},
+		"percentage": false,
+		"pointradius": 2,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		    {
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "runtime",
+			"orderByTime": "ASC",
+			"policy": "default",
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"HeapAlloc"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "mean"
+				}
+			    ]
+			],
+			"tags": []
+		    }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Current Total Heap Allocation",
+		"tooltip": {
+		    "shared": true,
+		    "sort": 0,
+		    "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		    "buckets": null,
+		    "mode": "time",
+		    "name": null,
+		    "show": true,
+		    "values": []
+		},
+		"yaxes": [
+		    {
+			"format": "bytes",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		    },
+		    {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		    }
+		],
+		"yaxis": {
+		    "align": false,
+		    "alignLevel": null
+		}
 	    }
 	],
 	"refresh": false,
@@ -496,7 +1055,6 @@
 	"timezone": "",
 	"title": "InfluxDB Internals",
 	"uid": "SOkbxoAZz",
-	"version": 2
-    },
-    "overwrite": true
+	"version": 1
+    }
 }
