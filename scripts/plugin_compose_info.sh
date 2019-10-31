@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # find all of the docker-compose files for each plugin
-plugins_compose_files=$(find plugins/ -type f -name "docker-compose.yml")
+plugins_compose_files=$(find plugins/ -mindepth 2 -maxdepth 2 -type f -name "docker-compose.yml")
 
 # construct our compose commands
 plugins_compose_data=""

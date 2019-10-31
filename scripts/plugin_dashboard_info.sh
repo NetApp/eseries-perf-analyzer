@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # find all of the dashboard folders for plugins
-plugins_dashboard_folders=$(find plugins/ -maxdepth 2 -type d -name "dashboards")
+plugins_dashboard_folders=$(find plugins/ -mindepth 2 -maxdepth 2 -type d -name "dashboards")
 
 for folder in $plugins_dashboard_folders
 do
