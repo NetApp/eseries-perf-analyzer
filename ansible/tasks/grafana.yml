@@ -1,6 +1,8 @@
-# Pause for a few seconds to make sure influxdb has started completely
-- pause:
-    seconds: 5
+- name: Wait for InfluxDB to startup completely
+  wait_for:
+    host: "influxdb"
+    port: 8086
+    timeout: 5
 
 - name: Get influxdb datasource
   uri:
