@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # find all of the task folders for plugins
-plugins_task_folders=$(find plugins/ -maxdepth 2 -type d -name "ansible_tasks")
+plugins_task_folders=$(find plugins/ -mindepth 2 -maxdepth 2 -type d -name "ansible_tasks")
 
 for folder in $plugins_task_folders
 do

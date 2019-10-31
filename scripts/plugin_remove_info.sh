@@ -2,7 +2,7 @@
 
 # find all of the build_info text files for each plugin
 # these tell us how to build the images in the plugins
-plugins_build_info_files=$(find plugins/ -type f -name "build_info.txt")
+plugins_build_info_files=$(find plugins/ -mindepth 2 -maxdepth 2 -type f -name "build_info.txt")
 
 # construct our remove commands
 plugins_remove_data=""
