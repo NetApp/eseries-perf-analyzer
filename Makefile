@@ -65,7 +65,6 @@ build: __docker-find warn ## Build the container
 	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/grafana:$(TAG) grafana
 	docker-compose build
 
-build-nc: __docker-find warn ## Build the container without caching
 	# Build plugins
 	@$(MAKE) --no-print-directory build-plugins
 
