@@ -52,7 +52,7 @@ run: build ## Build and run
 
 	# Start an instance of our Ansible image to perform setup on the running instance
 	#  We run using the host network so that we can access not only the WSP instance, but also the individual containers.
-	docker run --rm --network "host" $(PROJ_NAME)/ansible:${TAG}
+	docker run --rm --network=container:grafana $(PROJ_NAME)/ansible:${TAG}
 
 	docker ps
 
@@ -62,7 +62,7 @@ run-nc: build-nc ## Build and run
 
 	# Start an instance of our Ansible image to perform setup on the running instance
 	#  We run using the host network so that we can access not only the WSP instance, but also the individual containers.
-	docker run --rm --network "host" $(PROJ_NAME)/ansible:${TAG}
+	docker run --rm --network=container:grafana $(PROJ_NAME)/ansible:${TAG}
 
 export-nc: build-nc ## Build the images and export them
 	mkdir -p images
