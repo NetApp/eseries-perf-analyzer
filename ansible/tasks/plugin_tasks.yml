@@ -1,9 +1,9 @@
 - name: Find tasks defined by plugins
   find:
     file_type: file
-    paths: ./tasks/plugin_tasks
+    paths: ./tasks/plugin_tasks  # NOTE: Plugin tasks are copied to subdirectories at this path at the start of the build process
     patterns: "*.yml"
-    recurse: yes
+    recurse: yes  # Each plugin gets its own subfolder for tasks, and we maintain their folder structure
   register: plugin_tasks
 
 - name: Run plugin tasks

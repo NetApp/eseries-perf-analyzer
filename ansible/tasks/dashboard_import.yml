@@ -1,15 +1,15 @@
 - name: Find dashboards
   find:
     file_type: file
-    paths: ./dashboards
+    paths: ./dashboards  # NOTE: Plugin dashboards are copied to subdirectories at this path at the start of the build process
     patterns: "*.json"
-    recurse: yes
+    recurse: yes  # Each plugin gets its own subfolder for dashboards, and we maintain their folder structure
   register: dashboards
 
 - name: Create Grafana dashboards
   ignore_errors: yes
   uri:
-    url: "http://localhost:3000/api/dashboards/import"
+    url: "http://grafana:3000/api/dashboards/import"
     method: POST
     headers:
       Content-Type: "application/json"
