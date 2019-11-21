@@ -41,6 +41,51 @@ __version__ = '1.0'
 # LIST OF METRICS######
 #######################
 
+CONTROLLER_PARAMS = [
+    "observedTime",
+    "observedTimeInMS",
+    "readIOps",
+    "writeIOps",
+    "otherIOps",
+    "combinedIOps",
+    "readThroughput",
+    "writeThroughput",
+    "combinedThroughput",
+    "readResponseTime",
+    "readResponseTimeStdDev",
+    "writeResponseTime",
+    "writeResponseTimeStdDev",
+    "combinedResponseTime",
+    "combinedResponseTimeStdDev",
+    "averageReadOpSize",
+    "averageWriteOpSize",
+    "readOps",
+    "writeOps",
+    "readPhysicalIOps",
+    "writePhysicalIOps",
+    "controllerId",
+    "cacheHitBytesPercent",
+    "randomIosPercent",
+    "mirrorBytesPercent",
+    "fullStripeWritesBytesPercent",
+    "maxCpuUtilization",
+    "maxCpuUtilizationPerCore"
+    "cpuAvgUtilization",
+    "cpuAvgUtilizationPerCore"
+    "cpuAvgUtilizationPerCoreStdDev",
+    "raid0BytesPercent",
+    "raid1BytesPercent",
+    "raid5BytesPercent",
+    "raid6BytesPercent",
+    "ddpBytesPercent",
+    "readHitResponseTime",
+    "readHitResponseTimeStdDev",
+    "writeHitResponseTime",
+    "writeHitResponseTimeStdDev",
+    "combinedHitResponseTime",
+    "combinedHitResponseTimeStdDev"
+]
+
 DRIVE_PARAMS = [
     'averageReadOpSize',
     'averageWriteOpSize',
@@ -58,6 +103,26 @@ DRIVE_PARAMS = [
     'writePhysicalIOps',
     'writeResponseTime',
     'writeThroughput'
+]
+
+INTERFACE_PARAMS = [
+    "readIOps",
+    "writeIOps",
+    "otherIOps",
+    "combinedIOps",
+    "readThroughput",
+    "writeThroughput",
+    "combinedThroughput",
+    "readResponseTime",
+    "writeResponseTime",
+    "combinedResponseTime",
+    "averageReadOpSize",
+    "averageWriteOpSize",
+    "readOps",
+    "writeOps",
+    "queueDepthTotal",
+    "queueDepthMax",
+    "channelErrorCounts"
 ]
 
 SYSTEM_PARAMS = [
@@ -146,6 +211,8 @@ PARSER.add_argument('-s', '--showStorageNames', action='store_true',
                     help='Outputs the storage array names found from the SANtricity webserver')
 PARSER.add_argument('-v', '--showVolumeNames', action='store_true', default=0,
                     help='Outputs the volume names found from the SANtricity webserver')
+PARSER.add_argument('-f', '--showInterfaceNames', action='store_true', default=0,
+                    help='Outputs the interface names found from the SANtricity webserver')
 PARSER.add_argument('-a', '--showVolumeMetrics', action='store_true', default=0,
                     help='Outputs the volume payload metrics before it is sent')
 PARSER.add_argument('-d', '--showDriveNames', action='store_true', default=0,
@@ -158,6 +225,8 @@ PARSER.add_argument('-m', '--showMELMetrics', action='store_true', default=0,
                     help='Outputs the MEL payload metrics before it is sent')
 PARSER.add_argument('-e', '--showStateMetrics', action='store_true', default=0,
                     help='Outputs the state payload metrics before it is sent')
+PARSER.add_argument('-g', '--showInterfaceMetrics', action='store_true', default=0,
+                    help='Outputs the interface payload metrics before it is sent')
 PARSER.add_argument('-i', '--showIteration', action='store_true', default=0,
                     help='Outputs the current loop iteration')
 PARSER.add_argument('-n', '--doNotPost', action='store_true', default=0,
@@ -214,6 +283,17 @@ def get_session():
     request_session.verify = False
     return request_session
 
+def get_system_name(sys):
+    sys_name = sys.get("name", sys["id"])
+    
+    # If this storage device lacks a name, use the id
+    if not sys_name or len(sys_name) <= 0:
+        sys_name = sys["id"]
+    # If this storage device still lacks a name, use a default
+    if not sys_name or len(sys_name) <= 0:
+        sys_name = DEFAULT_SYSTEM_NAME
+    
+    return sys_name
 
 def get_drive_location(storage_id, session):
     """
@@ -251,13 +331,7 @@ def collect_storage_metrics(sys):
         client = InfluxDBClient(host=INFLUXDB_HOSTNAME, port=INFLUXDB_PORT, database=INFLUXDB_DATABASE)
 
         sys_id = sys["id"]
-        sys_name = sys.get("name", sys_id)
-        # If this storage device lacks a name, use the id
-        if not sys_name or len(sys_name) <= 0:
-            sys_name = sys_id
-        # If this storage device still lacks a name, use a default
-        if not sys_name or len(sys_name) <= 0:
-            sys_name = DEFAULT_SYSTEM_NAME
+        sys_name = get_system_name(sys)
 
         json_body = list()
 
@@ -287,6 +361,30 @@ def collect_storage_metrics(sys):
             if CMD.showDriveMetrics:
                 LOG.info("Drive payload: %s", disk_item)
             json_body.append(disk_item)
+
+        # Get interface statistics
+        interface_stats_list = session.get(("{}/{}/analysed-interface-statistics").format(
+            PROXY_BASE_URL, sys_id)).json()
+        if CMD.showInterfaceNames:
+            for stats in interface_stats_list:
+                LOG.info(stats["interfaceId"])
+        # Add interface statistics to json body
+        for stats in interface_stats_list:
+            if_item = dict(
+                measurement = "interface",
+                tags = dict(
+                    sys_id = sys_id,
+                    sys_name = sys_name,
+                    interface_id = stats["interfaceId"],
+                    channel_type = stats["channelType"]
+                ),
+                fields = dict(
+                    (metric, stats.get(metric)) for metric in INTERFACE_PARAMS
+                )
+            )
+            if CMD.showInterfaceMetrics:
+                LOG.info("Interface payload: %s", if_item)
+            json_body.append(if_item)
 
         # Get System statistics
         system_stats_list = session.get(("{}/{}/analysed-system-statistics").format(
@@ -346,13 +444,7 @@ def collect_major_event_log(sys):
         client = InfluxDBClient(host=INFLUXDB_HOSTNAME, port=INFLUXDB_PORT, database=INFLUXDB_DATABASE)
         
         sys_id = sys["id"]
-        sys_name = sys.get("name", sys_id)
-        # If this storage device lacks a name, use the id
-        if not sys_name or len(sys_name) <= 0:
-            sys_name = sys_id
-        # If this storage device still lacks a name, use a default
-        if not sys_name or len(sys_name) <= 0:
-            sys_name = DEFAULT_SYSTEM_NAME
+        sys_name = get_system_name(sys)
         
         json_body = list()
         start_from = -1
@@ -424,13 +516,7 @@ def collect_system_state(sys, checksums):
         client = InfluxDBClient(host=INFLUXDB_HOSTNAME, port=INFLUXDB_PORT, database=INFLUXDB_DATABASE)
         
         sys_id = sys["id"]
-        sys_name = sys.get("name", sys_id)
-        # If this storage device lacks a name, use the id
-        if not sys_name or len(sys_name) <= 0:
-            sys_name = sys_id
-        # If this storage device still lacks a name, use a default
-        if not sys_name or len(sys_name) <= 0:
-            sys_name = DEFAULT_SYSTEM_NAME
+        sys_name = get_system_name(sys)
 
         # query the api and get a list of current failures for this system
         failure_response = session.get(("{}/{}/failures").format(PROXY_BASE_URL, sys_id)).json()
@@ -636,6 +722,7 @@ if __name__ == "__main__":
         create_continuous_query(DRIVE_PARAMS, "disks")
         create_continuous_query(SYSTEM_PARAMS, "system")
         create_continuous_query(VOLUME_PARAMS, "volumes")
+        create_continuous_query(INTERFACE_PARAMS, "interface")
     
         for system in configuration.get("storage_systems", list()):
             LOG.info("system: %s", str(system))
