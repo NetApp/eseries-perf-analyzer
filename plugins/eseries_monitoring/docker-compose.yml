@@ -16,7 +16,7 @@ services:
         max-file: "5"
         max-size: 10m
     networks:
-      - eseries-grafana_perf_analyzer
+      - eseries_perf_analyzer
     volumes:
       - ./webservices_working:/opt/netapp/webservices_proxy/working
 
@@ -32,7 +32,7 @@ services:
         max-file: "5"
         max-size: 10m
     networks:
-      - eseries-grafana_perf_analyzer
+      - eseries_perf_analyzer
     environment:
         - USERNAME=admin
         # you can modify the password for webservices here
@@ -43,5 +43,5 @@ services:
         #- PROXY_ADDRESS=webservices:8080
 
 networks:
-  eseries-grafana_perf_analyzer:
+  eseries_perf_analyzer:
     external: true

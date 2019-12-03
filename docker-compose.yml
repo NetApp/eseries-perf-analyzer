@@ -18,7 +18,7 @@ services:
         max-file: "5"
         max-size: 10m
     networks:
-      - perf_analyzer
+      - eseries_perf_analyzer
     volumes:
       - ./influx-database:/var/lib/influxdb
 
@@ -39,10 +39,11 @@ services:
         max-file: "5"
         max-size: 10m
     networks:
-      - perf_analyzer
+      - eseries_perf_analyzer
 
 networks:
-  perf_analyzer:
+  eseries_perf_analyzer:
+    external: true
 
 volumes:
   grafana_data:
