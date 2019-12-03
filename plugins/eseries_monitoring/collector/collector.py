@@ -511,6 +511,15 @@ def collect_system_state(sys, checksums):
     except RuntimeError:
         LOG.error(("Error when attempting to post state information for {}/{}").format(sys["name"], sys["id"]))
 
+def create_continuous_query(params_list, database):
+    try:
+        for metric in params_list:
+            ds_select = "SELECT mean(\"" + metric + "\") AS \"ds_" + metric + "\" INTO \"" + INFLUXDB_DATABASE + "\".\"downsample_retention\".\"" + database + "\" FROM \"" + database + "\" WHERE (time < now()-1w) GROUP BY time(5m)"
+            #LOG.info(ds_select)
+            client.create_continuous_query("downsample_" + database + "_" + metric, ds_select, INFLUXDB_DATABASE, "")
+            #client.drop_continuous_query("downsample_" + database + "_" + metric, INFLUXDB_DATABASE)
+    except Exception as err:
+        LOG.info("Creation of continuous query on '{}' failed: {}".format(database, err))
 
 #######################
 # MAIN FUNCTIONS#######
@@ -532,12 +541,23 @@ if __name__ == "__main__":
 
         # set up our default retention policies if we have that configured
         try:
-            client.create_retention_policy("default_retention", RETENTION_DUR, "1", INFLUXDB_DATABASE, True)
+            client.create_retention_policy("default_retention", "1w", "1", INFLUXDB_DATABASE, True)
+        except InfluxDBClientError:
+            LOG.info("Updating retention policy to {}...".format("1w"))
+            client.alter_retention_policy("default_retention", INFLUXDB_DATABASE,
+                                          "1w", "1", True)
+        try:
+            client.create_retention_policy("downsample_retention", RETENTION_DUR, "1", INFLUXDB_DATABASE, False)
         except InfluxDBClientError:
             LOG.info("Updating retention policy to {}...".format(RETENTION_DUR))
-            client.alter_retention_policy("default_retention", INFLUXDB_DATABASE,
-                                          RETENTION_DUR, "1", True)
-            
+            client.alter_retention_policy("downsample_retention", INFLUXDB_DATABASE,
+                                          RETENTION_DUR, "1", False)
+        
+        # set up continuous queries that will downsample our metric data periodically
+        create_continuous_query(DRIVE_PARAMS, "disks")
+        create_continuous_query(SYSTEM_PARAMS, "system")
+        create_continuous_query(VOLUME_PARAMS, "volumes")
+    
         for system in configuration.get("storage_systems", list()):
             LOG.info("system: %s", str(system))
             body = dict(controllerAddresses=system.get("addresses"),

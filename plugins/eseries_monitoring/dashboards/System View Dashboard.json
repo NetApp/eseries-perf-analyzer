@@ -1,8 +1,8 @@
 {
     "dashboard": {
 	"annotations": {
-            "list": [
-	        {
+	    "list": [
+		{
 		    "builtIn": 1,
 		    "datasource": "-- Grafana --",
 		    "enable": true,
@@ -42,11 +42,10 @@
 	    ]
 	},
 	"editable": true,
-	"folderId": "eseriesdashfolder",
 	"gnetId": null,
 	"graphTooltip": 0,
 	"id": null,
-	"iteration": 1564429558733,
+	"iteration": 1578381531858,
 	"links": [
 	    {
 		"asDropdown": true,
@@ -63,6 +62,7 @@
 	"panels": [
 	    {
 		"collapsed": false,
+		"datasource": null,
 		"gridPos": {
 		    "h": 1,
 		    "w": 24,
@@ -76,23 +76,20 @@
 	    },
 	    {
 		"columns": [],
+		"datasource": null,
 		"description": "List of disks on the selected system(s)",
 		"fontSize": "100%",
 		"gridPos": {
 		    "h": 8,
 		    "w": 9,
 		    "x": 0,
-		    "y": 0
+		    "y": 1
 		},
 		"id": 16,
 		"links": [
 		    {
-			"dashboard": "Disk View Dashboard",
-			"includeVars": true,
-			"keepTime": true,
 			"title": "Disk View Dashboard",
-			"type": "dashboard",
-			"url": "/d/VsgedHNWk/disk-view-dashboard"
+			"url": "/d/VsgedHNWk/disk-view-dashboard?$__url_time_range&$__all_variables"
 		    }
 		],
 		"options": {},
@@ -246,12 +243,14 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		    "h": 8,
 		    "w": 5,
 		    "x": 9,
-		    "y": 0
+		    "y": 1
 		},
 		"id": 18,
 		"legend": {
@@ -267,7 +266,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
-		"options": {},
+		"options": {
+		    "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 2,
 		"points": false,
@@ -302,7 +303,60 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
+			"query": "SELECT mean(\"combinedResponseTime\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": false,
 			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"combinedResponseTime"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "mean"
+				}
+			    ]
+			],
+			"tags": [
+			    {
+				"key": "sys_name",
+				"operator": "=~",
+				"value": "/^$System$/"
+			    }
+			]
+		    },
+		    {
+			"alias": "$tag_sys_name",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "disks",
+			"orderByTime": "ASC",
+			"policy": "downsample_retention",
+			"query": "SELECT mean(\"ds_combinedResponseTime\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": true,
+			"refId": "B",
 			"resultFormat": "time_series",
 			"select": [
 			    [
@@ -373,12 +427,14 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		    "h": 8,
 		    "w": 5,
 		    "x": 14,
-		    "y": 0
+		    "y": 1
 		},
 		"id": 19,
 		"legend": {
@@ -394,7 +450,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
-		"options": {},
+		"options": {
+		    "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 2,
 		"points": false,
@@ -430,6 +488,57 @@
 			"orderByTime": "ASC",
 			"policy": "default",
 			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"combinedThroughput"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "sum"
+				}
+			    ]
+			],
+			"tags": [
+			    {
+				"key": "sys_name",
+				"operator": "=~",
+				"value": "/^$System$/"
+			    }
+			]
+		    },
+		    {
+			"alias": "$tag_sys_name",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "disks",
+			"orderByTime": "ASC",
+			"policy": "downsample_retention",
+			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": true,
+			"refId": "B",
 			"resultFormat": "time_series",
 			"select": [
 			    [
@@ -500,12 +609,14 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		    "h": 8,
 		    "w": 5,
 		    "x": 19,
-		    "y": 0
+		    "y": 1
 		},
 		"id": 20,
 		"legend": {
@@ -521,7 +632,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
-		"options": {},
+		"options": {
+		    "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 2,
 		"points": false,
@@ -557,6 +670,57 @@
 			"orderByTime": "ASC",
 			"policy": "default",
 			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"combinedIOps"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "sum"
+				}
+			    ]
+			],
+			"tags": [
+			    {
+				"key": "sys_name",
+				"operator": "=~",
+				"value": "/^$System$/"
+			    }
+			]
+		    },
+		    {
+			"alias": "$tag_sys_name",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "disks",
+			"orderByTime": "ASC",
+			"policy": "downsample_retention",
+			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": true,
+			"refId": "B",
 			"resultFormat": "time_series",
 			"select": [
 			    [
@@ -624,6 +788,7 @@
 	    },
 	    {
 		"collapsed": false,
+		"datasource": null,
 		"gridPos": {
 		    "h": 1,
 		    "w": 24,
@@ -637,6 +802,7 @@
 	    },
 	    {
 		"columns": [],
+		"datasource": null,
 		"description": "List of volumes on the selected system(s)",
 		"fontSize": "100%",
 		"gridPos": {
@@ -648,12 +814,8 @@
 		"id": 14,
 		"links": [
 		    {
-			"dashboard": "Volume View Dashboard",
-			"includeVars": true,
-			"keepTime": true,
 			"title": "Volume View Dashboard",
-			"type": "dashboard",
-			"url": "/d/_LGD-NNWz/volume-view-dashboard"
+			"url": "/d/_LGD-NNWz/volume-view-dashboard?$__url_time_range&$__all_variables"
 		    }
 		],
 		"options": {},
@@ -781,7 +943,9 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		    "h": 8,
 		    "w": 5,
@@ -802,7 +966,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
-		"options": {},
+		"options": {
+		    "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 2,
 		"points": false,
@@ -838,6 +1004,57 @@
 			"orderByTime": "ASC",
 			"policy": "default",
 			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"combinedResponseTime"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "mean"
+				}
+			    ]
+			],
+			"tags": [
+			    {
+				"key": "sys_name",
+				"operator": "=~",
+				"value": "/^$System$/"
+			    }
+			]
+		    },
+		    {
+			"alias": "$tag_sys_name",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "volumes",
+			"orderByTime": "ASC",
+			"policy": "downsample_retention",
+			"query": "SELECT mean(\"ds_combinedResponseTime\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": true,
+			"refId": "B",
 			"resultFormat": "time_series",
 			"select": [
 			    [
@@ -908,7 +1125,9 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		    "h": 8,
 		    "w": 5,
@@ -929,7 +1148,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
-		"options": {},
+		"options": {
+		    "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 2,
 		"points": false,
@@ -965,6 +1186,57 @@
 			"orderByTime": "ASC",
 			"policy": "default",
 			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"combinedThroughput"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "sum"
+				}
+			    ]
+			],
+			"tags": [
+			    {
+				"key": "sys_name",
+				"operator": "=~",
+				"value": "/^$System$/"
+			    }
+			]
+		    },
+		    {
+			"alias": "$tag_sys_name",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "volumes",
+			"orderByTime": "ASC",
+			"policy": "downsample_retention",
+			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": true,
+			"refId": "B",
 			"resultFormat": "time_series",
 			"select": [
 			    [
@@ -1035,7 +1307,9 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		    "h": 8,
 		    "w": 5,
@@ -1056,7 +1330,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
-		"options": {},
+		"options": {
+		    "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 2,
 		"points": false,
@@ -1090,8 +1366,61 @@
 			],
 			"measurement": "volumes",
 			"orderByTime": "ASC",
-			"policy": "default",
+			"policy": "default_retention",
+			"query": "SELECT sum(\"combinedIOps\") FROM \"default_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": false,
 			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"combinedIOps"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "sum"
+				}
+			    ]
+			],
+			"tags": [
+			    {
+				"key": "sys_name",
+				"operator": "=~",
+				"value": "/^$System$/"
+			    }
+			]
+		    },
+		    {
+			"alias": "$tag_sys_name",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "volumes",
+			"orderByTime": "ASC",
+			"policy": "downsample_retention",
+			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": true,
+			"refId": "B",
 			"resultFormat": "time_series",
 			"select": [
 			    [
@@ -1159,6 +1488,7 @@
 	    },
 	    {
 		"collapsed": false,
+		"datasource": null,
 		"gridPos": {
 		    "h": 1,
 		    "w": 24,
@@ -1175,8 +1505,10 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"decimals": 2,
 		"fill": 2,
+		"fillGradient": 0,
 		"gridPos": {
 		    "h": 10,
 		    "w": 19,
@@ -1199,7 +1531,9 @@
 		"linewidth": 3,
 		"links": [],
 		"nullPointMode": "null",
-		"options": {},
+		"options": {
+		    "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 2,
 		"points": false,
@@ -1237,6 +1571,57 @@
 			"query": "SELECT \"cpuAvgUtilization\" FROM \"systems\" WHERE $timeFilter GROUP BY time($__interval), \"sys_name\" fill(none)",
 			"rawQuery": false,
 			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			    [
+				{
+				    "params": [
+					"cpuAvgUtilization"
+				    ],
+				    "type": "field"
+				},
+				{
+				    "params": [],
+				    "type": "last"
+				}
+			    ]
+			],
+			"tags": [
+			    {
+				"key": "sys_name",
+				"operator": "=~",
+				"value": "/^$System$/"
+			    }
+			]
+		    },
+		    {
+			"alias": "$tag_sys_name",
+			"groupBy": [
+			    {
+				"params": [
+				    "$__interval"
+				],
+				"type": "time"
+			    },
+			    {
+				"params": [
+				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "none"
+				],
+				"type": "fill"
+			    }
+			],
+			"measurement": "systems",
+			"orderByTime": "ASC",
+			"policy": "downsample_retention",
+			"query": "SELECT last(\"ds_cpuAvgUtilization\") FROM \"downsample_retention\".\"systems\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"rawQuery": true,
+			"refId": "B",
 			"resultFormat": "time_series",
 			"select": [
 			    [
@@ -1304,6 +1689,7 @@
 	    },
 	    {
 		"columns": [],
+		"datasource": null,
 		"fontSize": "100%",
 		"gridPos": {
 		    "h": 10,
@@ -1414,6 +1800,7 @@
 	    },
 	    {
 		"columns": [],
+		"datasource": null,
 		"description": "",
 		"fontSize": "100%",
 		"gridPos": {
@@ -1583,13 +1970,14 @@
 	    },
 	    {
 		"columns": [],
+		"datasource": null,
 		"description": "",
 		"fontSize": "100%",
 		"gridPos": {
 		    "h": 10,
 		    "w": 9,
 		    "x": 15,
-		    "y": 26
+		    "y": 29
 		},
 		"id": 24,
 		"links": [],
@@ -1774,7 +2162,7 @@
 	    }
 	],
 	"refresh": "30s",
-	"schemaVersion": 18,
+	"schemaVersion": 20,
 	"style": "dark",
 	"tags": [
 	    "NetAppESeries"
@@ -1784,9 +2172,15 @@
 		{
 		    "allValue": null,
 		    "current": {
-			"text": "All",
+			"text": "ictm1301s03c1 + ictm1301s03c2 + ictm1302s02c1 + ictm1302s02c2 + ictm1302s03c1 + ictm1303s01c1 + ictm1303s09c1",
 			"value": [
-			    "$__all"
+			    "ictm1301s03c1",
+			    "ictm1301s03c2",
+			    "ictm1302s02c1",
+			    "ictm1302s02c2",
+			    "ictm1302s03c1",
+			    "ictm1303s01c1",
+			    "ictm1303s09c1"
 			]
 		    },
 		    "datasource": "WSP",
@@ -1842,7 +2236,7 @@
 	"timezone": "browser",
 	"title": "System View Dashboard",
 	"uid": "ZOshR4NZk",
-	"version": 2
+	"version": 37
     },
     "overwrite": true
 }

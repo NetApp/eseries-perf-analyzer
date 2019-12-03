@@ -2,7 +2,7 @@
   wait_for:
     host: "influxdb"
     port: 8086
-    timeout: 5
+    timeout: 10
 
 - name: Get influxdb datasource
   uri:
