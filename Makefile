@@ -68,6 +68,9 @@ build: __docker-find warn ## Build the container
 	# Build plugins
 	@$(MAKE) --no-print-directory build-plugins
 
+	# Create our docker network
+	docker network inspect eseries_perf_analyzer >/dev/null 2>&1 || docker network create eseries_perf_analyzer
+
 build-nc: warn ## Build the container without caching
 	# Prepare dashboards for import
 	$(shell mkdir -p ansible/dashboards)
@@ -88,6 +91,9 @@ build-nc: warn ## Build the container without caching
 
 	# Build plugins
 	@$(MAKE) --no-print-directory build-plugins
+
+	# Create our docker network
+	docker network inspect eseries_perf_analyzer >/dev/null 2>&1 || docker network create eseries_perf_analyzer
 
 run: build ## Build and run
 	# Start core services using our compose file and run in the background
@@ -154,6 +160,9 @@ clean: stop rm ## Remove all images and containers built by the project
 
 	# Clean plugins
 	@$(MAKE) --no-print-directory clean-plugins
+
+	# Remove our created docker network
+	docker network rm eseries_perf_analyzer
 
 warn: ##
 ifndef QUIET

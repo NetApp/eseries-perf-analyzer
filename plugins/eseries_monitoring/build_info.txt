@@ -6,6 +6,9 @@
 
 # ex. The alpine image here will be built from the folder "plugins/eseries_monitoring/alpine_base"
 #     and will be tagged "ntap-grafana-plugin/eseries_monitoring/alpine-base"
+#
+#     The webservices image here will be built from the folder "plugins/eseries_monitoring/webservices"
+#     and will be tagged "ntap-grafana-plugin/eseries_monitoring/webservices"
 
 alpine_base alpine-base
 python_base python-base
