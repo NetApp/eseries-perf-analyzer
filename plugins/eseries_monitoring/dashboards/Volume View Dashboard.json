@@ -1942,21 +1942,61 @@
 		{
 		    "allValue": null,
 		    "current": {
-			"text": "ictm1303s01c1 + ictm1303s09c1",
+			"text": "All Storage Systems",
+			"value": "All Storage Systems"
+		    },
+		    "datasource": "WSP",
+		    "definition": "SHOW TAG VALUES FROM \"folders\" WITH KEY = \"folder_name\"",
+		    "hide": 0,
+		    "includeAll": false,
+		    "label": null,
+		    "multi": false,
+		    "name": "Folder",
+		    "options": [
+			{
+			    "selected": true,
+			    "text": "All Storage Systems",
+			    "value": "All Storage Systems"
+			}
+		    ],
+		    "query": "SHOW TAG VALUES FROM \"folders\" WITH KEY = \"folder_name\"",
+		    "refresh": 0,
+		    "regex": "",
+		    "skipUrlSync": false,
+		    "sort": 0,
+		    "tagValuesQuery": "",
+		    "tags": [],
+		    "tagsQuery": "",
+		    "type": "query",
+		    "useTags": false
+		},
+		{
+		    "allValue": null,
+		    "current": {
+			"text": "ictm1301s02c1 + ictm1301s02c2 + ictm1301s03c1 + ictm1301s03c2 + ictm1302s01c1 + ictm1302s01c2 + ictm1302s02c1 + ictm1302s02c2 + ictm1302s03c1 + ictm1303s01c1 + ictm1303s09c1",
 			"value": [
+			    "ictm1301s02c1",
+			    "ictm1301s02c2",
+			    "ictm1301s03c1",
+			    "ictm1301s03c2",
+			    "ictm1302s01c1",
+			    "ictm1302s01c2",
+			    "ictm1302s02c1",
+			    "ictm1302s02c2",
+			    "ictm1302s03c1",
 			    "ictm1303s01c1",
 			    "ictm1303s09c1"
 			]
 		    },
 		    "datasource": "WSP",
-		    "definition": "SHOW TAG VALUES ON \"eseries\" FROM \"volumes\" WITH KEY = \"sys_name\"",
+		    "definition": "SHOW TAG VALUES FROM \"folders\" WITH KEY = \"sys_name\" WHERE \"folder_name\" =~ /$Folder/",
 		    "hide": 0,
 		    "includeAll": false,
 		    "label": null,
 		    "multi": true,
 		    "name": "System",
 		    "options": [],
-		    "query": "SHOW TAG VALUES ON \"eseries\" FROM \"volumes\" WITH KEY = \"sys_name\"",
+		    "query": "SHOW TAG VALUES FROM \"folders\" WITH KEY = \"sys_name\" WHERE \"folder_name\" =~ /$Folder/",
 		    "refresh": 2,
 		    "regex": "",
 		    "skipUrlSync": false,
@@ -1995,7 +2035,7 @@
 	    ]
 	},
 	"time": {
-	    "from": "now-3h",
+	    "from": "now-6h",
 	    "to": "now"
 	},
 	"timepicker": {
@@ -2026,7 +2066,7 @@
 	"timezone": "browser",
 	"title": "Volume View Dashboard",
 	"uid": "_LGD-NNWz",
-	"version": 6
+	"version": 42
     },
     "overwrite": true
 }
