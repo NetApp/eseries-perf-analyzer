@@ -32,6 +32,9 @@ INFLUXDB_HOSTNAME = 'influxdb'
 INFLUXDB_PORT = 8086
 INFLUXDB_DATABASE = 'eseries'
 
+# NOTE(bdustin): time in seconds between folder collections
+FOLDER_COLLECTION_INTERVAL = 60*10
+
 __version__ = '1.0'
 
 #######################
@@ -521,6 +524,82 @@ def create_continuous_query(params_list, database):
     except Exception as err:
         LOG.info("Creation of continuous query on '{}' failed: {}".format(database, err))
 
+def get_storage_system_ids_folder_list():
+    PROXY_FOLDER_URL = ("http://{}/devmgr/v2/folders").format(CMD.proxySocketAddress)
+    folder_response = SESSION.get(PROXY_FOLDER_URL).json()
+    folders = list()
+    for folder in folder_response:
+        folder_name = folder["name"]
+        subfolder = dict(
+            name = folder_name,
+            systemIDs = list(),
+            systemNames = list()
+        )
+        for system in folder["storageSystemIds"]:
+            subfolder["systemIDs"].append(system)
+        folders.append(subfolder)
+
+    return folders
+
+def add_system_names_to_ids_list(folder_of_ids):
+    try:
+        response = SESSION.get(PROXY_BASE_URL)
+        if response.status_code != 200:
+            LOG.warning("We were unable to retrieve the storage-system list! Status-code={}".format(response.status_code))
+    except requests.exceptions.HTTPError or requests.exceptions.ConnectionError as e:
+        LOG.warning("Unable to connect to the Web Services instance to get storage-system list!", e)
+    except Exception as e:
+        LOG.warning("Unexpected exception!", e)
+    else:
+        storageList = response.json()
+        for folder in folder_of_ids:
+            for storage_id in folder["systemIDs"]:
+                for system in storageList:
+                    if (system["id"] == storage_id):
+                        folder["systemNames"].append(system["name"])
+                        break
+
+        for folder in folder_of_ids:
+            if (folder["name"] == "All Storage Systems"):
+                for system in storageList:
+                    folder["systemIDs"].append(system["id"])
+                    folder["systemNames"].append(system["name"])
+
+    return folder_of_ids
+
+def get_storage_system_folder_list():
+    folders = get_storage_system_ids_folder_list()
+    return add_system_names_to_ids_list(folders)
+
+def collect_system_folders(systems):
+    """
+    Collects all folders defined in the WSP and posts them to influxdb
+    :param systems: List of all system folders (names and IDs)
+    """
+    try:
+        client = InfluxDBClient(host=INFLUXDB_HOSTNAME, port=INFLUXDB_PORT, database=INFLUXDB_DATABASE)
+        json_body = list()
+
+        for folder in systems:
+            for name in folder["systemNames"]:
+                sys_item = dict(
+                    measurement = "folders",
+                    tags = dict(
+                        folder_name = folder["name"],
+                        sys_name = name
+                    ),
+                    fields = dict(
+                        dummy = 0
+                    )
+                )
+                json_body.append(sys_item)
+        if not CMD.doNotPost:
+            client.drop_measurement("folders")
+            client.write_points(json_body, database=INFLUXDB_DATABASE, time_precision="s")
+
+    except RuntimeError:
+        LOG.error("Error when attempting to post system folders")
+  
 #######################
 # MAIN FUNCTIONS#######
 #######################
@@ -570,6 +649,9 @@ if __name__ == "__main__":
     except json.decoder.JSONDecodeError:
         LOG.exception("Failed to open configuration file due to invalid JSON!")
 
+    # Time that we last collected array folder information
+    last_folder_collection = -1
+
     checksums = dict()
     while True:
         time_start = time.time()
@@ -592,6 +674,13 @@ if __name__ == "__main__":
                     if not storage_name or len(storage_name) <= 0:
                         storage_name = DEFAULT_STORAGE_NAME
                     LOG.info(storage_name)
+
+            # Grab array folders and commit the data to InfluxDB
+            if (last_folder_collection < 0 or time.time() - last_folder_collection >= FOLDER_COLLECTION_INTERVAL):
+                LOG.info("Collecting system folder information...")
+                storage_system_list = get_storage_system_folder_list()
+                collect_system_folders(storage_system_list)
+                last_folder_collection = time.time()
 
             # Iterate through all storage systems and collect metrics
             collector = [executor.submit(collect_storage_metrics, sys) for sys in storageList]

@@ -45,7 +45,7 @@
 	"gnetId": null,
 	"graphTooltip": 1,
 	"id": null,
-	"iteration": 1578591325880,
+	"iteration": 1576185007986,
 	"links": [
 	    {
 		"asDropdown": true,
@@ -2102,20 +2102,82 @@
 		{
 		    "allValue": null,
 		    "current": {
-			"text": "ictm1301s02c1",
+			"tags": [],
+			"text": "All Storage Systems",
+			"value": "All Storage Systems"
+		    },
+		    "datasource": "WSP",
+		    "definition": "SHOW TAG VALUES FROM \"folders\" WITH KEY = \"folder_name\"",
+		    "hide": 0,
+		    "includeAll": false,
+		    "label": null,
+		    "multi": false,
+		    "name": "Folder",
+		    "options": [
+			{
+			    "selected": true,
+			    "text": "All Storage Systems",
+			    "value": "All Storage Systems"
+			},
+			{
+			    "selected": false,
+			    "text": "Small",
+			    "value": "Small"
+			},
+			{
+			    "selected": false,
+			    "text": "borked",
+			    "value": "borked"
+			},
+			{
+			    "selected": false,
+			    "text": "subset",
+			    "value": "subset"
+			},
+			{
+			    "selected": false,
+			    "text": "test",
+			    "value": "test"
+			}
+		    ],
+		    "query": "SHOW TAG VALUES FROM \"folders\" WITH KEY = \"folder_name\"",
+		    "refresh": 0,
+		    "regex": "",
+		    "skipUrlSync": false,
+		    "sort": 0,
+		    "tagValuesQuery": "",
+		    "tags": [],
+		    "tagsQuery": "",
+		    "type": "query",
+		    "useTags": false
+		},
+		{
+		    "allValue": null,
+		    "current": {
+			"text": "ictm1301s02c1 + ictm1301s02c2 + ictm1301s03c1 + ictm1301s03c2 + ictm1302s01c1 + ictm1302s01c2 + ictm1302s02c1 + ictm1302s02c2 + ictm1302s03c1 + ictm1303s01c1 + ictm1303s09c1",
 			"value": [
-			    "ictm1301s02c1"
+			    "ictm1301s02c1",
+			    "ictm1301s02c2",
+			    "ictm1301s03c1",
+			    "ictm1301s03c2",
+			    "ictm1302s01c1",
+			    "ictm1302s01c2",
+			    "ictm1302s02c1",
+			    "ictm1302s02c2",
+			    "ictm1302s03c1",
+			    "ictm1303s01c1",
+			    "ictm1303s09c1"
 			]
 		    },
 		    "datasource": "WSP",
-		    "definition": "SHOW TAG VALUES ON \"eseries\" FROM \"disks\" WITH KEY = \"sys_name\"",
+		    "definition": "SHOW TAG VALUES FROM \"folders\" WITH KEY = \"sys_name\" WHERE \"folder_name\" =~ /$Folder/",
 		    "hide": 0,
 		    "includeAll": false,
 		    "label": null,
 		    "multi": true,
 		    "name": "System",
 		    "options": [],
-		    "query": "SHOW TAG VALUES ON \"eseries\" FROM \"disks\" WITH KEY = \"sys_name\"",
+		    "query": "SHOW TAG VALUES FROM \"folders\" WITH KEY = \"sys_name\" WHERE \"folder_name\" =~ /$Folder/",
 		    "refresh": 2,
 		    "regex": "",
 		    "skipUrlSync": false,
@@ -2182,7 +2244,7 @@
 	    ]
 	},
 	"time": {
-	    "from": "now-3h",
+	    "from": "now-6h",
 	    "to": "now"
 	},
 	"timepicker": {
@@ -2213,7 +2275,7 @@
 	"timezone": "browser",
 	"title": "Disk View Dashboard",
 	"uid": "VsgedHNWk",
-	"version": 6
+	"version": 41
     },
     "overwrite": true
 }
