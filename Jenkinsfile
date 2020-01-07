@@ -12,7 +12,7 @@ pipeline {
     environment {
         TAG = "${BRANCH_NAME}-${BUILD_NUMBER}"
         PROJECT_NAME = "esg-grafana"
-        VERSION = "2.0"
+        VERSION = "2.1"
         QUIET = "yes"
         // This determines what repositories to use for building the images
         PIP_CONF = 'pip.conf.internal'
