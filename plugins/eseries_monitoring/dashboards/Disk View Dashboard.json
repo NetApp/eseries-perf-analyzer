@@ -45,7 +45,7 @@
 	"gnetId": null,
 	"graphTooltip": 1,
 	"id": null,
-	"iteration": 1578382434198,
+	"iteration": 1578591325880,
 	"links": [
 	    {
 		"asDropdown": true,
@@ -106,6 +106,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -116,6 +117,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -168,6 +181,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -191,7 +205,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT mean(\"ds_combinedResponseTime\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT mean(\"ds_combinedResponseTime\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -318,6 +332,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -328,6 +343,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -380,6 +407,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -403,7 +431,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -530,6 +558,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -540,6 +569,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -592,6 +633,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -615,7 +657,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -742,6 +784,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -752,6 +795,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -804,6 +859,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -827,7 +883,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT mean(\"ds_readResponseTime\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT mean(\"ds_readResponseTime\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -954,6 +1010,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -964,6 +1021,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -1016,6 +1085,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1039,7 +1109,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_readThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT sum(\"ds_readThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1166,6 +1236,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1176,6 +1247,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -1228,6 +1311,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1251,7 +1335,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_readIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT sum(\"ds_readIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1378,6 +1462,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1388,6 +1473,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -1440,6 +1537,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1463,7 +1561,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT mean(\"ds_writeResponseTime\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT mean(\"ds_writeResponseTime\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1590,6 +1688,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1600,6 +1699,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -1650,6 +1761,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1673,7 +1785,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"writeThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT sum(\"writeThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1800,6 +1912,7 @@
 		"steppedLine": false,
 		"targets": [
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1810,6 +1923,18 @@
 			    {
 				"params": [
 				    "sys_name"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray"
+				],
+				"type": "tag"
+			    },
+			    {
+				"params": [
+				    "sys_tray_slot"
 				],
 				"type": "tag"
 			    },
@@ -1860,6 +1985,7 @@
 			]
 		    },
 		    {
+			"alias": "$tag_sys_name: Tray $tag_sys_tray - Slot $tag_sys_tray_slot",
 			"groupBy": [
 			    {
 				"params": [
@@ -1883,7 +2009,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_writeIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\" fill(none)",
+			"query": "SELECT sum(\"ds_writeIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1977,7 +2103,9 @@
 		    "allValue": null,
 		    "current": {
 			"text": "ictm1301s02c1",
-			"value": "ictm1301s02c1"
+			"value": [
+			    "ictm1301s02c1"
+			]
 		    },
 		    "datasource": "WSP",
 		    "definition": "SHOW TAG VALUES ON \"eseries\" FROM \"disks\" WITH KEY = \"sys_name\"",
@@ -2026,8 +2154,11 @@
 		{
 		    "allValue": null,
 		    "current": {
+			"tags": [],
 			"text": "All",
-			"value": "$__all"
+			"value": [
+			    "$__all"
+			]
 		    },
 		    "datasource": "WSP",
 		    "definition": "SHOW TAG VALUES FROM disks WITH KEY = \"sys_tray_slot\" WHERE \"sys_name\" =~ /$System/ AND \"sys_tray\" =~ /$Tray/",
@@ -2082,7 +2213,7 @@
 	"timezone": "browser",
 	"title": "Disk View Dashboard",
 	"uid": "VsgedHNWk",
-	"version": 37
+	"version": 6
     },
     "overwrite": true
 }
