@@ -33,6 +33,8 @@ down-plugins: ## Run docker-compose down on all plugins
 clean-plugins: ## Remove all images built by plugins
 	@$(shell PROJ_NAME=$(PROJ_NAME) ./scripts/plugin_remove_info.sh)
 
+export-plugins: ## Export all plugin images
+	@$(shell PROJ_NAME=$(PROJ_NAME) scripts/plugin_image_info.sh)
 
 # HELP
 # This will output the help for each task
@@ -127,11 +129,27 @@ export-nc: build-nc ## Build the images and export them
 	docker save $(PROJ_NAME)/influxdb:${TAG} > images/influxdb.tar
 	docker save $(PROJ_NAME)/grafana:${TAG} > images/grafana.tar
 
+	# Export core plugin images
+	docker save $(PROJ_NAME)-plugin/eseries_monitoring/collector:latest > images/eseries_monitoring_collector.tar
+	docker save $(PROJ_NAME)-plugin/eseries_monitoring/webservices:latest > images/eseries_monitoring_webservices.tar
+
+	# Including this will scan and export any plugin images we find that have been built.
+	# This includes images that are only built as a base
+	#@$(MAKE) --no-print-directory export-plugins
+
 export: build ## Build the images and export them
 	mkdir -p images
 	docker save $(PROJ_NAME)/ansible:${TAG} > images/ansible.tar
 	docker save $(PROJ_NAME)/influxdb:${TAG} > images/influxdb.tar
 	docker save $(PROJ_NAME)/grafana:${TAG} > images/grafana.tar
+
+	# Export core plugin images
+	docker save $(PROJ_NAME)-plugin/eseries_monitoring/collector:latest > images/eseries_monitoring_collector.tar
+	docker save $(PROJ_NAME)-plugin/eseries_monitoring/webservices:latest > images/eseries_monitoring_webservices.tar
+
+	# Including this will scan and export any plugin images we find that have been built.
+	# This includes images that are only built as a base
+	#@$(MAKE) --no-print-directory export-plugins
 
 stop: __docker-find ## Stop all of our running services
 	# Stop running plugins
