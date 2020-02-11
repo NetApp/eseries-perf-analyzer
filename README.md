@@ -68,7 +68,7 @@ Arrays to be monitored should be added to the *"<project_dir\>/plugins/eseries_m
 
 It is also possible to manually add storage systems using the Web Services Proxy interactive API documentation found at **http://<host\>:8080/devmgr/docs/#/Storage-Systems/new_StorageSystem**.
 
-Once everything is started, arrays can also be managed through the SANtricity® Unified Manager as described below. Note that although they will still be monitored, legacy arrays added through the API/config files will not appear in this manager.
+Once everything is started, arrays can also be managed through the SANtricity® Unified Manager as described below. Note that although they will still be monitored, legacy arrays added through the API/config files will not appear in this manager. Use of this manager is briefly described below.
 #### Disk Usage, Data Retention, and Downsampling
 With our data collection we use ~260 KB per drive/volume per day. Based on this, you can expect to consume 250-300 GB of storage space for 100 systems for one year.
 
@@ -98,7 +98,7 @@ Once everything is started, you have access to several pages to control and conf
 
 ## Once It's Started
 ### Accessing the Web Services Proxy
-The Web Services Proxy can be accessed at **http://<host\>:8080**. From here you can access the SANtricity® Unified Manager using default credentials of _admin/admin_. This is a UI frontend for managing storage arrays. There are also links to the Web Services API reference as well as the NetApp support site.
+The Web Services Proxy can be accessed at **http://<host\>:8080**. From here you can access the SANtricity® Unified Manager using default credentials of _admin/admin_. This is a UI frontend for managing storage arrays. There are also links to the Web Services API reference as well as the NetApp support site. Through this manager, it is also possible to create and organize your arrays into folders. This allows you to arrange arrays into logical groups. These groups are exposed in the dashboards, and graphs can be filtered by these groups. These folders are updated at start, and then periodically every 10 minutes. If you would like to see your folder changes reflected in dashboards immediately, simply restart services using _"make restart"_.
 ### Accessing the Grafana Interface and Dashboards
 The dashboards are available at **http://<host\>:3000** using default credentials _admin/admin_. Grafana should be pre-configured for immediate access to your data. Documentation for additional configuration and navigation can be found [here](http://docs.grafana.org/guides/getting_started/).
 ## Troubleshooting
