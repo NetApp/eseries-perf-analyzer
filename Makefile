@@ -48,7 +48,7 @@ help: ## This help.
 
 # DOCKER TASKS
 # Build the container
-build: __docker-find warn ## Build the container
+build: __docker-find __docker-version warn ## Build the container
 	# Prepare dashboards for import
 	$(shell mkdir -p ansible/dashboards)
 	@chmod +x scripts/*
@@ -58,6 +58,9 @@ build: __docker-find warn ## Build the container
 	$(shell mkdir -p ansible/tasks/plugin_tasks)
 	@chmod +x scripts/*
 	@scripts/plugin_task_info.sh
+
+	# Create our docker network
+	docker network inspect eseries_perf_analyzer >/dev/null 2>&1 || docker network create eseries_perf_analyzer
 
 	# Build core services
 	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
@@ -70,14 +73,14 @@ build: __docker-find warn ## Build the container
 	# Build plugins
 	@$(MAKE) --no-print-directory build-plugins
 
-	# Create our docker network
-	docker network inspect eseries_perf_analyzer >/dev/null 2>&1 || docker network create eseries_perf_analyzer
-
-build-nc: warn ## Build the container without caching
+build-nc: __docker-find __docker-version warn ## Build the container without caching
 	# Prepare dashboards for import
 	$(shell mkdir -p ansible/dashboards)
 	@chmod +x scripts/*
 	@scripts/plugin_dashboard_info.sh
+
+	# Create our docker network
+	docker network inspect eseries_perf_analyzer >/dev/null 2>&1 || docker network create eseries_perf_analyzer
 
 	# Prepare plugin tasks
 	$(shell mkdir -p ansible/tasks/plugin_tasks)
@@ -93,9 +96,6 @@ build-nc: warn ## Build the container without caching
 
 	# Build plugins
 	@$(MAKE) --no-print-directory build-plugins
-
-	# Create our docker network
-	docker network inspect eseries_perf_analyzer >/dev/null 2>&1 || docker network create eseries_perf_analyzer
 
 run: build ## Build and run
 	# Start core services using our compose file and run in the background
@@ -151,7 +151,7 @@ export: build ## Build the images and export them
 	# This includes images that are only built as a base
 	#@$(MAKE) --no-print-directory export-plugins
 
-stop: __docker-find ## Stop all of our running services
+stop: __docker-find __docker-version ## Stop all of our running services
 	# Stop running plugins
 	@$(MAKE) --no-print-directory stop-plugins
 
@@ -160,7 +160,7 @@ stop: __docker-find ## Stop all of our running services
 
 restart: stop run ## 'stop' followed by 'run'
 
-rm: __docker-find ## Remove all existing containers defined by the project
+rm: __docker-find __docker-version  ## Remove all existing containers defined by the project
 	docker-compose rm -s -f
 	$(shell ./scripts/plugin_compose_info.sh "rm -s -f")
 
@@ -191,3 +191,7 @@ endif
 __docker-find: ##
 	@chmod +x scripts/*
 	@scripts/docker_exists.sh
+
+__docker-version: ##
+	@chmod +x scripts/*
+	@scripts/check_docker_version.sh
