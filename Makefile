@@ -34,7 +34,7 @@ clean-plugins: ## Remove all images built by plugins
 	@$(shell PROJ_NAME=$(PROJ_NAME) ./scripts/plugin_remove_info.sh)
 
 export-plugins: ## Export all plugin images
-	@$(shell PROJ_NAME=$(PROJ_NAME) scripts/plugin_image_info.sh)
+	@$(shell PROJ_NAME=$(PROJ_NAME) ./scripts/plugin_image_info.sh)
 
 # HELP
 # This will output the help for each task

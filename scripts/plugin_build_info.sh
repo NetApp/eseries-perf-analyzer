@@ -1,5 +1,24 @@
 #!/bin/bash
 
+# grab our environment variables
+# and construct our build args string
+env_vars=$(cat .env)
+env_var_names=($(cat .env | cut -d "=" -f 1))
+env_var_values=($(cat .env | cut -d "=" -f 2))
+env_var_string=""
+index=0
+for s in $env_vars
+do
+    this_name=${env_var_names[index]}
+    this_value=${env_var_values[index]}
+    if [ "$env_var_string" = "" ]; then
+	env_var_string="--build-arg $this_name=$this_value "
+    else
+	env_var_string="--build-arg $this_name=$this_value $env_var_string"
+    fi
+    index=$index+1
+done
+
 # find all of the build_info text files for each plugin
 # these tell us how to build the plugins
 plugins_build_info_files=$(find plugins/ -mindepth 2 -maxdepth 2 -type f -name "build_info.txt")
@@ -43,9 +62,9 @@ do
 
         # add this component to the build commands
         if [ "$plugins_build_data" = "" ]; then
-            plugins_build_data="echo \"[PLUGINS] Building '${plugin_name}' component: ${image_tag}\"; docker build --build-arg PROJ_NAME=${PROJ_NAME} -t ${PROJ_NAME}-plugin/${plugin_name}/${image_tag} ${plugin_dir}/${image_dir}"
+            plugins_build_data="echo \"[PLUGINS] Building '${plugin_name}' component: ${image_tag}\"; docker build --build-arg PROJ_NAME=${PROJ_NAME} $env_var_string -t ${PROJ_NAME}-plugin/${plugin_name}/${image_tag} ${plugin_dir}/${image_dir}"
         else
-            plugins_build_data="$plugins_build_data; echo \"[PLUGINS] Building '${plugin_name}' component: ${image_tag}\"; docker build --build-arg PROJ_NAME=${PROJ_NAME} -t ${PROJ_NAME}-plugin/${plugin_name}/${image_tag} ${plugin_dir}/${image_dir}"
+            plugins_build_data="$plugins_build_data; echo \"[PLUGINS] Building '${plugin_name}' component: ${image_tag}\"; docker build --build-arg PROJ_NAME=${PROJ_NAME} $env_var_string -t ${PROJ_NAME}-plugin/${plugin_name}/${image_tag} ${plugin_dir}/${image_dir}"
         fi
         
     done < $file
