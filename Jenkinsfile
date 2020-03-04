@@ -23,7 +23,7 @@ pipeline {
             steps {
                 sh'''
                     # Overwrite the default environment options
-                    printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\n" > .env
+                    printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\nPIP_CONF=${PIP_CONF}\nALPINE_REPO_FILE=${ALPINE_REPO_FILE}\n" > .env
                     make build
                 '''
                 sh 'echo ${GIT_COMMIT}'
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 sh'''
                     # Overwrite the default environment options
-                    printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\n" > .env
+                    printf "TAG=${TAG}\nPROJ_NAME=${PROJECT_NAME}\nPIP_CONF=${PIP_CONF}\nALPINE_REPO_FILE=${ALPINE_REPO_FILE}\n" > .env
 		    plugins/eseries_monitoring/collector/tests/initiate_testing.sh ${PROJECT_NAME} ${TAG}
                 '''
             }

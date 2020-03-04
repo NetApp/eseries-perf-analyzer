@@ -5,7 +5,7 @@ FROM ${PROJ_NAME}-plugin/eseries_monitoring/alpine-base as builder
 LABEL autodelete="true"
 
 FROM python:3.8.1-alpine3.10
-ARG PIP_CONF=pip.conf.internal
+ARG PIP_CONF=pip.conf
 ADD $PIP_CONF /etc/pip.conf
 COPY --from=builder /etc/apk/repositories /etc/apk/repositories
 ONBUILD WORKDIR /home
