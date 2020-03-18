@@ -318,7 +318,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -344,7 +344,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"combinedThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
+			"query": "SELECT sum(\"combinedThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time(5s) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -381,7 +381,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -401,7 +401,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"vol_name\" fill(none)",
+			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"vol_name\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -526,7 +526,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -552,7 +552,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"combinedIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
+			"query": "SELECT sum(\"combinedIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time(5s) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -589,7 +589,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -609,7 +609,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"vol_name\" fill(none)",
+			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"vol_name\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -942,7 +942,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -968,7 +968,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"readThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
+			"query": "SELECT sum(\"readThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time(5s) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1005,7 +1005,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -1025,7 +1025,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_readThroughput\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"vol_name\" fill(none)",
+			"query": "SELECT sum(\"ds_readThroughput\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"vol_name\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1150,7 +1150,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -1176,7 +1176,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"readIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
+			"query": "SELECT sum(\"readIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time(5s) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1213,7 +1213,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -1233,7 +1233,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_readIOps\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"vol_name\" fill(none)",
+			"query": "SELECT sum(\"ds_readIOps\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"vol_name\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1566,7 +1566,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -1592,7 +1592,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"writeThroughput\") FROM \"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter GROUP BY time($__interval), \"sys_name\", \"vol_name\" fill(none)",
+			"query": "SELECT sum(\"writeThroughput\") FROM \"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter GROUP BY time(5s), \"sys_name\", \"vol_name\" fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1629,7 +1629,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -1649,7 +1649,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_writeThroughput\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"vol_name\" fill(none)",
+			"query": "SELECT sum(\"ds_writeThroughput\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"vol_name\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1774,7 +1774,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -1835,7 +1835,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -1855,7 +1855,7 @@
 			"measurement": "volumes",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_writeIOps\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"vol_name\" fill(none)",
+			"query": "SELECT sum(\"ds_writeIOps\") FROM \"downsample_retention\".\"volumes\" WHERE (\"sys_name\" =~ /^$System$/ AND \"vol_name\" =~ /^$Volume$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"vol_name\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
