@@ -336,7 +336,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -368,7 +368,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"combinedThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time(5s) fill(none)",
+			"query": "SELECT mean(\"combinedThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -382,7 +382,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -411,7 +411,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -431,7 +431,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
+			"query": "SELECT mean(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -445,7 +445,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -562,7 +562,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -594,7 +594,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"combinedIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time(5s) fill(none)",
+			"query": "SELECT mean(\"combinedIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -608,7 +608,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -637,7 +637,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -657,7 +657,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
+			"query": "SELECT mean(\"ds_combinedIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -671,7 +671,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -1014,7 +1014,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -1046,7 +1046,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"readThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time(5s) fill(none)",
+			"query": "SELECT mean(\"readThroughput\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1060,7 +1060,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -1089,7 +1089,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -1109,7 +1109,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_readThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
+			"query": "SELECT mean(\"ds_readThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1123,7 +1123,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -1240,7 +1240,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -1272,7 +1272,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "default",
-			"query": "SELECT sum(\"readIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time(5s) fill(none)",
+			"query": "SELECT mean(\"readIOps\") FROM \"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter GROUP BY time($__interval) fill(none)",
 			"rawQuery": false,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1286,7 +1286,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -1315,7 +1315,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -1335,7 +1335,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_readIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
+			"query": "SELECT mean(\"ds_readIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1349,7 +1349,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -1692,7 +1692,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -1736,7 +1736,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -1765,7 +1765,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -1785,7 +1785,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"writeThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
+			"query": "SELECT mean(\"writeThroughput\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -1799,7 +1799,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -1916,7 +1916,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -1960,7 +1960,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -1989,7 +1989,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "5s"
+				    "$__interval"
 				],
 				"type": "time"
 			    },
@@ -2009,7 +2009,7 @@
 			"measurement": "disks",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_writeIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
+			"query": "SELECT mean(\"ds_writeIOps\") FROM \"downsample_retention\".\"disks\" WHERE (\"sys_name\" =~ /^$System$/ AND \"sys_tray\" =~ /^$Tray$/ AND \"sys_tray_slot\" =~ /^$Slot$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"sys_name\", \"sys_tray\", \"sys_tray_slot\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -2023,7 +2023,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
