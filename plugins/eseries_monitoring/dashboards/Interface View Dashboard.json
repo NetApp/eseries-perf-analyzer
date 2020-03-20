@@ -123,7 +123,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -160,7 +160,7 @@
 			"measurement": "interface",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedResponseTime\") FROM \"downsample_retention\".\"interface\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"channel_type\" fill(none)",
+			"query": "SELECT mean(\"ds_combinedResponseTime\") FROM \"downsample_retention\".\"interface\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"channel_type\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -174,7 +174,7 @@
 				},
 				{
 				    "params": [],
-				    "type": "sum"
+				    "type": "mean"
 				}
 			    ]
 			],
@@ -275,7 +275,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -324,7 +324,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -344,7 +344,7 @@
 			"measurement": "interface",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"interface\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"channel_type\" fill(none)",
+			"query": "SELECT sum(\"ds_combinedThroughput\") FROM \"downsample_retention\".\"interface\" WHERE (\"sys_name\" =~ /^$System$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"channel_type\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
@@ -459,7 +459,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -514,7 +514,7 @@
 			"groupBy": [
 			    {
 				"params": [
-				    "$__interval"
+				    "5s"
 				],
 				"type": "time"
 			    },
@@ -534,7 +534,7 @@
 			"measurement": "interface",
 			"orderByTime": "ASC",
 			"policy": "downsample_retention",
-			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"interface\" WHERE (\"sys_name\" =~ /^$System$/ AND \"interface_id\" =~ /^$Interface$/) AND $timeFilter AND time < now() - 1w GROUP BY time($__interval), \"channel_type\" fill(none)",
+			"query": "SELECT sum(\"ds_combinedIOps\") FROM \"downsample_retention\".\"interface\" WHERE (\"sys_name\" =~ /^$System$/ AND \"interface_id\" =~ /^$Interface$/) AND $timeFilter AND time < now() - 1w GROUP BY time(5s), \"channel_type\" fill(none)",
 			"rawQuery": true,
 			"refId": "B",
 			"resultFormat": "time_series",
