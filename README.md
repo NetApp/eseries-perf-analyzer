@@ -19,6 +19,11 @@ The only real requirements to utilize this project are a Linux OS and a Docker i
 
 Our descriptions below of the various components will in no way fully do them justice. It is recommended that you visit the project/home pages for each in order to gain a full understanding of what they can provide and how they can be fully utilized. We will attempt to provide the high-level information that you absolutely need to know, but probably little beyond that.
 
+## Support
+If you have any issues with the project, including problems running any of the automation or bugs that you find in the project, please file them as an issue here with the release that you're using and any details that you can give us. We may request additional information on your configuration if you have modified it from the default. If the issue that you are having is E-Series related, you may need to file a ticket with NetApp support, as issues here are only for this project.
+
+Please take note of the documentation and any documented requirements as none of the scripts will work without these dependencies!
+
 ## Components
 ### NetApp SANtricity Web Services Proxy
 The Web Services Proxy provides a RESTful interface for managing/monitoring E-Series storage systems. Our newest hardware models provide a RESTful API out-of-the-box, but the Web Services Proxy will support the newest systems as well as the legacy storage systems that do not. It is highly scalable and can support upwards of 500 E-Series systems while using < 2 GB of memory.
