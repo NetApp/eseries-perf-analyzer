@@ -7,7 +7,7 @@ FROM ${IMAGE} as builder
 
 # Signifies this is a temporary image that can be purged
 LABEL autodelete="true"
-RUN apk add --update gcc musl-dev libffi-dev make openssl-dev
+RUN apk add --update gcc musl-dev libffi-dev make openssl-dev rust cargo
 RUN pip3 --default-timeout=5 --retries 15 install --upgrade --prefix=/install -r requirements.txt
 
 FROM ${IMAGE}
