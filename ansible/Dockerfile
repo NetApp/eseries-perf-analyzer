@@ -8,7 +8,8 @@ FROM ${IMAGE} as builder
 # Signifies this is a temporary image that can be purged
 LABEL autodelete="true"
 RUN apk add --update gcc musl-dev libffi-dev make openssl-dev
-RUN pip3 --default-timeout=5 --retries 15 install --upgrade --prefix=/install -r requirements.txt
+RUN python -m pip install --upgrade pip
+RUN pip --default-timeout=5 --retries 15 install --upgrade --prefix=/install -r requirements.txt
 
 FROM ${IMAGE}
 COPY --from=builder /install /usr/local
