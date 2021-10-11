@@ -1,3 +1,4 @@
+ARG CONTAINER_GRAFANA_TAG=6.5.2
 ARG TAG=latest
 ARG PROJ_NAME=ntap-grafana
-FROM grafana/grafana:6.5.2
+FROM grafana/grafana:${CONTAINER_GRAFANA_TAG}

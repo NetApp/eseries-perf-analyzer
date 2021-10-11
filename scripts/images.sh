@@ -18,7 +18,7 @@ set -- "${POSITIONAL[@]}"
 if [ -z "$QUIET" ]; then
     echo "##########################################################################################"
     echo "In order to run this application the following Docker images will be downloaded and installed:"
-    find . -iname "Dockerfile" -exec cat {} \; | grep ^FROM | grep -vG "\${" | grep -v "ntap-grafana" | awk '{print $2}' |sort -u
+    find . -iname "Dockerfile" -exec cat {} \; | grep ^FROM | awk '{print $2}' | grep -v "^\\$" | sort -u
     echo ''
     echo "If you agree with the above you may continue, otherwise cancel and
   change the relevant tags to a newer version in the Dockerfile[s]."
@@ -31,8 +31,6 @@ else
 fi
 
 if [[ ${REPLY,,} =~ ^(y|yes|Yes|YES)$ ]]; then
-
-
    exit 0
 else
     echo ''
@@ -41,4 +39,3 @@ else
     find . -iname "Dockerfile" -exec echo {} \;
     exit 1
 fi
-

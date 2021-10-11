@@ -63,11 +63,11 @@ build: __docker-find __docker-version warn ## Build the container
 	docker network inspect eseries_perf_analyzer >/dev/null 2>&1 || docker network create eseries_perf_analyzer
 
 	# Build core services
-	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
-	docker build --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
+	docker build --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg CONTAINER_ALPINE_TAG --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
+	docker build --build-arg PIP_CONF=$(PIP_CONF) --build-arg CONTAINER_PYTHON_TAG --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/ansible:${TAG} ansible
-	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
-	docker build --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/grafana:$(TAG) grafana
+	docker build --build-arg CONTAINER_INFLUXDB_TAG --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
+	docker build --build-arg CONTAINER_GRAFANA_TAG  --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/grafana:$(TAG) grafana
 	docker-compose build
 
 	# Build plugins
@@ -87,11 +87,11 @@ build-nc: __docker-find __docker-version warn ## Build the container without cac
 	@chmod +x scripts/*
 	@scripts/plugin_task_info.sh
 
-	docker build --no-cache -f build/alpine/Dockerfile --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
-	docker build --no-cache -f build/python/Dockerfile --build-arg PIP_CONF=$(PIP_CONF) --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
+	docker build --no-cache --build-arg REPO_FILE=$(ALPINE_REPO_FILE) --build-arg CONTAINER_ALPINE_TAG --build-arg TAG=$(TAG) -t $(PROJ_NAME)/alpine-base:${TAG} build/alpine
+	docker build --no-cache --build-arg PIP_CONF=$(PIP_CONF) --build-arg CONTAINER_PYTHON_TAG --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/python-base:${TAG} build/python
 	docker build --no-cache --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/ansible:${TAG} ansible
-	docker build --no-cache --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
-	docker build --no-cache --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/grafana:$(TAG) grafana
+	docker build --no-cache --build-arg CONTAINER_INFLUXDB_TAG --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/influxdb:$(TAG) influxdb
+	docker build --no-cache --build-arg CONTAINER_GRAFANA_TAG  --build-arg TAG=$(TAG) --build-arg PROJ_NAME=$(PROJ_NAME) -t $(PROJ_NAME)/grafana:$(TAG) grafana
 	docker-compose build --pull --no-cache
 
 	# Build plugins
