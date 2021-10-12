@@ -1,4 +1,4 @@
-ARG CONTAINER_INFLUXDB_TAG=1.7-alpine
+ARG CONTAINER_INFLUXDB_TAG=1.8-alpine
 ARG TAG=latest
 ARG PROJ_NAME=ntap-grafana
 FROM ${PROJ_NAME}/alpine-base:${TAG} as builder
