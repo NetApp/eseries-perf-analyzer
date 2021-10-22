@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 # find all of the build_info text files for each plugin
 # these tell us how to build the images in the plugins
 plugins_build_info_files=$(find plugins/ -mindepth 2 -maxdepth 2 -type f -name "build_info.txt")
@@ -10,9 +12,6 @@ for file in $plugins_build_info_files
 do
     # extract this plugin's directory name from the build_info path
     plugin_name=$(echo $file | grep -o "/.*/" | cut -d "/" -f 2)
-
-    # relative path to this plugin's directory
-    plugin_dir=$(echo "plugins/${plugin_name}")
 
     # read build_info line by line, constructing remove commands
     # build tag: ntap-grafana-plugin/*plugin_dir*/*plugin_component*
@@ -37,10 +36,10 @@ do
         fi
 
         if [ "$plugins_remove_data" = "" ]; then
-                plugins_remove_data="docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${image_tag}"
-                else
-                plugins_remove_data="$plugins_remove_data; docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${image_tag}"
-                fi
+            plugins_remove_data="docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${image_tag}"
+        else
+            plugins_remove_data="$plugins_remove_data; docker rmi -f ${PROJ_NAME}-plugin/${plugin_name}/${image_tag}"
+        fi
         
     done < $file
 done

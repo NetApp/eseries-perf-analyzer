@@ -166,10 +166,6 @@ rm: __docker-find __docker-version  ## Remove all existing containers defined by
 
 clean: stop rm ## Remove all images and containers built by the project
 	rm -rf images
-	# There are certain images created by the multi-stage builds that will not otherwise be removed. If not removed first,
-	# it will cause the next commands to fail.
-	docker image prune -f
-
 	docker rmi $(PROJ_NAME)/ansible:${TAG}
 	docker rmi $(PROJ_NAME)/influxdb:${TAG}
 	docker rmi $(PROJ_NAME)/grafana:${TAG}

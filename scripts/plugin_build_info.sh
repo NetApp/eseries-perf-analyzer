@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 # grab our environment variables
 # and construct our build args string
 env_vars=$(cat .env)
