@@ -1,4 +1,3 @@
-// @Library('hub') _
 pipeline {
     agent { label 'linux-docker' }
     options {
@@ -9,7 +8,7 @@ pipeline {
     environment {
         TAG = "${BRANCH_NAME}-${BUILD_NUMBER}"
         PROJECT_NAME = "esg-grafana"
-        VERSION = "2.1"
+        VERSION = "3.0"
         QUIET = "yes"
     }
     stages {
@@ -39,30 +38,6 @@ pipeline {
                 '''
             }
         }
-        // stage('Security Scan'){
-        //     when {
-        //         anyOf { branch '1.0'; branch '2.0'; branch '2.1'; changelog '.*^hubScan$' }
-        //     }
-        //     steps{
-        //         hubScan("${PROJECT_NAME}", "${VERSION}", coreCount: -1)
-        //     }
-        // }
-        // stage('Prepare for scan'){
-        //     steps {
-        //         sh'''
-        //             make export
-        //         '''
-        //     }
-        // }
-        // stage('Security Scan Images'){
-        //     when {
-        //         anyOf { branch '1.0'; branch '2.0'; branch '2.1'; changelog '.*^hubScan$' }
-        //     }
-        //     steps {
-        //         // Validate the images, running a security scan on all docker images
-        //         hubScanDocker("${PROJECT_NAME}", "${VERSION}", "${WORKSPACE}/images", coreCount: -1)
-        //     }
-        // }
     }
     post {
         always {
