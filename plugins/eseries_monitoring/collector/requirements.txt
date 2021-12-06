@@ -1,3 +1,10 @@
-requests
-urllib3>=1.25.3
-influxdb
+requests==2.26.0
+urllib3==1.26.7
+influxdb==5.3.1
+certifi==2021.10.8
+charset-normalizer==2.0.8
+idna==3.3
+msgpack==1.0.3
+python-dateutil==2.8.2
+pytz==2021.3
+six==1.16.0
