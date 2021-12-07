@@ -21,20 +21,25 @@ pipeline {
             }
             steps {
                 script {
-                    docker.build("perf-analyzer-blackduck", "./blackduck").withRun("-u 0") {
+                    docker.build("perf-analyzer-blackduck", "./blackduck").inside("-u 0") {
+                        sh "cd ./plugins/eseries_monitoring/collector && pip --default-timeout=5 --retries 15 install -r requirements.txt"
+                        sh "cd ./ansible && pip --default-timeout=5 --retries 15 install -r requirements.txt"
+
                         // Scan the source code of the project
                         synopsys_detect detectProperties: """
-                            --detect.excluded.detector.types="PIP" \
-                            --detect.project.name=${PROJECT_NAME} \
-                            --detect.project.version.name=${VERSION} \
-                            --detect.cleanup=false \
-                            --detect.output.path=scanTempDir \
-                            --detect.project.code.location.unmap=true \
-                            --detect.detector.search.depth=25 \
-                            --detect.code.location.name=${PROJECT_NAME}_${VERSION}_code \
-                            --detect.bom.aggregate.name=${PROJECT_NAME}_${VERSION}_bom \
-                            --detect.detector.search.exclusion.paths=scanTempDir/ \
-                            --detect.blackduck.signature.scanner.exclusion.patterns=/scanTempDir/
+                            --detect.python.python3=true
+                            --detect.pip.project.name=${PROJECT_NAME}
+                            --detect.pip.project.version.name=${VERSION}
+                            --detect.project.name=${PROJECT_NAME}
+                            --detect.project.version.name=${VERSION}
+                            --detect.cleanup=false
+                            --detect.output.path=/tmp/scanTempDir
+                            --detect.project.code.location.unmap=true
+                            --detect.detector.search.depth=25
+                            --detect.code.location.name=${PROJECT_NAME}_${VERSION}_code
+                            --detect.bom.aggregate.name=${PROJECT_NAME}_${VERSION}_bom
+                            --detect.detector.search.exclusion.paths=scanTempDir
+                            --detect.blackduck.signature.scanner.exclusion.patterns=scanTempDir
                         """
                         // This error occurs when using a non-root user within the container:
                         //    Error creating directory /synopsys-detect/download.
