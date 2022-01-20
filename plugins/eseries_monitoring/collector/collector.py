@@ -724,6 +724,7 @@ if __name__ == "__main__":
         create_continuous_query(VOLUME_PARAMS, "volumes")
         create_continuous_query(INTERFACE_PARAMS, "interface")
     
+        LOG.info("Attempting to add storage systems...")
         for system in configuration.get("storage_systems", list()):
             LOG.info("system: %s", str(system))
             body = dict(controllerAddresses=system.get("addresses"),

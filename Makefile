@@ -18,10 +18,13 @@ configuration := .$(configuration)
 ##
 # plugin targets
 ##
+configure-plugins: ## Perform plugin configuration
+	@scripts/plugin_configure.sh
+
 run-plugins: ## Run all plugins
 	@$(shell ./scripts/plugin_compose_info.sh "up -d")
 
-build-plugins: ## Build all plugins
+build-plugins: configure-plugins ## Build all plugins
 	@$(shell PROJ_NAME=$(PROJ_NAME) ./scripts/plugin_build_info.sh)
 
 stop-plugins: ## Stop all plugins

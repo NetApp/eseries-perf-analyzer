@@ -34,7 +34,19 @@ netapp_web_services:
 
 The Web Services Proxy installation includes a GUI component that can be used to manage the newest E-Series systems (those running firmware levels 11.40 and above), which may or may not work for your environment.
 
-By default we will use the credentials _admin/admin_ for accessing the Web Services Proxy. These credentials can be updated, but you will need to update the credentials in your storage system config file *"<project_dir\>/plugins/eseries_monitoring/collector/config.json"* as well. These credentials can optionally be passed as arguments to the collector script (_"-u USERNAME -p PASSWORD"_) which will cause the _config.json_ credentials to be ignored. Environment variables for the purpose are exposed in the *"<project_dir\>/plugins/eseries_monitoring/docker-compose.yml"* file's *stats_collector* section.
+#### Managing Web Services Proxy Credentials
+By default the credentials _admin/admin_ will be used for accessing the Web Services Proxy. If you wish to modify the password used then follow this procedure.
+
+##### Update the password for the web services proxy service
+Edit the file `.auth.env` in the root of the project. Change the value of the `PROXY_PASSWORD` variable to the password that you wish to use and save the file. This
+will be used to configure the password for the proxy service.
+     
+##### Update the password used by the collector plugin
+Edit the file `<project_dir>/plugins/eseries_monitoring/collector/config.json` and change the value of the `password` key. This is the top level `password` key and not the password for an individual storage system which is a different password.
+
+Once both the `.auth.env` and `config.json` files have been updated then the images will need to be rebuilt if the project is running. This can be done with a simple `make restart` command. If the project has not been built or started yet then the changes will take effect when you do build and start the project.
+
+
 ### InfluxDB
 [InfluxDB](https://www.influxdata.com/) is our persistent store for preserving metrics data. Grafana supports [many different backends](https://grafana.com/plugins?type=datasource), but we chose InfluxDB due to its speed and scalability as well as the power and simplicity of its query language.
 
